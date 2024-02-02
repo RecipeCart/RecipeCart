@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-recipecart-dev-181245-authRole",
+      "UnauthRoleArn": "arn:aws:iam::988119534577:role/amplify-recipecart-dev-181245-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::988119534577:role/amplify-recipecart-dev-181245-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-recipecart-dev-181245-deployment",
+      "UnauthRoleName": "amplify-recipecart-dev-181245-unauthRole",
+      "StackName": "amplify-recipecart-dev-181245",
+      "StackId": "arn:aws:cloudformation:us-east-2:988119534577:stack/amplify-recipecart-dev-181245/69293d90-c157-11ee-b7ee-029c99981ccf",
+      "AmplifyAppId": "d37i3s7g2im22f"
+    },
+    "categories": {
+      "auth": {
+        "recipecart9b41d873": {}
+      }
+    }
+  }
+}
