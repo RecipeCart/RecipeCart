@@ -1,0 +1,57 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-recipecart-dev-181245-authRole",
+      "UnauthRoleArn": "arn:aws:iam::988119534577:role/amplify-recipecart-dev-181245-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::988119534577:role/amplify-recipecart-dev-181245-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-recipecart-dev-181245-deployment",
+      "UnauthRoleName": "amplify-recipecart-dev-181245-unauthRole",
+      "StackName": "amplify-recipecart-dev-181245",
+      "StackId": "arn:aws:cloudformation:us-east-2:988119534577:stack/amplify-recipecart-dev-181245/69293d90-c157-11ee-b7ee-029c99981ccf",
+      "AmplifyAppId": "d37i3s7g2im22f"
+    }
+  },
+  "auth": {
+    "recipecart9b41d873": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "output": {
+        "UserPoolId": "us-east-2_0oepvxquT",
+        "AppClientIDWeb": "4mrbsgvh3cp66tot7i6tnmkie6",
+        "AppClientID": "106sjh0di1o4rfehudgsmvnlv9",
+        "IdentityPoolId": "us-east-2:0cf853c0-0b5b-4804-9e57-ae3c1312d2f4",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-2:988119534577:userpool/us-east-2_0oepvxquT",
+        "IdentityPoolName": "recipecart9b41d873_identitypool_9b41d873__dev",
+        "UserPoolName": "recipecart9b41d873_userpool_9b41d873"
+      },
+      "lastPushTimeStamp": "2024-02-24T00:11:20.604Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-recipecart-dev-181245-deployment/amplify-cfn-templates/auth/recipecart9b41d873-cloudformation-template.json",
+        "logicalId": "authrecipecart9b41d873"
+      }
+    }
+  }
+}

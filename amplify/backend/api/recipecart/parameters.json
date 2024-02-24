@@ -1,0 +1,12 @@
+{
+  "AppSyncApiName": "recipecart",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authrecipecart9b41d873",
+      "Outputs.UserPoolId"
+    ]
+  },
+  "AuthModeLastUpdated": "2024-02-24T22:46:38.478Z"
+}

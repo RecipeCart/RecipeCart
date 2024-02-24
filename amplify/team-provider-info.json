@@ -14,6 +14,19 @@
     "categories": {
       "auth": {
         "recipecart9b41d873": {}
+      },
+      "api": {
+        "recipecart": {}
+      },
+      "storage": {
+        "Recipeg42gtn7q7fgxzeax6xxsvbh74adev": {
+          "tableName": "Recipe-g42gtn7q7fgxzeax6xxsvbh74a-dev",
+          "region": "us-east-2",
+          "arn": "arn:aws:dynamodb:us-east-2:988119534577:table/Recipe-g42gtn7q7fgxzeax6xxsvbh74a-dev",
+          "streamArn": "arn:aws:dynamodb:us-east-2:988119534577:table/Recipe-g42gtn7q7fgxzeax6xxsvbh74a-dev/stream/2024-02-24T00:45:39.316",
+          "partitionKeyName": "id",
+          "partitionKeyType": "S"
+        }
       }
     }
   }
