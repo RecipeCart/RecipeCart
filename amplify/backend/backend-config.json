@@ -1,6 +1,6 @@
 {
   "api": {
-    "recipecart": {
+    "recipecartAPI": {
       "dependsOn": [
         {
           "attributes": [
@@ -12,16 +12,7 @@
       ],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [
-            {
-              "apiKeyConfig": {
-                "apiKeyExpirationDate": "2024-02-25T22:46:19.457Z",
-                "apiKeyExpirationDays": 1,
-                "description": "recipe"
-              },
-              "authenticationType": "API_KEY"
-            }
-          ],
+          "additionalAuthenticationProviders": [],
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
@@ -60,26 +51,67 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
-    },
-    "userPoolGroups": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId",
-            "AppClientIDWeb",
-            "AppClientID",
-            "IdentityPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "recipecart9b41d873"
-        }
-      ],
+    }
+  },
+  "function": {
+    "addrecipe": {
+      "build": true,
       "providerPlugin": "awscloudformation",
-      "service": "Cognito-UserPool-Groups"
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_storage_Recipefv65t5m7jbe6zdktco7kki5pr4deve_arn": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "Recipefv65t5m7jbe6zdktco7kki5pr4deve"
+        }
+      ]
+    },
+    "AMPLIFY_storage_Recipefv65t5m7jbe6zdktco7kki5pr4deve_partitionKeyName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "Recipefv65t5m7jbe6zdktco7kki5pr4deve"
+        }
+      ]
+    },
+    "AMPLIFY_storage_Recipefv65t5m7jbe6zdktco7kki5pr4deve_partitionKeyType": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "Recipefv65t5m7jbe6zdktco7kki5pr4deve"
+        }
+      ]
+    },
+    "AMPLIFY_storage_Recipefv65t5m7jbe6zdktco7kki5pr4deve_region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "Recipefv65t5m7jbe6zdktco7kki5pr4deve"
+        }
+      ]
+    },
+    "AMPLIFY_storage_Recipefv65t5m7jbe6zdktco7kki5pr4deve_streamArn": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "Recipefv65t5m7jbe6zdktco7kki5pr4deve"
+        }
+      ]
+    },
+    "AMPLIFY_storage_Recipefv65t5m7jbe6zdktco7kki5pr4deve_tableName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "Recipefv65t5m7jbe6zdktco7kki5pr4deve"
+        }
+      ]
     }
   },
   "storage": {
-    "Recipeg42gtn7q7fgxzeax6xxsvbh74adev": {
+    "Recipefv65t5m7jbe6zdktco7kki5pr4deve": {
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
       "service": "DynamoDB",

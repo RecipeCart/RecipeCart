@@ -1,4 +1,35 @@
 {
+  "deve": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-recipecart-deve-90955-authRole",
+      "UnauthRoleArn": "arn:aws:iam::988119534577:role/amplify-recipecart-deve-90955-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::988119534577:role/amplify-recipecart-deve-90955-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+      "UnauthRoleName": "amplify-recipecart-deve-90955-unauthRole",
+      "StackName": "amplify-recipecart-deve-90955",
+      "StackId": "arn:aws:cloudformation:us-east-2:988119534577:stack/amplify-recipecart-deve-90955/b8ce6250-d4b0-11ee-997f-0278afbf360f",
+      "AmplifyAppId": "d37i3s7g2im22f"
+    },
+    "categories": {
+      "auth": {
+        "recipecart9b41d873": {}
+      },
+      "storage": {
+        "Recipefv65t5m7jbe6zdktco7kki5pr4deve": {
+          "tableName": "Recipe-fv65t5m7jbe6zdktco7kki5pr4-deve",
+          "region": "us-east-2",
+          "arn": "arn:aws:dynamodb:us-east-2:988119534577:table/Recipe-fv65t5m7jbe6zdktco7kki5pr4-deve",
+          "streamArn": "arn:aws:dynamodb:us-east-2:988119534577:table/Recipe-fv65t5m7jbe6zdktco7kki5pr4-deve/stream/2024-02-26T16:34:43.713",
+          "partitionKeyName": "id",
+          "partitionKeyType": "S"
+        }
+      },
+      "function": {
+        "addrecipe": {}
+      }
+    }
+  },
   "dev": {
     "awscloudformation": {
       "AuthRoleName": "amplify-recipecart-dev-181245-authRole",

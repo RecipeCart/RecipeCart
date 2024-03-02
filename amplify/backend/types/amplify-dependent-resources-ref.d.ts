@@ -1,9 +1,8 @@
 export type AmplifyDependentResourcesAttributes = {
   "api": {
-    "recipecart": {
+    "recipecartAPI": {
       "GraphQLAPIEndpointOutput": "string",
-      "GraphQLAPIIdOutput": "string",
-      "GraphQLAPIKeyOutput": "string"
+      "GraphQLAPIIdOutput": "string"
     }
   },
   "auth": {
@@ -15,9 +14,6 @@ export type AmplifyDependentResourcesAttributes = {
       "UserPoolArn": "string",
       "UserPoolId": "string",
       "UserPoolName": "string"
-    },
-    "userPoolGroups": {
-      "recipeeditGroupRole": "string"
     }
   }
 }
