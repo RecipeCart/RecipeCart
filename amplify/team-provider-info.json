@@ -16,5 +16,26 @@
         "recipecart9b41d873": {}
       }
     }
+  },
+  "deve": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-recipecart-deve-90955-authRole",
+      "UnauthRoleArn": "arn:aws:iam::988119534577:role/amplify-recipecart-deve-90955-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::988119534577:role/amplify-recipecart-deve-90955-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+      "UnauthRoleName": "amplify-recipecart-deve-90955-unauthRole",
+      "StackName": "amplify-recipecart-deve-90955",
+      "StackId": "arn:aws:cloudformation:us-east-2:988119534577:stack/amplify-recipecart-deve-90955/b8ce6250-d4b0-11ee-997f-0278afbf360f",
+      "AmplifyAppId": "d37i3s7g2im22f"
+    },
+    "categories": {
+      "auth": {
+        "recipecart9b41d873": {}
+      },
+      "api": {
+        "recipecartAPI": {}
+      }
+    }
   }
 }
