@@ -8,10 +8,6 @@
       "cognitoUserPoolId": "authrecipecart9b41d873"
     },
     "conflictResolution": {},
-    "additionalAuthTypes": [
-      {
-        "mode": "AWS_IAM"
-      }
-    ]
+    "additionalAuthTypes": []
   }
 }
