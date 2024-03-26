@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/common/utils/colors.dart' as constants;
+import 'package:recipe_cart/features/recipe/ui/homepage/inventory_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -35,9 +36,6 @@ class _NavigationExampleState extends State<NavigationExample> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inventory'),
-      ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
@@ -58,6 +56,11 @@ class _NavigationExampleState extends State<NavigationExample> {
             label: 'Saved Recipes',
           ),
           NavigationDestination(
+            selectedIcon: Icon(Icons.fastfood),
+            icon: Icon(Icons.fastfood_outlined),
+            label: 'Saved Recipes',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.settings),
             label: 'Settings',
           ),
@@ -65,146 +68,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       ),
       body: <Widget>[
         /// Home page
-        Card(
-          // color: Colors.black,
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Column(
-                children: <Widget>[
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        color: Colors.white,
-                        width: 0.3,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    margin: const EdgeInsets.only(top: 10.0),
-                    child: Row( // Use Row for horizontal layout
-                      children: [
-                        Expanded( // Ensures title takes most space
-                          child: ListTile(
-                            title: const Text('Watermelon'),
-                            subtitle: Row( // Row for weight and edit icon
-                              children: [
-                                Text('Weight: $weight'),
-                                // Editable text field for weight
-                                Expanded(
-                                  child: TextField(
-                                      controller: weightController, // Use controller
-                                      keyboardType: TextInputType.number,
-                                      decoration: const InputDecoration(
-                                      border: InputBorder.none,// Remove default border
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // Icon trailing the content
-                        IconButton(
-                          icon: const Icon(Icons.edit), // Use Icons.edit for writing icon
-                          onPressed: () {
-                            weight = weightController.text;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),  
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        color: Colors.white,
-                        width: 0.3,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    margin: const EdgeInsets.only(top: 10.0),
-                    child: Row( // Use Row for horizontal layout
-                      children: [
-                        Expanded( // Ensures title takes most space
-                          child: ListTile(
-                            title: const Text('Banana'),
-                            subtitle: Row( // Row for weight and edit icon
-                              children: [
-                                Text('Weight: $weight'),
-                                // Editable text field for weight
-                                Expanded(
-                                  child: TextField(
-                                      controller: weightController, // Use controller
-                                      keyboardType: TextInputType.number,
-                                      decoration: const InputDecoration(
-                                      border: InputBorder.none,// Remove default border
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // Icon trailing the content
-                        IconButton(
-                          icon: const Icon(Icons.edit), // Use Icons.edit for writing icon
-                          onPressed: () {
-                            weight = weightController.text;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(
-                        color: Colors.white,
-                        width: 0.3,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    margin: const EdgeInsets.only(top: 10.0),
-                    child: Row( // Use Row for horizontal layout
-                      children: [
-                        Expanded( // Ensures title takes most space
-                          child: ListTile(
-                            title: const Text('Orange'),
-                            subtitle: Row( // Row for weight and edit icon
-                              children: [
-                                Text('Weight: $weight'),
-                                // Editable text field for weight
-                                Expanded(
-                                  child: TextField(
-                                      controller: weightController, // Use controller
-                                      keyboardType: TextInputType.number,
-                                      decoration: const InputDecoration(
-                                      border: InputBorder.none,// Remove default border
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // Icon trailing the content
-                        IconButton(
-                          icon: const Icon(Icons.edit), // Use Icons.edit for writing icon
-                          onPressed: () {
-                            weight = weightController.text;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),               
-                ],
-              ),
-            ),
-
-          ),
-        ),
-
+        const InventoryPage(),
         /// Notifications page
         const Padding(
           padding: EdgeInsets.all(8.0),
@@ -227,7 +91,28 @@ class _NavigationExampleState extends State<NavigationExample> {
             ],
           ),
         ),
-
+        /// Generate Recipe Page
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.notifications_sharp),
+                  title: Text('Notification 1'),
+                  subtitle: Text('This is a notification'),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.bookmark_add),
+                  title: Text('Notification 2'),
+                  subtitle: Text('This is a notification'),
+                ),
+              ),
+            ],
+          ),
+        ),        
         /// Messages page
         ListView.builder(
           reverse: true,
