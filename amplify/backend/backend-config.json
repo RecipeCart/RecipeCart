@@ -1,6 +1,6 @@
 {
   "api": {
-    "recipecartAPI": {
+    "recipecart": {
       "dependsOn": [
         {
           "attributes": [
@@ -12,7 +12,16 @@
       ],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [],
+          "additionalAuthenticationProviders": [
+            {
+              "apiKeyConfig": {
+                "apiKeyExpirationDate": "2024-04-26T01:00:54.272Z",
+                "apiKeyExpirationDays": 31,
+                "description": "toPopulateDB"
+              },
+              "authenticationType": "API_KEY"
+            }
+          ],
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {

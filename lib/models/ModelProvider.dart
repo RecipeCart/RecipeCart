@@ -21,22 +21,18 @@
 
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'Ingredient.dart';
-import 'IngredientType.dart';
 import 'Recipe.dart';
 import 'Settings.dart';
-import 'User.dart';
 
 export 'Ingredient.dart';
-export 'IngredientType.dart';
 export 'Recipe.dart';
 export 'Settings.dart';
-export 'User.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "1e4d6534d3845f0d4ab254eb285b6695";
+  String version = "2340c97cb65b9c5a4157d6a9b0a46216";
   @override
-  List<amplify_core.ModelSchema> modelSchemas = [Ingredient.schema, IngredientType.schema, Recipe.schema, Settings.schema, User.schema];
+  List<amplify_core.ModelSchema> modelSchemas = [Ingredient.schema, Recipe.schema, Settings.schema];
   @override
   List<amplify_core.ModelSchema> customTypeSchemas = [];
   static final ModelProvider _instance = ModelProvider();
@@ -47,14 +43,10 @@ class ModelProvider implements amplify_core.ModelProviderInterface {
     switch(modelName) {
       case "Ingredient":
         return Ingredient.classType;
-      case "IngredientType":
-        return IngredientType.classType;
       case "Recipe":
         return Recipe.classType;
       case "Settings":
         return Settings.classType;
-      case "User":
-        return User.classType;
       default:
         throw Exception("Failed to find model in model provider for model name: " + modelName);
     }

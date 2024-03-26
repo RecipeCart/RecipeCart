@@ -1,0 +1,70 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+# access patterns for Recipe
+# Get Recipe by recipeName
+# Get Recipe by userID (get all recipes saved/created by a user)
+# Get Recipe by ingredients
+# Get Recipe above a certain rating
+# Get Recipe by ingredients above a certain rating
+# Owners can CRUD their own recipes
+
+type Recipe @model @auth(rules: [{allow: private, operations: [read]}, {allow: owner, ownerField: "userID"}, {allow: public, provider: apiKey}]) {
+  id: ID! @primaryKey(sortKeyFields: ["recipeName"])
+  recipeName: String! @index(name: "byRecipeName", queryField: "recipeByName")
+  dietType: Int! @index(name: "byDietByCuisine", sortKeyFields: ["cuisineType"], queryField: "recipeByDietByCuisine")
+  cuisineType: Int!
+  userID: String 
+    @auth(rules: [{allow: owner, operations: [read, delete]}])
+    @index(name: "byUserID", queryField: "recipeByUserID")
+
+  ingredients: [Ingredient!] @hasMany(indexName: "byRecipe", fields: ["id", "recipeName"])
+
+  instructions: String!
+  ratings: Float! @index(name: "byRatingsByViews", sortKeyFields: ["views"], queryField: "recipeByRatingsByViews")
+  views: Int!
+  image: String
+}
+
+
+# access patterns for Ingredient
+# Any signed-in user can read the ingredient table
+# Owners can CRUD their own ingredient copy
+# Owners can only read and update the quantity of their ingredient copy
+# Get ingredients by userID (for owners to check inventory)
+# Get ingredients by ingredientName
+
+type Ingredient @model @auth(rules: [{allow: private, operations: [read]}, {allow: owner, ownerField: "userID"}, {allow: public, provider: apiKey}]) {
+  id: ID! @primaryKey(sortKeyFields: ["ingredientName"])
+  ingredientName: String! @index(name: "byIngredientName", queryField: "ingredientByName")
+  userID: String 
+    @auth(rules: [{allow: owner, operations: [read, delete]}])
+    @index(name: "byUserID", queryField: "ingredientByUserID")
+  vector: [Float] 
+    @auth(rules: [{allow: private, operations: [read]}, {allow: owner, operations: [read, delete]}, {allow: public, provider: apiKey}]) 
+  barcodes: [String]
+    @auth(rules: [{allow: private, operations: [read, update]}, {allow: owner, operations: [read, delete]}, {allow: public, provider: apiKey}]) 
+  quantity: Float!
+
+  recipe: Recipe @belongsTo(fields: ["recipeID", "recipeName"])
+  recipeID: ID @index(name: "byRecipe", sortKeyFields: ["recipeName"]) # customized foreign key for parent primary key
+  recipeName: String # customized foreign key for parent sort key
+
+  settings: Settings @belongsTo(fields: ["settingsID"])
+  settingsID: ID @index(name: "bySettings")
+}
+
+
+type Settings @model @auth(rules: [{allow: owner, operations: [read, update, delete]}, {allow: public, provider: apiKey}]) {
+  id: ID!
+  dietType: Int!
+
+  avoidances: [Ingredient] @hasMany(indexName: "bySettings", fields: ["id"]) 
+
+  cuisineTypes: [Int]
+  language: Int!
+  notifications: Boolean!
+  linkedDevices: [String]
+}
+

@@ -13,6 +13,7 @@ class RecipeCartApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Authenticator(
+      initialStep: AuthenticatorStep.signIn,
       child: MaterialApp.router(
         routerConfig: router,
         builder: Authenticator.builder(),
