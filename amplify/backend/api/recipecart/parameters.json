@@ -1,5 +1,5 @@
 {
-  "AppSyncApiName": "recipecartAPI",
+  "AppSyncApiName": "recipecart",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
   "AuthCognitoUserPoolId": {
@@ -8,5 +8,5 @@
       "Outputs.UserPoolId"
     ]
   },
-  "AuthModeLastUpdated": "2024-03-02T15:31:31.200Z"
+  "AuthModeLastUpdated": "2024-03-26T01:00:55.968Z"
 }

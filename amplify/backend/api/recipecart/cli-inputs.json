@@ -1,7 +1,7 @@
 {
   "version": 1,
   "serviceConfiguration": {
-    "apiName": "recipecartAPI",
+    "apiName": "recipecart",
     "serviceName": "AppSync",
     "defaultAuthType": {
       "mode": "AMAZON_COGNITO_USER_POOLS",
@@ -10,7 +10,10 @@
     "conflictResolution": {},
     "additionalAuthTypes": [
       {
-        "mode": "AWS_IAM"
+        "mode": "API_KEY",
+        "expirationTime": 31,
+        "apiKeyExpirationDate": "2024-04-26T01:00:54.272Z",
+        "keyDescription": "toPopulateDB"
       }
     ]
   }

@@ -58,7 +58,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           NavigationDestination(
             selectedIcon: Icon(Icons.fastfood),
             icon: Icon(Icons.fastfood_outlined),
-            label: 'Saved Recipes',
+            label: 'Generate Recipes',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings),
