@@ -1,0 +1,13 @@
+{
+  "resourceName": "recipeCartStorageBucket",
+  "policyUUID": "06f39a23",
+  "bucketName": "recipecartstorage",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "groupAccess": {}
+}

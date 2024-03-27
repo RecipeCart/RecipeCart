@@ -1,4 +1,5 @@
 import 'package:recipe_cart/common/services/user_api_service.dart';
+import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final userRepositoryProvider = Provider<UserRepository>((ref) {
@@ -16,5 +17,10 @@ class UserRepository {
     return userAPIService.signOutCurrentUser();
   }
 
+  Future<void> signUpUser({required String username, required String password, required String email, String? phoneNumber}) {
+    return userAPIService.signUpUser(username: username, password: password, email: email, phoneNumber: phoneNumber);
+  }
+
   
+
 }

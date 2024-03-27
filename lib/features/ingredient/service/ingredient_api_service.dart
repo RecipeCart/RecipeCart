@@ -42,4 +42,15 @@ class IngredientAPIService {
       return const [];
     }
   }
+
+  Future<void> addIngredientToInventory({required String id, required String name}) async {
+    try {
+      final Ingredient newIngredient = Ingredient(
+        id: id,
+        ingredientName: name,
+        
+      );
+      final request = ModelMutations.create()
+    }
+  }
 }

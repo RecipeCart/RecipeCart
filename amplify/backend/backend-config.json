@@ -62,5 +62,12 @@
       "service": "Cognito"
     }
   },
-  "function": {}
+  "function": {},
+  "storage": {
+    "recipeCartStorageBucket": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
+  }
 }
