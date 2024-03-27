@@ -22,7 +22,6 @@
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'package:collection/collection.dart';
-import 'package:collection/collection.dart';
 
 
 /** This is an auto generated class representing the Ingredient type in your schema. */
@@ -34,6 +33,8 @@ class Ingredient extends amplify_core.Model {
   final List<double>? _vector;
   final String? _barcode;
   final double? _quantity;
+  final String? _unit;
+  final Recipe? _recipe;
   final Settings? _settings;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
@@ -47,10 +48,7 @@ class Ingredient extends amplify_core.Model {
   
   IngredientModelIdentifier get modelIdentifier {
     try {
-    try {
       return IngredientModelIdentifier(
-        id: id,
-        ingredientName: _ingredientName!
         id: id,
         ingredientName: _ingredientName!
       );
@@ -65,9 +63,7 @@ class Ingredient extends amplify_core.Model {
   }
   
   String get ingredientName {
-  String get ingredientName {
     try {
-      return _ingredientName!;
       return _ingredientName!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
@@ -81,12 +77,8 @@ class Ingredient extends amplify_core.Model {
   
   String? get userID {
     return _userID;
-  String? get userID {
-    return _userID;
   }
   
-  List<double>? get vector {
-    return _vector;
   List<double>? get vector {
     return _vector;
   }
@@ -98,7 +90,6 @@ class Ingredient extends amplify_core.Model {
   double get quantity {
     try {
       return _quantity!;
-      return _quantity!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -107,6 +98,14 @@ class Ingredient extends amplify_core.Model {
           underlyingException: e.toString()
           );
     }
+  }
+  
+  String? get unit {
+    return _unit;
+  }
+  
+  Recipe? get recipe {
+    return _recipe;
   }
   
   Settings? get settings {
@@ -119,13 +118,11 @@ class Ingredient extends amplify_core.Model {
   
   amplify_core.TemporalDateTime? get updatedAt {
     return _updatedAt;
-  amplify_core.TemporalDateTime? get updatedAt {
-    return _updatedAt;
   }
   
-  const Ingredient._internal({required this.id, required ingredientName, userID, vector, barcode, required quantity, settings, createdAt, updatedAt}): _ingredientName = ingredientName, _userID = userID, _vector = vector, _barcode = barcode, _quantity = quantity, _settings = settings, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Ingredient._internal({required this.id, required ingredientName, userID, vector, barcode, required quantity, unit, recipe, settings, createdAt, updatedAt}): _ingredientName = ingredientName, _userID = userID, _vector = vector, _barcode = barcode, _quantity = quantity, _unit = unit, _recipe = recipe, _settings = settings, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Ingredient({String? id, required String ingredientName, String? userID, List<double>? vector, String? barcode, required double quantity, Settings? settings}) {
+  factory Ingredient({String? id, required String ingredientName, String? userID, List<double>? vector, String? barcode, required double quantity, String? unit, Recipe? recipe, Settings? settings}) {
     return Ingredient._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       ingredientName: ingredientName,
@@ -133,6 +130,8 @@ class Ingredient extends amplify_core.Model {
       vector: vector != null ? List<double>.unmodifiable(vector) : vector,
       barcode: barcode,
       quantity: quantity,
+      unit: unit,
+      recipe: recipe,
       settings: settings);
   }
   
@@ -150,6 +149,8 @@ class Ingredient extends amplify_core.Model {
       DeepCollectionEquality().equals(_vector, other._vector) &&
       _barcode == other._barcode &&
       _quantity == other._quantity &&
+      _unit == other._unit &&
+      _recipe == other._recipe &&
       _settings == other._settings;
   }
   
@@ -167,16 +168,17 @@ class Ingredient extends amplify_core.Model {
     buffer.write("vector=" + (_vector != null ? _vector!.toString() : "null") + ", ");
     buffer.write("barcode=" + "$_barcode" + ", ");
     buffer.write("quantity=" + (_quantity != null ? _quantity!.toString() : "null") + ", ");
+    buffer.write("unit=" + "$_unit" + ", ");
+    buffer.write("recipe=" + (_recipe != null ? _recipe!.toString() : "null") + ", ");
     buffer.write("settings=" + (_settings != null ? _settings!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
-    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  Ingredient copyWith({String? userID, List<double>? vector, String? barcode, double? quantity, Settings? settings}) {
+  Ingredient copyWith({String? userID, List<double>? vector, String? barcode, double? quantity, String? unit, Recipe? recipe, Settings? settings}) {
     return Ingredient._internal(
       id: id,
       ingredientName: ingredientName,
@@ -184,6 +186,8 @@ class Ingredient extends amplify_core.Model {
       vector: vector ?? this.vector,
       barcode: barcode ?? this.barcode,
       quantity: quantity ?? this.quantity,
+      unit: unit ?? this.unit,
+      recipe: recipe ?? this.recipe,
       settings: settings ?? this.settings);
   }
   
@@ -192,6 +196,8 @@ class Ingredient extends amplify_core.Model {
     ModelFieldValue<List<double>?>? vector,
     ModelFieldValue<String?>? barcode,
     ModelFieldValue<double>? quantity,
+    ModelFieldValue<String?>? unit,
+    ModelFieldValue<Recipe?>? recipe,
     ModelFieldValue<Settings?>? settings
   }) {
     return Ingredient._internal(
@@ -201,6 +207,8 @@ class Ingredient extends amplify_core.Model {
       vector: vector == null ? this.vector : vector.value,
       barcode: barcode == null ? this.barcode : barcode.value,
       quantity: quantity == null ? this.quantity : quantity.value,
+      unit: unit == null ? this.unit : unit.value,
+      recipe: recipe == null ? this.recipe : recipe.value,
       settings: settings == null ? this.settings : settings.value
     );
   }
@@ -212,15 +220,18 @@ class Ingredient extends amplify_core.Model {
       _vector = (json['vector'] as List?)?.map((e) => (e as num).toDouble()).toList(),
       _barcode = json['barcode'],
       _quantity = (json['quantity'] as num?)?.toDouble(),
+      _unit = json['unit'],
+      _recipe = json['recipe']?['serializedData'] != null
+        ? Recipe.fromJson(new Map<String, dynamic>.from(json['recipe']['serializedData']))
+        : null,
       _settings = json['settings']?['serializedData'] != null
         ? Settings.fromJson(new Map<String, dynamic>.from(json['settings']['serializedData']))
         : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
-      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'ingredientName': _ingredientName, 'userID': _userID, 'vector': _vector, 'barcode': _barcode, 'quantity': _quantity, 'settings': _settings?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'ingredientName': _ingredientName, 'userID': _userID, 'vector': _vector, 'barcode': _barcode, 'quantity': _quantity, 'unit': _unit, 'recipe': _recipe?.toJson(), 'settings': _settings?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -230,9 +241,10 @@ class Ingredient extends amplify_core.Model {
     'vector': _vector,
     'barcode': _barcode,
     'quantity': _quantity,
+    'unit': _unit,
+    'recipe': _recipe,
     'settings': _settings,
     'createdAt': _createdAt,
-    'updatedAt': _updatedAt
     'updatedAt': _updatedAt
   };
 
@@ -243,6 +255,10 @@ class Ingredient extends amplify_core.Model {
   static final VECTOR = amplify_core.QueryField(fieldName: "vector");
   static final BARCODE = amplify_core.QueryField(fieldName: "barcode");
   static final QUANTITY = amplify_core.QueryField(fieldName: "quantity");
+  static final UNIT = amplify_core.QueryField(fieldName: "unit");
+  static final RECIPE = amplify_core.QueryField(
+    fieldName: "recipe",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Recipe'));
   static final SETTINGS = amplify_core.QueryField(
     fieldName: "settings",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Settings'));
@@ -283,6 +299,7 @@ class Ingredient extends amplify_core.Model {
       amplify_core.ModelIndex(fields: const ["ingredientName"], name: "byIngredientName"),
       amplify_core.ModelIndex(fields: const ["userID"], name: "byUserID"),
       amplify_core.ModelIndex(fields: const ["barcode"], name: "byBarcode"),
+      amplify_core.ModelIndex(fields: const ["recipeID", "recipeName"], name: "byRecipe"),
       amplify_core.ModelIndex(fields: const ["settingsID"], name: "bySettings")
     ];
     
@@ -317,6 +334,19 @@ class Ingredient extends amplify_core.Model {
       key: Ingredient.QUANTITY,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.double)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Ingredient.UNIT,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
+      key: Ingredient.RECIPE,
+      isRequired: false,
+      targetNames: ['recipeID', 'recipeName'],
+      ofModelName: 'Recipe'
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
@@ -363,12 +393,7 @@ class _IngredientModelType extends amplify_core.ModelType<Ingredient> {
 class IngredientModelIdentifier implements amplify_core.ModelIdentifier<Ingredient> {
   final String id;
   final String ingredientName;
-  final String ingredientName;
 
-  /**
-   * Create an instance of IngredientModelIdentifier using [id] the primary key.
-   * And [ingredientName] the sort key.
-   */
   /**
    * Create an instance of IngredientModelIdentifier using [id] the primary key.
    * And [ingredientName] the sort key.
@@ -376,13 +401,9 @@ class IngredientModelIdentifier implements amplify_core.ModelIdentifier<Ingredie
   const IngredientModelIdentifier({
     required this.id,
     required this.ingredientName});
-    required this.id,
-    required this.ingredientName});
   
   @override
   Map<String, dynamic> serializeAsMap() => (<String, dynamic>{
-    'id': id,
-    'ingredientName': ingredientName
     'id': id,
     'ingredientName': ingredientName
   });
@@ -398,7 +419,6 @@ class IngredientModelIdentifier implements amplify_core.ModelIdentifier<Ingredie
   
   @override
   String toString() => 'IngredientModelIdentifier(id: $id, ingredientName: $ingredientName)';
-  String toString() => 'IngredientModelIdentifier(id: $id, ingredientName: $ingredientName)';
   
   @override
   bool operator ==(Object other) {
@@ -409,14 +429,10 @@ class IngredientModelIdentifier implements amplify_core.ModelIdentifier<Ingredie
     return other is IngredientModelIdentifier &&
       id == other.id &&
       ingredientName == other.ingredientName;
-      id == other.id &&
-      ingredientName == other.ingredientName;
   }
   
   @override
   int get hashCode =>
-    id.hashCode ^
-    ingredientName.hashCode;
     id.hashCode ^
     ingredientName.hashCode;
 }

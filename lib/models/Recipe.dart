@@ -21,6 +21,7 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
+import 'package:collection/collection.dart';
 
 
 /** This is an auto generated class representing the Recipe type in your schema. */
@@ -31,9 +32,9 @@ class Recipe extends amplify_core.Model {
   final int? _dietType;
   final int? _cuisineType;
   final String? _userID;
+  final List<Ingredient>? _ingredients;
   final String? _instructions;
   final double? _ratings;
-  final int? _views;
   final int? _views;
   final String? _image;
   final amplify_core.TemporalDateTime? _createdAt;
@@ -48,21 +49,10 @@ class Recipe extends amplify_core.Model {
   
   RecipeModelIdentifier get modelIdentifier {
     try {
-    try {
       return RecipeModelIdentifier(
         id: id,
         recipeName: _recipeName!
-        id: id,
-        recipeName: _recipeName!
       );
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -116,6 +106,10 @@ class Recipe extends amplify_core.Model {
     return _userID;
   }
   
+  List<Ingredient>? get ingredients {
+    return _ingredients;
+  }
+  
   String get instructions {
     try {
       return _instructions!;
@@ -155,19 +149,6 @@ class Recipe extends amplify_core.Model {
     }
   }
   
-  int get views {
-    try {
-      return _views!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
-  }
-  
   String? get image {
     return _image;
   }
@@ -180,19 +161,19 @@ class Recipe extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Recipe._internal({required this.id, required recipeName, required dietType, required cuisineType, userID, required instructions, required ratings, required views, image, createdAt, updatedAt}): _recipeName = recipeName, _dietType = dietType, _cuisineType = cuisineType, _userID = userID, _instructions = instructions, _ratings = ratings, _views = views, _image = image, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Recipe._internal({required this.id, required recipeName, required dietType, required cuisineType, userID, ingredients, required instructions, required ratings, required views, image, createdAt, updatedAt}): _recipeName = recipeName, _dietType = dietType, _cuisineType = cuisineType, _userID = userID, _ingredients = ingredients, _instructions = instructions, _ratings = ratings, _views = views, _image = image, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Recipe({String? id, required String recipeName, required int dietType, required int cuisineType, String? userID, required String instructions, required double ratings, required int views, String? image}) {
+  factory Recipe({String? id, required String recipeName, required int dietType, required int cuisineType, String? userID, List<Ingredient>? ingredients, required String instructions, required double ratings, required int views, String? image}) {
     return Recipe._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       recipeName: recipeName,
       dietType: dietType,
       cuisineType: cuisineType,
       userID: userID,
+      ingredients: ingredients != null ? List<Ingredient>.unmodifiable(ingredients) : ingredients,
       instructions: instructions,
       ratings: ratings,
       views: views,
-      image: image);
       image: image);
   }
   
@@ -209,10 +190,10 @@ class Recipe extends amplify_core.Model {
       _dietType == other._dietType &&
       _cuisineType == other._cuisineType &&
       _userID == other._userID &&
+      DeepCollectionEquality().equals(_ingredients, other._ingredients) &&
       _instructions == other._instructions &&
       _ratings == other._ratings &&
       _views == other._views &&
-      _image == other._image;
       _image == other._image;
   }
   
@@ -229,33 +210,28 @@ class Recipe extends amplify_core.Model {
     buffer.write("dietType=" + (_dietType != null ? _dietType!.toString() : "null") + ", ");
     buffer.write("cuisineType=" + (_cuisineType != null ? _cuisineType!.toString() : "null") + ", ");
     buffer.write("userID=" + "$_userID" + ", ");
-    buffer.write("dietType=" + (_dietType != null ? _dietType!.toString() : "null") + ", ");
-    buffer.write("cuisineType=" + (_cuisineType != null ? _cuisineType!.toString() : "null") + ", ");
-    buffer.write("userID=" + "$_userID" + ", ");
     buffer.write("instructions=" + "$_instructions" + ", ");
     buffer.write("ratings=" + (_ratings != null ? _ratings!.toString() : "null") + ", ");
     buffer.write("views=" + (_views != null ? _views!.toString() : "null") + ", ");
     buffer.write("image=" + "$_image" + ", ");
-    buffer.write("image=" + "$_image" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
-    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  Recipe copyWith({int? dietType, int? cuisineType, String? userID, String? instructions, double? ratings, int? views, String? image}) {
+  Recipe copyWith({int? dietType, int? cuisineType, String? userID, List<Ingredient>? ingredients, String? instructions, double? ratings, int? views, String? image}) {
     return Recipe._internal(
       id: id,
       recipeName: recipeName,
       dietType: dietType ?? this.dietType,
       cuisineType: cuisineType ?? this.cuisineType,
       userID: userID ?? this.userID,
+      ingredients: ingredients ?? this.ingredients,
       instructions: instructions ?? this.instructions,
       ratings: ratings ?? this.ratings,
       views: views ?? this.views,
-      image: image ?? this.image);
       image: image ?? this.image);
   }
   
@@ -263,10 +239,9 @@ class Recipe extends amplify_core.Model {
     ModelFieldValue<int>? dietType,
     ModelFieldValue<int>? cuisineType,
     ModelFieldValue<String?>? userID,
+    ModelFieldValue<List<Ingredient>>? ingredients,
     ModelFieldValue<String>? instructions,
     ModelFieldValue<double>? ratings,
-    ModelFieldValue<int>? views,
-    ModelFieldValue<String?>? image
     ModelFieldValue<int>? views,
     ModelFieldValue<String?>? image
   }) {
@@ -276,10 +251,10 @@ class Recipe extends amplify_core.Model {
       dietType: dietType == null ? this.dietType : dietType.value,
       cuisineType: cuisineType == null ? this.cuisineType : cuisineType.value,
       userID: userID == null ? this.userID : userID.value,
+      ingredients: ingredients == null ? this.ingredients : ingredients.value,
       instructions: instructions == null ? this.instructions : instructions.value,
       ratings: ratings == null ? this.ratings : ratings.value,
       views: views == null ? this.views : views.value,
-      image: image == null ? this.image : image.value
       image: image == null ? this.image : image.value
     );
   }
@@ -290,17 +265,21 @@ class Recipe extends amplify_core.Model {
       _dietType = (json['dietType'] as num?)?.toInt(),
       _cuisineType = (json['cuisineType'] as num?)?.toInt(),
       _userID = json['userID'],
+      _ingredients = json['ingredients'] is List
+        ? (json['ingredients'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => Ingredient.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _instructions = json['instructions'],
       _ratings = (json['ratings'] as num?)?.toDouble(),
       _views = (json['views'] as num?)?.toInt(),
       _image = json['image'],
-      _image = json['image'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
-      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'recipeName': _recipeName, 'dietType': _dietType, 'cuisineType': _cuisineType, 'userID': _userID, 'instructions': _instructions, 'ratings': _ratings, 'views': _views, 'image': _image, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'recipeName': _recipeName, 'dietType': _dietType, 'cuisineType': _cuisineType, 'userID': _userID, 'ingredients': _ingredients?.map((Ingredient? e) => e?.toJson()).toList(), 'instructions': _instructions, 'ratings': _ratings, 'views': _views, 'image': _image, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -309,13 +288,12 @@ class Recipe extends amplify_core.Model {
     'dietType': _dietType,
     'cuisineType': _cuisineType,
     'userID': _userID,
+    'ingredients': _ingredients,
     'instructions': _instructions,
     'ratings': _ratings,
     'views': _views,
-    'views': _views,
     'image': _image,
     'createdAt': _createdAt,
-    'updatedAt': _updatedAt
     'updatedAt': _updatedAt
   };
 
@@ -325,50 +303,16 @@ class Recipe extends amplify_core.Model {
   static final DIETTYPE = amplify_core.QueryField(fieldName: "dietType");
   static final CUISINETYPE = amplify_core.QueryField(fieldName: "cuisineType");
   static final USERID = amplify_core.QueryField(fieldName: "userID");
+  static final INGREDIENTS = amplify_core.QueryField(
+    fieldName: "ingredients",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Ingredient'));
   static final INSTRUCTIONS = amplify_core.QueryField(fieldName: "instructions");
   static final RATINGS = amplify_core.QueryField(fieldName: "ratings");
-  static final VIEWS = amplify_core.QueryField(fieldName: "views");
   static final VIEWS = amplify_core.QueryField(fieldName: "views");
   static final IMAGE = amplify_core.QueryField(fieldName: "image");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Recipe";
     modelSchemaDefinition.pluralName = "Recipes";
-    
-    modelSchemaDefinition.authRules = [
-      amplify_core.AuthRule(
-        authStrategy: amplify_core.AuthStrategy.PRIVATE,
-        operations: const [
-          amplify_core.ModelOperation.READ
-        ]),
-      amplify_core.AuthRule(
-        authStrategy: amplify_core.AuthStrategy.OWNER,
-        ownerField: "userID",
-        identityClaim: "cognito:username",
-        provider: amplify_core.AuthRuleProvider.USERPOOLS,
-        operations: const [
-          amplify_core.ModelOperation.CREATE,
-          amplify_core.ModelOperation.UPDATE,
-          amplify_core.ModelOperation.DELETE,
-          amplify_core.ModelOperation.READ
-        ]),
-      amplify_core.AuthRule(
-        authStrategy: amplify_core.AuthStrategy.PUBLIC,
-        provider: amplify_core.AuthRuleProvider.APIKEY,
-        operations: const [
-          amplify_core.ModelOperation.CREATE,
-          amplify_core.ModelOperation.UPDATE,
-          amplify_core.ModelOperation.DELETE,
-          amplify_core.ModelOperation.READ
-        ])
-    ];
-    
-    modelSchemaDefinition.indexes = [
-      amplify_core.ModelIndex(fields: const ["id", "recipeName"], name: null),
-      amplify_core.ModelIndex(fields: const ["recipeName"], name: "byRecipeName"),
-      amplify_core.ModelIndex(fields: const ["dietType", "cuisineType"], name: "byDietByCuisine"),
-      amplify_core.ModelIndex(fields: const ["userID"], name: "byUserID"),
-      amplify_core.ModelIndex(fields: const ["ratings", "views"], name: "byRatingsByViews")
-    ];
     
     modelSchemaDefinition.authRules = [
       amplify_core.AuthRule(
@@ -432,22 +376,11 @@ class Recipe extends amplify_core.Model {
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Recipe.DIETTYPE,
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
+      key: Recipe.INGREDIENTS,
       isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Recipe.CUISINETYPE,
-      isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Recipe.USERID,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+      ofModelName: 'Ingredient',
+      associatedKey: Ingredient.RECIPE
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
@@ -460,12 +393,6 @@ class Recipe extends amplify_core.Model {
       key: Recipe.RATINGS,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.double)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Recipe.VIEWS,
-      isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
@@ -517,12 +444,7 @@ class _RecipeModelType extends amplify_core.ModelType<Recipe> {
 class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
   final String id;
   final String recipeName;
-  final String recipeName;
 
-  /**
-   * Create an instance of RecipeModelIdentifier using [id] the primary key.
-   * And [recipeName] the sort key.
-   */
   /**
    * Create an instance of RecipeModelIdentifier using [id] the primary key.
    * And [recipeName] the sort key.
@@ -530,13 +452,9 @@ class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
   const RecipeModelIdentifier({
     required this.id,
     required this.recipeName});
-    required this.id,
-    required this.recipeName});
   
   @override
   Map<String, dynamic> serializeAsMap() => (<String, dynamic>{
-    'id': id,
-    'recipeName': recipeName
     'id': id,
     'recipeName': recipeName
   });
@@ -552,7 +470,6 @@ class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
   
   @override
   String toString() => 'RecipeModelIdentifier(id: $id, recipeName: $recipeName)';
-  String toString() => 'RecipeModelIdentifier(id: $id, recipeName: $recipeName)';
   
   @override
   bool operator ==(Object other) {
@@ -563,14 +480,10 @@ class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
     return other is RecipeModelIdentifier &&
       id == other.id &&
       recipeName == other.recipeName;
-      id == other.id &&
-      recipeName == other.recipeName;
   }
   
   @override
   int get hashCode =>
-    id.hashCode ^
-    recipeName.hashCode;
     id.hashCode ^
     recipeName.hashCode;
 }
