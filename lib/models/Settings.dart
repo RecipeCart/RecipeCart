@@ -29,7 +29,7 @@ class Settings extends amplify_core.Model {
   static const classType = const _SettingsModelType();
   final String id;
   final int? _dietType;
-  final List<IngredientType>? _avoidances;
+  final List<Ingredient>? _avoidances;
   final List<int>? _cuisineTypes;
   final int? _language;
   final bool? _notifications;
@@ -63,7 +63,7 @@ class Settings extends amplify_core.Model {
     }
   }
   
-  List<IngredientType>? get avoidances {
+  List<Ingredient>? get avoidances {
     return _avoidances;
   }
   
@@ -111,11 +111,11 @@ class Settings extends amplify_core.Model {
   
   const Settings._internal({required this.id, required dietType, avoidances, cuisineTypes, required language, required notifications, linkedDevices, createdAt, updatedAt}): _dietType = dietType, _avoidances = avoidances, _cuisineTypes = cuisineTypes, _language = language, _notifications = notifications, _linkedDevices = linkedDevices, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Settings({String? id, required int dietType, List<IngredientType>? avoidances, List<int>? cuisineTypes, required int language, required bool notifications, List<String>? linkedDevices}) {
+  factory Settings({String? id, required int dietType, List<Ingredient>? avoidances, List<int>? cuisineTypes, required int language, required bool notifications, List<String>? linkedDevices}) {
     return Settings._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       dietType: dietType,
-      avoidances: avoidances != null ? List<IngredientType>.unmodifiable(avoidances) : avoidances,
+      avoidances: avoidances != null ? List<Ingredient>.unmodifiable(avoidances) : avoidances,
       cuisineTypes: cuisineTypes != null ? List<int>.unmodifiable(cuisineTypes) : cuisineTypes,
       language: language,
       notifications: notifications,
@@ -160,7 +160,7 @@ class Settings extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Settings copyWith({int? dietType, List<IngredientType>? avoidances, List<int>? cuisineTypes, int? language, bool? notifications, List<String>? linkedDevices}) {
+  Settings copyWith({int? dietType, List<Ingredient>? avoidances, List<int>? cuisineTypes, int? language, bool? notifications, List<String>? linkedDevices}) {
     return Settings._internal(
       id: id,
       dietType: dietType ?? this.dietType,
@@ -173,7 +173,7 @@ class Settings extends amplify_core.Model {
   
   Settings copyWithModelFieldValues({
     ModelFieldValue<int>? dietType,
-    ModelFieldValue<List<IngredientType>?>? avoidances,
+    ModelFieldValue<List<Ingredient>?>? avoidances,
     ModelFieldValue<List<int>?>? cuisineTypes,
     ModelFieldValue<int>? language,
     ModelFieldValue<bool>? notifications,
@@ -196,7 +196,7 @@ class Settings extends amplify_core.Model {
       _avoidances = json['avoidances'] is List
         ? (json['avoidances'] as List)
           .where((e) => e?['serializedData'] != null)
-          .map((e) => IngredientType.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .map((e) => Ingredient.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
       _cuisineTypes = (json['cuisineTypes'] as List?)?.map((e) => (e as num).toInt()).toList(),
@@ -207,7 +207,7 @@ class Settings extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'dietType': _dietType, 'avoidances': _avoidances?.map((IngredientType? e) => e?.toJson()).toList(), 'cuisineTypes': _cuisineTypes, 'language': _language, 'notifications': _notifications, 'linkedDevices': _linkedDevices, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'dietType': _dietType, 'avoidances': _avoidances?.map((Ingredient? e) => e?.toJson()).toList(), 'cuisineTypes': _cuisineTypes, 'language': _language, 'notifications': _notifications, 'linkedDevices': _linkedDevices, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -227,7 +227,7 @@ class Settings extends amplify_core.Model {
   static final DIETTYPE = amplify_core.QueryField(fieldName: "dietType");
   static final AVOIDANCES = amplify_core.QueryField(
     fieldName: "avoidances",
-    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'IngredientType'));
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Ingredient'));
   static final CUISINETYPES = amplify_core.QueryField(fieldName: "cuisineTypes");
   static final LANGUAGE = amplify_core.QueryField(fieldName: "language");
   static final NOTIFICATIONS = amplify_core.QueryField(fieldName: "notifications");
@@ -235,6 +235,28 @@ class Settings extends amplify_core.Model {
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Settings";
     modelSchemaDefinition.pluralName = "Settings";
+    
+    modelSchemaDefinition.authRules = [
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.OWNER,
+        ownerField: "owner",
+        identityClaim: "cognito:username",
+        provider: amplify_core.AuthRuleProvider.USERPOOLS,
+        operations: const [
+          amplify_core.ModelOperation.READ,
+          amplify_core.ModelOperation.UPDATE,
+          amplify_core.ModelOperation.DELETE
+        ]),
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.PUBLIC,
+        provider: amplify_core.AuthRuleProvider.APIKEY,
+        operations: const [
+          amplify_core.ModelOperation.CREATE,
+          amplify_core.ModelOperation.UPDATE,
+          amplify_core.ModelOperation.DELETE,
+          amplify_core.ModelOperation.READ
+        ])
+    ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
     
@@ -247,8 +269,8 @@ class Settings extends amplify_core.Model {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
       key: Settings.AVOIDANCES,
       isRequired: false,
-      ofModelName: 'IngredientType',
-      associatedKey: IngredientType.SETTINGSAVOIDANCESID
+      ofModelName: 'Ingredient',
+      associatedKey: Ingredient.SETTINGS
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

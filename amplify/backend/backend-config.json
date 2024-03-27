@@ -62,5 +62,30 @@
       "service": "Cognito"
     }
   },
-  "function": {}
+  "function": {},
+  "parameters": {
+    "AMPLIFY_function_S3Triggerb1c1d36c_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "S3Triggerb1c1d36c"
+        }
+      ]
+    },
+    "AMPLIFY_function_S3Triggerb1c1d36c_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "S3Triggerb1c1d36c"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "recipeCartStorageBucket": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
+  }
 }

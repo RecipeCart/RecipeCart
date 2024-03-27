@@ -17,6 +17,15 @@
       },
       "api": {
         "recipecartAPI": {}
+      },
+      "function": {
+        "S3Triggerb1c1d36c": {
+          "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+          "s3Key": "amplify-builds/S3Triggerb1c1d36c-34466154624a504c664b-build.zip"
+        }
+      },
+      "storage": {
+        "recipeCartStorageBucket": {}
       }
     }
   },

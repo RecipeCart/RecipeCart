@@ -19,7 +19,8 @@ type Recipe @model @auth(rules: [{allow: private, operations: [read]}, {allow: o
     @auth(rules: [{allow: owner, operations: [read, delete]}])
     @index(name: "byUserID", queryField: "recipeByUserID")
 
-  ingredients: [Ingredient!] @hasMany(indexName: "byRecipe", fields: ["id", "recipeName"])
+  ingredients: [Ingredient!]! @hasMany(indexName: "byRecipe", fields: ["id", "recipeName"])
+    #@manyToMany(relationName: "recipeIngredient") 
 
   instructions: String!
   ratings: Float! @index(name: "byRatingsByViews", sortKeyFields: ["views"], queryField: "recipeByRatingsByViews")
@@ -32,7 +33,8 @@ type Recipe @model @auth(rules: [{allow: private, operations: [read]}, {allow: o
 # Any signed-in user can read the ingredient table
 # Owners can CRUD their own ingredient copy
 # Owners can only read and update the quantity of their ingredient copy
-# Get ingredients by userID (for owners to check inventory)
+# Get ingredients by userID (for owners to check their own ingredient inventory)
+# Get ingredients by recipeID (for recipe's ingredient copies)
 # Get ingredients by ingredientName
 
 type Ingredient @model @auth(rules: [{allow: private, operations: [read]}, {allow: owner, ownerField: "userID"}, {allow: public, provider: apiKey}]) {
@@ -42,11 +44,13 @@ type Ingredient @model @auth(rules: [{allow: private, operations: [read]}, {allo
     @auth(rules: [{allow: owner, operations: [read, delete]}])
     @index(name: "byUserID", queryField: "ingredientByUserID")
   vector: [Float] 
-    @auth(rules: [{allow: private, operations: [read]}, {allow: owner, operations: [read, delete]}, {allow: public, provider: apiKey}]) 
-  barcodes: [String]
-    @auth(rules: [{allow: private, operations: [read, update]}, {allow: owner, operations: [read, delete]}, {allow: public, provider: apiKey}]) 
-  quantity: Float!
+  barcode: String @index(name: "byBarcode", queryField: "ingredientByBarcode") 
 
+  # quantity is different based on whether this is a recipe ingredient or a user inventory ingredient
+  quantity: Float!
+  unit: String
+
+  # recipe: [Recipe] @manyToMany(relationName: "recipeIngredient")
   recipe: Recipe @belongsTo(fields: ["recipeID", "recipeName"])
   recipeID: ID @index(name: "byRecipe", sortKeyFields: ["recipeName"]) # customized foreign key for parent primary key
   recipeName: String # customized foreign key for parent sort key
