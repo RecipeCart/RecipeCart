@@ -34,6 +34,7 @@ class Recipe extends amplify_core.Model {
   final String? _instructions;
   final double? _ratings;
   final int? _views;
+  final int? _views;
   final String? _image;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
@@ -47,10 +48,21 @@ class Recipe extends amplify_core.Model {
   
   RecipeModelIdentifier get modelIdentifier {
     try {
+    try {
       return RecipeModelIdentifier(
         id: id,
         recipeName: _recipeName!
+        id: id,
+        recipeName: _recipeName!
       );
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -143,6 +155,19 @@ class Recipe extends amplify_core.Model {
     }
   }
   
+  int get views {
+    try {
+      return _views!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
   String? get image {
     return _image;
   }
@@ -168,6 +193,7 @@ class Recipe extends amplify_core.Model {
       ratings: ratings,
       views: views,
       image: image);
+      image: image);
   }
   
   bool equals(Object other) {
@@ -187,6 +213,7 @@ class Recipe extends amplify_core.Model {
       _ratings == other._ratings &&
       _views == other._views &&
       _image == other._image;
+      _image == other._image;
   }
   
   @override
@@ -202,11 +229,16 @@ class Recipe extends amplify_core.Model {
     buffer.write("dietType=" + (_dietType != null ? _dietType!.toString() : "null") + ", ");
     buffer.write("cuisineType=" + (_cuisineType != null ? _cuisineType!.toString() : "null") + ", ");
     buffer.write("userID=" + "$_userID" + ", ");
+    buffer.write("dietType=" + (_dietType != null ? _dietType!.toString() : "null") + ", ");
+    buffer.write("cuisineType=" + (_cuisineType != null ? _cuisineType!.toString() : "null") + ", ");
+    buffer.write("userID=" + "$_userID" + ", ");
     buffer.write("instructions=" + "$_instructions" + ", ");
     buffer.write("ratings=" + (_ratings != null ? _ratings!.toString() : "null") + ", ");
     buffer.write("views=" + (_views != null ? _views!.toString() : "null") + ", ");
     buffer.write("image=" + "$_image" + ", ");
+    buffer.write("image=" + "$_image" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
+    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
     
@@ -224,6 +256,7 @@ class Recipe extends amplify_core.Model {
       ratings: ratings ?? this.ratings,
       views: views ?? this.views,
       image: image ?? this.image);
+      image: image ?? this.image);
   }
   
   Recipe copyWithModelFieldValues({
@@ -232,6 +265,8 @@ class Recipe extends amplify_core.Model {
     ModelFieldValue<String?>? userID,
     ModelFieldValue<String>? instructions,
     ModelFieldValue<double>? ratings,
+    ModelFieldValue<int>? views,
+    ModelFieldValue<String?>? image
     ModelFieldValue<int>? views,
     ModelFieldValue<String?>? image
   }) {
@@ -244,6 +279,7 @@ class Recipe extends amplify_core.Model {
       instructions: instructions == null ? this.instructions : instructions.value,
       ratings: ratings == null ? this.ratings : ratings.value,
       views: views == null ? this.views : views.value,
+      image: image == null ? this.image : image.value
       image: image == null ? this.image : image.value
     );
   }
@@ -258,7 +294,9 @@ class Recipe extends amplify_core.Model {
       _ratings = (json['ratings'] as num?)?.toDouble(),
       _views = (json['views'] as num?)?.toInt(),
       _image = json['image'],
+      _image = json['image'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
@@ -274,8 +312,10 @@ class Recipe extends amplify_core.Model {
     'instructions': _instructions,
     'ratings': _ratings,
     'views': _views,
+    'views': _views,
     'image': _image,
     'createdAt': _createdAt,
+    'updatedAt': _updatedAt
     'updatedAt': _updatedAt
   };
 
@@ -288,10 +328,47 @@ class Recipe extends amplify_core.Model {
   static final INSTRUCTIONS = amplify_core.QueryField(fieldName: "instructions");
   static final RATINGS = amplify_core.QueryField(fieldName: "ratings");
   static final VIEWS = amplify_core.QueryField(fieldName: "views");
+  static final VIEWS = amplify_core.QueryField(fieldName: "views");
   static final IMAGE = amplify_core.QueryField(fieldName: "image");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Recipe";
     modelSchemaDefinition.pluralName = "Recipes";
+    
+    modelSchemaDefinition.authRules = [
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.PRIVATE,
+        operations: const [
+          amplify_core.ModelOperation.READ
+        ]),
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.OWNER,
+        ownerField: "userID",
+        identityClaim: "cognito:username",
+        provider: amplify_core.AuthRuleProvider.USERPOOLS,
+        operations: const [
+          amplify_core.ModelOperation.CREATE,
+          amplify_core.ModelOperation.UPDATE,
+          amplify_core.ModelOperation.DELETE,
+          amplify_core.ModelOperation.READ
+        ]),
+      amplify_core.AuthRule(
+        authStrategy: amplify_core.AuthStrategy.PUBLIC,
+        provider: amplify_core.AuthRuleProvider.APIKEY,
+        operations: const [
+          amplify_core.ModelOperation.CREATE,
+          amplify_core.ModelOperation.UPDATE,
+          amplify_core.ModelOperation.DELETE,
+          amplify_core.ModelOperation.READ
+        ])
+    ];
+    
+    modelSchemaDefinition.indexes = [
+      amplify_core.ModelIndex(fields: const ["id", "recipeName"], name: null),
+      amplify_core.ModelIndex(fields: const ["recipeName"], name: "byRecipeName"),
+      amplify_core.ModelIndex(fields: const ["dietType", "cuisineType"], name: "byDietByCuisine"),
+      amplify_core.ModelIndex(fields: const ["userID"], name: "byUserID"),
+      amplify_core.ModelIndex(fields: const ["ratings", "views"], name: "byRatingsByViews")
+    ];
     
     modelSchemaDefinition.authRules = [
       amplify_core.AuthRule(
@@ -356,6 +433,24 @@ class Recipe extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.DIETTYPE,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.CUISINETYPE,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.USERID,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Recipe.INSTRUCTIONS,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
@@ -365,6 +460,12 @@ class Recipe extends amplify_core.Model {
       key: Recipe.RATINGS,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.double)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.VIEWS,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
@@ -416,7 +517,12 @@ class _RecipeModelType extends amplify_core.ModelType<Recipe> {
 class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
   final String id;
   final String recipeName;
+  final String recipeName;
 
+  /**
+   * Create an instance of RecipeModelIdentifier using [id] the primary key.
+   * And [recipeName] the sort key.
+   */
   /**
    * Create an instance of RecipeModelIdentifier using [id] the primary key.
    * And [recipeName] the sort key.
@@ -424,9 +530,13 @@ class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
   const RecipeModelIdentifier({
     required this.id,
     required this.recipeName});
+    required this.id,
+    required this.recipeName});
   
   @override
   Map<String, dynamic> serializeAsMap() => (<String, dynamic>{
+    'id': id,
+    'recipeName': recipeName
     'id': id,
     'recipeName': recipeName
   });
@@ -442,6 +552,7 @@ class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
   
   @override
   String toString() => 'RecipeModelIdentifier(id: $id, recipeName: $recipeName)';
+  String toString() => 'RecipeModelIdentifier(id: $id, recipeName: $recipeName)';
   
   @override
   bool operator ==(Object other) {
@@ -452,10 +563,14 @@ class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
     return other is RecipeModelIdentifier &&
       id == other.id &&
       recipeName == other.recipeName;
+      id == other.id &&
+      recipeName == other.recipeName;
   }
   
   @override
   int get hashCode =>
+    id.hashCode ^
+    recipeName.hashCode;
     id.hashCode ^
     recipeName.hashCode;
 }

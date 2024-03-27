@@ -1,10 +1,12 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/common/utils/colors.dart' as constants;
+import 'package:recipe_cart/features/recipe/ui/homepage/generate_recipe_page.dart';
 import 'package:recipe_cart/features/recipe/ui/homepage/inventory_page.dart';
+import 'package:recipe_cart/features/recipe/ui/homepage/saved_recipe_page.dart';
+import 'package:recipe_cart/features/recipe/ui/homepage/settings_page.dart';
 
 class HomePage extends StatelessWidget {
+
   const HomePage({
     super.key,
   });
@@ -13,9 +15,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // int currentPageIndex = 0;
 
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
-      home: const NavigationExample(),
+    return const Scaffold(
+      // theme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
+      body: NavigationExample(),
     );
   }
 }
@@ -31,10 +33,9 @@ class _NavigationExampleState extends State<NavigationExample> {
   int currentPageIndex = 0;
   String weight = "";
   final weightController = TextEditingController();
-
+  
   @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+  Widget build(BuildContext context) {    
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -58,7 +59,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           NavigationDestination(
             selectedIcon: Icon(Icons.fastfood),
             icon: Icon(Icons.fastfood_outlined),
-            label: 'Generate Recipes',
+            label: 'Create Recipes',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings),
@@ -69,91 +70,12 @@ class _NavigationExampleState extends State<NavigationExample> {
       body: <Widget>[
         /// Home page
         const InventoryPage(),
-        /// Notifications page
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.notifications_sharp),
-                  title: Text('Notification 1'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.bookmark_add),
-                  title: Text('Notification 2'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-            ],
-          ),
-        ),
+        /// Saved Recipe page
+        const SavedRecipePage(),
         /// Generate Recipe Page
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.notifications_sharp),
-                  title: Text('Notification 1'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.bookmark_add),
-                  title: Text('Notification 2'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-            ],
-          ),
-        ),        
+        const GenerateRecipePage(),       
         /// Messages page
-        ListView.builder(
-          reverse: true,
-          itemCount: 2,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  margin: const EdgeInsets.all(8.0),
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Text(
-                    'Hello',
-                    style: theme.textTheme.bodyLarge!
-                        .copyWith(color: theme.colorScheme.onPrimary),
-                  ),
-                ),
-              );
-            }
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Text(
-                  'Hi!',
-                  style: theme.textTheme.bodyLarge!
-                      .copyWith(color: theme.colorScheme.onPrimary),
-                ),
-              ),
-            );
-          },
-        ),
+        const SettingsPage(),
       ][currentPageIndex],
     );
   }

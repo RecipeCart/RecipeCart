@@ -22,6 +22,7 @@
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'package:collection/collection.dart';
+import 'package:collection/collection.dart';
 
 
 /** This is an auto generated class representing the Ingredient type in your schema. */
@@ -46,7 +47,10 @@ class Ingredient extends amplify_core.Model {
   
   IngredientModelIdentifier get modelIdentifier {
     try {
+    try {
       return IngredientModelIdentifier(
+        id: id,
+        ingredientName: _ingredientName!
         id: id,
         ingredientName: _ingredientName!
       );
@@ -61,7 +65,9 @@ class Ingredient extends amplify_core.Model {
   }
   
   String get ingredientName {
+  String get ingredientName {
     try {
+      return _ingredientName!;
       return _ingredientName!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
@@ -75,8 +81,12 @@ class Ingredient extends amplify_core.Model {
   
   String? get userID {
     return _userID;
+  String? get userID {
+    return _userID;
   }
   
+  List<double>? get vector {
+    return _vector;
   List<double>? get vector {
     return _vector;
   }
@@ -87,6 +97,7 @@ class Ingredient extends amplify_core.Model {
   
   double get quantity {
     try {
+      return _quantity!;
       return _quantity!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
@@ -106,6 +117,8 @@ class Ingredient extends amplify_core.Model {
     return _createdAt;
   }
   
+  amplify_core.TemporalDateTime? get updatedAt {
+    return _updatedAt;
   amplify_core.TemporalDateTime? get updatedAt {
     return _updatedAt;
   }
@@ -157,6 +170,7 @@ class Ingredient extends amplify_core.Model {
     buffer.write("settings=" + (_settings != null ? _settings!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
+    buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
     
     return buffer.toString();
@@ -203,6 +217,7 @@ class Ingredient extends amplify_core.Model {
         : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
+      _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
     'id': id, 'ingredientName': _ingredientName, 'userID': _userID, 'vector': _vector, 'barcode': _barcode, 'quantity': _quantity, 'settings': _settings?.toJson(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
@@ -217,6 +232,7 @@ class Ingredient extends amplify_core.Model {
     'quantity': _quantity,
     'settings': _settings,
     'createdAt': _createdAt,
+    'updatedAt': _updatedAt
     'updatedAt': _updatedAt
   };
 
@@ -347,7 +363,12 @@ class _IngredientModelType extends amplify_core.ModelType<Ingredient> {
 class IngredientModelIdentifier implements amplify_core.ModelIdentifier<Ingredient> {
   final String id;
   final String ingredientName;
+  final String ingredientName;
 
+  /**
+   * Create an instance of IngredientModelIdentifier using [id] the primary key.
+   * And [ingredientName] the sort key.
+   */
   /**
    * Create an instance of IngredientModelIdentifier using [id] the primary key.
    * And [ingredientName] the sort key.
@@ -355,9 +376,13 @@ class IngredientModelIdentifier implements amplify_core.ModelIdentifier<Ingredie
   const IngredientModelIdentifier({
     required this.id,
     required this.ingredientName});
+    required this.id,
+    required this.ingredientName});
   
   @override
   Map<String, dynamic> serializeAsMap() => (<String, dynamic>{
+    'id': id,
+    'ingredientName': ingredientName
     'id': id,
     'ingredientName': ingredientName
   });
@@ -373,6 +398,7 @@ class IngredientModelIdentifier implements amplify_core.ModelIdentifier<Ingredie
   
   @override
   String toString() => 'IngredientModelIdentifier(id: $id, ingredientName: $ingredientName)';
+  String toString() => 'IngredientModelIdentifier(id: $id, ingredientName: $ingredientName)';
   
   @override
   bool operator ==(Object other) {
@@ -383,10 +409,14 @@ class IngredientModelIdentifier implements amplify_core.ModelIdentifier<Ingredie
     return other is IngredientModelIdentifier &&
       id == other.id &&
       ingredientName == other.ingredientName;
+      id == other.id &&
+      ingredientName == other.ingredientName;
   }
   
   @override
   int get hashCode =>
+    id.hashCode ^
+    ingredientName.hashCode;
     id.hashCode ^
     ingredientName.hashCode;
 }
