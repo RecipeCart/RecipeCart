@@ -9,7 +9,8 @@
       "UnauthRoleName": "amplify-recipecart-deve-90955-unauthRole",
       "StackName": "amplify-recipecart-deve-90955",
       "StackId": "arn:aws:cloudformation:us-east-2:988119534577:stack/amplify-recipecart-deve-90955/b8ce6250-d4b0-11ee-997f-0278afbf360f",
-      "AmplifyAppId": "d37i3s7g2im22f"
+      "AmplifyAppId": "d37i3s7g2im22f",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-recipecart-deve-90955-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
       "auth": {
@@ -22,6 +23,14 @@
         "S3Triggerb1c1d36c": {
           "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
           "s3Key": "amplify-builds/S3Triggerb1c1d36c-34466154624a504c664b-build.zip"
+        },
+        "startStopLambda": {
+          "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+          "s3Key": "amplify-builds/startStopLambda-74382b4567354d364236-build.zip"
+        },
+        "recipecart9b41d873PostConfirmation": {
+          "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+          "s3Key": "amplify-builds/recipecart9b41d873PostConfirmation-352f474c72647247574f-build.zip"
         }
       },
       "storage": {

@@ -4,14 +4,14 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONL
 
 # access patterns for Recipe
 # Get Recipe by recipeName
-# Get Recipe by userID (get all recipes saved/created by a user)
+# Get Recipe by userID (get all recipes created by a user)
 # Get Recipe by ingredients
 # Get Recipe above a certain rating
 # Get Recipe by ingredients above a certain rating
 # Owners can CRUD their own recipes
 
 type Recipe @model @auth(rules: [{allow: private, operations: [read]}, {allow: owner, ownerField: "userID"}, {allow: public, provider: apiKey}]) {
-  id: ID! @primaryKey(sortKeyFields: ["recipeName"])
+  id: ID!
   recipeName: String! @index(name: "byRecipeName", queryField: "recipeByName")
   dietType: Int! @index(name: "byDietByCuisine", sortKeyFields: ["cuisineType"], queryField: "recipeByDietByCuisine")
   cuisineType: Int!
@@ -19,12 +19,23 @@ type Recipe @model @auth(rules: [{allow: private, operations: [read]}, {allow: o
     @auth(rules: [{allow: owner, operations: [read, delete]}])
     @index(name: "byUserID", queryField: "recipeByUserID")
 
-  ingredients: [Ingredient!]! @hasMany(indexName: "byRecipe", fields: ["id", "recipeName"])
+  ingredients: [Ingredient!]! @hasMany(indexName: "byRecipe", fields: ["id"])
     #@manyToMany(relationName: "recipeIngredient") 
 
   instructions: String!
-  ratings: Float! @index(name: "byRatingsByViews", sortKeyFields: ["views"], queryField: "recipeByRatingsByViews")
-  views: Int!
+
+  # calculate average ratings based on average of 0-5 ratings
+  ratings: Float! @index(name: "byRatings", queryField: "recipeByRatings")
+  fives: Int
+  fours: Int
+  threes: Int
+  twos: Int
+  ones: Int
+  zeroes: Int
+
+  likes: Int! @index(name: "byLikes", queryField: "recipeByLikes")
+  saved: Int!
+  views: Int! @index(name: "byViews", queryField: "recipeByViews")
   image: String
 }
 
@@ -37,38 +48,45 @@ type Recipe @model @auth(rules: [{allow: private, operations: [read]}, {allow: o
 # Get ingredients by recipeID (for recipe's ingredient copies)
 # Get ingredients by ingredientName
 
-type Ingredient @model @auth(rules: [{allow: private, operations: [read]}, {allow: owner, ownerField: "userID"}, {allow: public, provider: apiKey}]) {
+type Ingredient @model @auth(rules: [
+  {allow: private, operations: [read]}, 
+  {allow: owner, ownerField: "userID"}, 
+  {allow: public, provider: apiKey}
+  ]) {
   id: ID! @primaryKey(sortKeyFields: ["ingredientName"])
   ingredientName: String! @index(name: "byIngredientName", queryField: "ingredientByName")
   userID: String 
     @auth(rules: [{allow: owner, operations: [read, delete]}])
     @index(name: "byUserID", queryField: "ingredientByUserID")
-  vector: [Float] 
   barcode: String @index(name: "byBarcode", queryField: "ingredientByBarcode") 
+
+  # boolean to check if removed from user inventory or not. Default to false upon creation
+  removed: Boolean
 
   # quantity is different based on whether this is a recipe ingredient or a user inventory ingredient
   quantity: Float!
   unit: String
 
   # recipe: [Recipe] @manyToMany(relationName: "recipeIngredient")
-  recipe: Recipe @belongsTo(fields: ["recipeID", "recipeName"])
-  recipeID: ID @index(name: "byRecipe", sortKeyFields: ["recipeName"]) # customized foreign key for parent primary key
-  recipeName: String # customized foreign key for parent sort key
-
-  settings: Settings @belongsTo(fields: ["settingsID"])
-  settingsID: ID @index(name: "bySettings")
+  recipe: Recipe @belongsTo(fields: ["recipeID"])
+  recipeID: ID @index(name: "byRecipe") # customized foreign key for parent primary key
 }
 
 
-type Settings @model @auth(rules: [{allow: owner, operations: [read, update, delete]}, {allow: public, provider: apiKey}]) {
+type Settings @model @auth(rules: [
+  {allow: owner, operations: [read, update, delete]}, 
+  {allow: public, provider: apiKey}
+  ]) {
   id: ID!
-  dietType: Int!
-
-  avoidances: [Ingredient] @hasMany(indexName: "bySettings", fields: ["id"]) 
-
+  email: String!
+  owner: String!
+  dietType: Int
   cuisineTypes: [Int]
-  language: Int!
-  notifications: Boolean!
+  savedRecipes: [String] # recipeID
+  likedRecipes: [String] #recipeID
+  avoidances: [String] # ingredientName 
+  language: Int
+  notifications: Boolean
   linkedDevices: [String]
 }
 

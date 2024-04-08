@@ -4,6 +4,7 @@ import 'package:recipe_cart/features/recipe/ui/homepage/generate_recipe_page.dar
 import 'package:recipe_cart/features/recipe/ui/homepage/inventory_page.dart';
 import 'package:recipe_cart/features/recipe/ui/homepage/saved_recipe_page.dart';
 import 'package:recipe_cart/features/recipe/ui/homepage/settings_page.dart';
+import 'package:recipe_cart/features/recipe/ui/homepage/search_recipe_page.dart';
 
 class HomePage extends StatelessWidget {
 
@@ -54,17 +55,22 @@ class _NavigationExampleState extends State<NavigationExample> {
           NavigationDestination(
             selectedIcon: Icon(Icons.bookmark_added),
             icon: Icon(Icons.bookmark_added_outlined),
-            label: 'Saved Recipes',
+            label: 'Saved',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search),
+            label: 'Explore',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.fastfood),
             icon: Icon(Icons.fastfood_outlined),
-            label: 'Create Recipes',
+            label: 'Generate',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings),
             label: 'Settings',
           ),
+
         ],
       ),
       body: <Widget>[
@@ -72,10 +78,13 @@ class _NavigationExampleState extends State<NavigationExample> {
         const InventoryPage(),
         /// Saved Recipe page
         const SavedRecipePage(),
+        // search recipes page
+        const SearchRecipePage(),
         /// Generate Recipe Page
         const GenerateRecipePage(),       
         /// Messages page
         const SettingsPage(),
+
       ][currentPageIndex],
     );
   }
