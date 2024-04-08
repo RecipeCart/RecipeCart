@@ -1,5 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:recipe_cart/features/recipe/ui/api.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:recipe_cart/features/recipe/ui/inventory_card.dart';
@@ -61,6 +62,10 @@ class _InventoryBuild extends State<InventoryPage> {
           ),
         ),
 
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.go('/camera'),
+        child: const Icon(Icons.camera_alt_outlined),
       ),
     );
   }
