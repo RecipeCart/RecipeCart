@@ -2,7 +2,7 @@ import 'package:recipe_cart/common/navigation/router/routes.dart';
 import 'package:recipe_cart/features/recipe/ui/homepage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/saved_recipe_page.dart';
+import 'package:recipe_cart/features/recipe/ui/homepage/widgets/camera_screen.dart';
 
 final router = GoRouter(
   routes: [
@@ -15,7 +15,7 @@ final router = GoRouter(
         GoRoute(
           path: 'camera',
           // name: AppRoute.home.name,
-          builder: (context, state){return const CameraScreen();}, 
+          builder: (context, state) => const CameraScreen(), 
         ),  
       ],
     ),
