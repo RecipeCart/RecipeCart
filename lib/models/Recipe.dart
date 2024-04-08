@@ -35,6 +35,14 @@ class Recipe extends amplify_core.Model {
   final List<Ingredient>? _ingredients;
   final String? _instructions;
   final double? _ratings;
+  final int? _fives;
+  final int? _fours;
+  final int? _threes;
+  final int? _twos;
+  final int? _ones;
+  final int? _zeroes;
+  final int? _likes;
+  final int? _saved;
   final int? _views;
   final String? _image;
   final amplify_core.TemporalDateTime? _createdAt;
@@ -48,19 +56,9 @@ class Recipe extends amplify_core.Model {
   String getId() => id;
   
   RecipeModelIdentifier get modelIdentifier {
-    try {
       return RecipeModelIdentifier(
-        id: id,
-        recipeName: _recipeName!
+        id: id
       );
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
   }
   
   String get recipeName {
@@ -136,6 +134,56 @@ class Recipe extends amplify_core.Model {
     }
   }
   
+  int? get fives {
+    return _fives;
+  }
+  
+  int? get fours {
+    return _fours;
+  }
+  
+  int? get threes {
+    return _threes;
+  }
+  
+  int? get twos {
+    return _twos;
+  }
+  
+  int? get ones {
+    return _ones;
+  }
+  
+  int? get zeroes {
+    return _zeroes;
+  }
+  
+  int get likes {
+    try {
+      return _likes!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
+  int get saved {
+    try {
+      return _saved!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
   int get views {
     try {
       return _views!;
@@ -161,9 +209,9 @@ class Recipe extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Recipe._internal({required this.id, required recipeName, required dietType, required cuisineType, userID, ingredients, required instructions, required ratings, required views, image, createdAt, updatedAt}): _recipeName = recipeName, _dietType = dietType, _cuisineType = cuisineType, _userID = userID, _ingredients = ingredients, _instructions = instructions, _ratings = ratings, _views = views, _image = image, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Recipe._internal({required this.id, required recipeName, required dietType, required cuisineType, userID, ingredients, required instructions, required ratings, fives, fours, threes, twos, ones, zeroes, required likes, required saved, required views, image, createdAt, updatedAt}): _recipeName = recipeName, _dietType = dietType, _cuisineType = cuisineType, _userID = userID, _ingredients = ingredients, _instructions = instructions, _ratings = ratings, _fives = fives, _fours = fours, _threes = threes, _twos = twos, _ones = ones, _zeroes = zeroes, _likes = likes, _saved = saved, _views = views, _image = image, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Recipe({String? id, required String recipeName, required int dietType, required int cuisineType, String? userID, List<Ingredient>? ingredients, required String instructions, required double ratings, required int views, String? image}) {
+  factory Recipe({String? id, required String recipeName, required int dietType, required int cuisineType, String? userID, List<Ingredient>? ingredients, required String instructions, required double ratings, int? fives, int? fours, int? threes, int? twos, int? ones, int? zeroes, required int likes, required int saved, required int views, String? image}) {
     return Recipe._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       recipeName: recipeName,
@@ -173,6 +221,14 @@ class Recipe extends amplify_core.Model {
       ingredients: ingredients != null ? List<Ingredient>.unmodifiable(ingredients) : ingredients,
       instructions: instructions,
       ratings: ratings,
+      fives: fives,
+      fours: fours,
+      threes: threes,
+      twos: twos,
+      ones: ones,
+      zeroes: zeroes,
+      likes: likes,
+      saved: saved,
       views: views,
       image: image);
   }
@@ -193,6 +249,14 @@ class Recipe extends amplify_core.Model {
       DeepCollectionEquality().equals(_ingredients, other._ingredients) &&
       _instructions == other._instructions &&
       _ratings == other._ratings &&
+      _fives == other._fives &&
+      _fours == other._fours &&
+      _threes == other._threes &&
+      _twos == other._twos &&
+      _ones == other._ones &&
+      _zeroes == other._zeroes &&
+      _likes == other._likes &&
+      _saved == other._saved &&
       _views == other._views &&
       _image == other._image;
   }
@@ -212,6 +276,14 @@ class Recipe extends amplify_core.Model {
     buffer.write("userID=" + "$_userID" + ", ");
     buffer.write("instructions=" + "$_instructions" + ", ");
     buffer.write("ratings=" + (_ratings != null ? _ratings!.toString() : "null") + ", ");
+    buffer.write("fives=" + (_fives != null ? _fives!.toString() : "null") + ", ");
+    buffer.write("fours=" + (_fours != null ? _fours!.toString() : "null") + ", ");
+    buffer.write("threes=" + (_threes != null ? _threes!.toString() : "null") + ", ");
+    buffer.write("twos=" + (_twos != null ? _twos!.toString() : "null") + ", ");
+    buffer.write("ones=" + (_ones != null ? _ones!.toString() : "null") + ", ");
+    buffer.write("zeroes=" + (_zeroes != null ? _zeroes!.toString() : "null") + ", ");
+    buffer.write("likes=" + (_likes != null ? _likes!.toString() : "null") + ", ");
+    buffer.write("saved=" + (_saved != null ? _saved!.toString() : "null") + ", ");
     buffer.write("views=" + (_views != null ? _views!.toString() : "null") + ", ");
     buffer.write("image=" + "$_image" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -221,39 +293,64 @@ class Recipe extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Recipe copyWith({int? dietType, int? cuisineType, String? userID, List<Ingredient>? ingredients, String? instructions, double? ratings, int? views, String? image}) {
+  Recipe copyWith({String? recipeName, int? dietType, int? cuisineType, String? userID, List<Ingredient>? ingredients, String? instructions, double? ratings, int? fives, int? fours, int? threes, int? twos, int? ones, int? zeroes, int? likes, int? saved, int? views, String? image}) {
     return Recipe._internal(
       id: id,
-      recipeName: recipeName,
+      recipeName: recipeName ?? this.recipeName,
       dietType: dietType ?? this.dietType,
       cuisineType: cuisineType ?? this.cuisineType,
       userID: userID ?? this.userID,
       ingredients: ingredients ?? this.ingredients,
       instructions: instructions ?? this.instructions,
       ratings: ratings ?? this.ratings,
+      fives: fives ?? this.fives,
+      fours: fours ?? this.fours,
+      threes: threes ?? this.threes,
+      twos: twos ?? this.twos,
+      ones: ones ?? this.ones,
+      zeroes: zeroes ?? this.zeroes,
+      likes: likes ?? this.likes,
+      saved: saved ?? this.saved,
       views: views ?? this.views,
       image: image ?? this.image);
   }
   
   Recipe copyWithModelFieldValues({
+    ModelFieldValue<String>? recipeName,
     ModelFieldValue<int>? dietType,
     ModelFieldValue<int>? cuisineType,
     ModelFieldValue<String?>? userID,
     ModelFieldValue<List<Ingredient>>? ingredients,
     ModelFieldValue<String>? instructions,
     ModelFieldValue<double>? ratings,
+    ModelFieldValue<int?>? fives,
+    ModelFieldValue<int?>? fours,
+    ModelFieldValue<int?>? threes,
+    ModelFieldValue<int?>? twos,
+    ModelFieldValue<int?>? ones,
+    ModelFieldValue<int?>? zeroes,
+    ModelFieldValue<int>? likes,
+    ModelFieldValue<int>? saved,
     ModelFieldValue<int>? views,
     ModelFieldValue<String?>? image
   }) {
     return Recipe._internal(
       id: id,
-      recipeName: recipeName,
+      recipeName: recipeName == null ? this.recipeName : recipeName.value,
       dietType: dietType == null ? this.dietType : dietType.value,
       cuisineType: cuisineType == null ? this.cuisineType : cuisineType.value,
       userID: userID == null ? this.userID : userID.value,
       ingredients: ingredients == null ? this.ingredients : ingredients.value,
       instructions: instructions == null ? this.instructions : instructions.value,
       ratings: ratings == null ? this.ratings : ratings.value,
+      fives: fives == null ? this.fives : fives.value,
+      fours: fours == null ? this.fours : fours.value,
+      threes: threes == null ? this.threes : threes.value,
+      twos: twos == null ? this.twos : twos.value,
+      ones: ones == null ? this.ones : ones.value,
+      zeroes: zeroes == null ? this.zeroes : zeroes.value,
+      likes: likes == null ? this.likes : likes.value,
+      saved: saved == null ? this.saved : saved.value,
       views: views == null ? this.views : views.value,
       image: image == null ? this.image : image.value
     );
@@ -273,13 +370,21 @@ class Recipe extends amplify_core.Model {
         : null,
       _instructions = json['instructions'],
       _ratings = (json['ratings'] as num?)?.toDouble(),
+      _fives = (json['fives'] as num?)?.toInt(),
+      _fours = (json['fours'] as num?)?.toInt(),
+      _threes = (json['threes'] as num?)?.toInt(),
+      _twos = (json['twos'] as num?)?.toInt(),
+      _ones = (json['ones'] as num?)?.toInt(),
+      _zeroes = (json['zeroes'] as num?)?.toInt(),
+      _likes = (json['likes'] as num?)?.toInt(),
+      _saved = (json['saved'] as num?)?.toInt(),
       _views = (json['views'] as num?)?.toInt(),
       _image = json['image'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'recipeName': _recipeName, 'dietType': _dietType, 'cuisineType': _cuisineType, 'userID': _userID, 'ingredients': _ingredients?.map((Ingredient? e) => e?.toJson()).toList(), 'instructions': _instructions, 'ratings': _ratings, 'views': _views, 'image': _image, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'recipeName': _recipeName, 'dietType': _dietType, 'cuisineType': _cuisineType, 'userID': _userID, 'ingredients': _ingredients?.map((Ingredient? e) => e?.toJson()).toList(), 'instructions': _instructions, 'ratings': _ratings, 'fives': _fives, 'fours': _fours, 'threes': _threes, 'twos': _twos, 'ones': _ones, 'zeroes': _zeroes, 'likes': _likes, 'saved': _saved, 'views': _views, 'image': _image, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -291,6 +396,14 @@ class Recipe extends amplify_core.Model {
     'ingredients': _ingredients,
     'instructions': _instructions,
     'ratings': _ratings,
+    'fives': _fives,
+    'fours': _fours,
+    'threes': _threes,
+    'twos': _twos,
+    'ones': _ones,
+    'zeroes': _zeroes,
+    'likes': _likes,
+    'saved': _saved,
     'views': _views,
     'image': _image,
     'createdAt': _createdAt,
@@ -308,6 +421,14 @@ class Recipe extends amplify_core.Model {
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Ingredient'));
   static final INSTRUCTIONS = amplify_core.QueryField(fieldName: "instructions");
   static final RATINGS = amplify_core.QueryField(fieldName: "ratings");
+  static final FIVES = amplify_core.QueryField(fieldName: "fives");
+  static final FOURS = amplify_core.QueryField(fieldName: "fours");
+  static final THREES = amplify_core.QueryField(fieldName: "threes");
+  static final TWOS = amplify_core.QueryField(fieldName: "twos");
+  static final ONES = amplify_core.QueryField(fieldName: "ones");
+  static final ZEROES = amplify_core.QueryField(fieldName: "zeroes");
+  static final LIKES = amplify_core.QueryField(fieldName: "likes");
+  static final SAVED = amplify_core.QueryField(fieldName: "saved");
   static final VIEWS = amplify_core.QueryField(fieldName: "views");
   static final IMAGE = amplify_core.QueryField(fieldName: "image");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
@@ -343,7 +464,6 @@ class Recipe extends amplify_core.Model {
     ];
     
     modelSchemaDefinition.indexes = [
-      amplify_core.ModelIndex(fields: const ["id", "recipeName"], name: null),
       amplify_core.ModelIndex(fields: const ["recipeName"], name: "byRecipeName"),
       amplify_core.ModelIndex(fields: const ["dietType", "cuisineType"], name: "byDietByCuisine"),
       amplify_core.ModelIndex(fields: const ["userID"], name: "byUserID"),
@@ -396,6 +516,54 @@ class Recipe extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.FIVES,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.FOURS,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.THREES,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.TWOS,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.ONES,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.ZEROES,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.LIKES,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Recipe.SAVED,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Recipe.VIEWS,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
@@ -443,20 +611,14 @@ class _RecipeModelType extends amplify_core.ModelType<Recipe> {
  */
 class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
   final String id;
-  final String recipeName;
 
-  /**
-   * Create an instance of RecipeModelIdentifier using [id] the primary key.
-   * And [recipeName] the sort key.
-   */
+  /** Create an instance of RecipeModelIdentifier using [id] the primary key. */
   const RecipeModelIdentifier({
-    required this.id,
-    required this.recipeName});
+    required this.id});
   
   @override
   Map<String, dynamic> serializeAsMap() => (<String, dynamic>{
-    'id': id,
-    'recipeName': recipeName
+    'id': id
   });
   
   @override
@@ -469,7 +631,7 @@ class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
   String serializeAsString() => serializeAsMap().values.join('#');
   
   @override
-  String toString() => 'RecipeModelIdentifier(id: $id, recipeName: $recipeName)';
+  String toString() => 'RecipeModelIdentifier(id: $id)';
   
   @override
   bool operator ==(Object other) {
@@ -478,12 +640,10 @@ class RecipeModelIdentifier implements amplify_core.ModelIdentifier<Recipe> {
     }
     
     return other is RecipeModelIdentifier &&
-      id == other.id &&
-      recipeName == other.recipeName;
+      id == other.id;
   }
   
   @override
   int get hashCode =>
-    id.hashCode ^
-    recipeName.hashCode;
+    id.hashCode;
 }

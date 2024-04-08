@@ -35,6 +35,18 @@
       },
       "storage": {
         "recipeCartStorageBucket": {}
+      },
+      "function": {
+        "startStopLambda": {
+          "barcodeDirectory": "/home/mainacc/objectDetectAWS",
+          "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+          "s3Key": "amplify-builds/startStopLambda-74382b4567354d364236-build.zip"
+        },
+        "recipecart9b41d873PostConfirmation": {
+          "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+          "s3Key": "amplify-builds/recipecart9b41d873PostConfirmation-352f474c72647247574f-build.zip",
+          "graphqlEndpointUrl": "https://27vshttqrze53iw4pubwf4icwa.appsync-api.us-east-2.amazonaws.com/graphql"
+        }
       }
     }
   },

@@ -29,8 +29,10 @@ class Settings extends amplify_core.Model {
   static const classType = const _SettingsModelType();
   final String id;
   final int? _dietType;
-  final List<Ingredient>? _avoidances;
   final List<int>? _cuisineTypes;
+  final List<String>? _savedRecipes;
+  final List<String>? _likedRecipes;
+  final List<String>? _avoidances;
   final int? _language;
   final bool? _notifications;
   final List<String>? _linkedDevices;
@@ -63,38 +65,28 @@ class Settings extends amplify_core.Model {
     }
   }
   
-  List<Ingredient>? get avoidances {
-    return _avoidances;
-  }
-  
   List<int>? get cuisineTypes {
     return _cuisineTypes;
   }
   
-  int get language {
-    try {
-      return _language!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
+  List<String>? get savedRecipes {
+    return _savedRecipes;
   }
   
-  bool get notifications {
-    try {
-      return _notifications!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
+  List<String>? get likedRecipes {
+    return _likedRecipes;
+  }
+  
+  List<String>? get avoidances {
+    return _avoidances;
+  }
+  
+  int? get language {
+    return _language;
+  }
+  
+  bool? get notifications {
+    return _notifications;
   }
   
   List<String>? get linkedDevices {
@@ -109,14 +101,16 @@ class Settings extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Settings._internal({required this.id, required dietType, avoidances, cuisineTypes, required language, required notifications, linkedDevices, createdAt, updatedAt}): _dietType = dietType, _avoidances = avoidances, _cuisineTypes = cuisineTypes, _language = language, _notifications = notifications, _linkedDevices = linkedDevices, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Settings._internal({required this.id, required dietType, cuisineTypes, savedRecipes, likedRecipes, avoidances, language, notifications, linkedDevices, createdAt, updatedAt}): _dietType = dietType, _cuisineTypes = cuisineTypes, _savedRecipes = savedRecipes, _likedRecipes = likedRecipes, _avoidances = avoidances, _language = language, _notifications = notifications, _linkedDevices = linkedDevices, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Settings({String? id, required int dietType, List<Ingredient>? avoidances, List<int>? cuisineTypes, required int language, required bool notifications, List<String>? linkedDevices}) {
+  factory Settings({String? id, required int dietType, List<int>? cuisineTypes, List<String>? savedRecipes, List<String>? likedRecipes, List<String>? avoidances, int? language, bool? notifications, List<String>? linkedDevices}) {
     return Settings._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       dietType: dietType,
-      avoidances: avoidances != null ? List<Ingredient>.unmodifiable(avoidances) : avoidances,
       cuisineTypes: cuisineTypes != null ? List<int>.unmodifiable(cuisineTypes) : cuisineTypes,
+      savedRecipes: savedRecipes != null ? List<String>.unmodifiable(savedRecipes) : savedRecipes,
+      likedRecipes: likedRecipes != null ? List<String>.unmodifiable(likedRecipes) : likedRecipes,
+      avoidances: avoidances != null ? List<String>.unmodifiable(avoidances) : avoidances,
       language: language,
       notifications: notifications,
       linkedDevices: linkedDevices != null ? List<String>.unmodifiable(linkedDevices) : linkedDevices);
@@ -132,8 +126,10 @@ class Settings extends amplify_core.Model {
     return other is Settings &&
       id == other.id &&
       _dietType == other._dietType &&
-      DeepCollectionEquality().equals(_avoidances, other._avoidances) &&
       DeepCollectionEquality().equals(_cuisineTypes, other._cuisineTypes) &&
+      DeepCollectionEquality().equals(_savedRecipes, other._savedRecipes) &&
+      DeepCollectionEquality().equals(_likedRecipes, other._likedRecipes) &&
+      DeepCollectionEquality().equals(_avoidances, other._avoidances) &&
       _language == other._language &&
       _notifications == other._notifications &&
       DeepCollectionEquality().equals(_linkedDevices, other._linkedDevices);
@@ -150,6 +146,9 @@ class Settings extends amplify_core.Model {
     buffer.write("id=" + "$id" + ", ");
     buffer.write("dietType=" + (_dietType != null ? _dietType!.toString() : "null") + ", ");
     buffer.write("cuisineTypes=" + (_cuisineTypes != null ? _cuisineTypes!.toString() : "null") + ", ");
+    buffer.write("savedRecipes=" + (_savedRecipes != null ? _savedRecipes!.toString() : "null") + ", ");
+    buffer.write("likedRecipes=" + (_likedRecipes != null ? _likedRecipes!.toString() : "null") + ", ");
+    buffer.write("avoidances=" + (_avoidances != null ? _avoidances!.toString() : "null") + ", ");
     buffer.write("language=" + (_language != null ? _language!.toString() : "null") + ", ");
     buffer.write("notifications=" + (_notifications != null ? _notifications!.toString() : "null") + ", ");
     buffer.write("linkedDevices=" + (_linkedDevices != null ? _linkedDevices!.toString() : "null") + ", ");
@@ -160,12 +159,14 @@ class Settings extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Settings copyWith({int? dietType, List<Ingredient>? avoidances, List<int>? cuisineTypes, int? language, bool? notifications, List<String>? linkedDevices}) {
+  Settings copyWith({int? dietType, List<int>? cuisineTypes, List<String>? savedRecipes, List<String>? likedRecipes, List<String>? avoidances, int? language, bool? notifications, List<String>? linkedDevices}) {
     return Settings._internal(
       id: id,
       dietType: dietType ?? this.dietType,
-      avoidances: avoidances ?? this.avoidances,
       cuisineTypes: cuisineTypes ?? this.cuisineTypes,
+      savedRecipes: savedRecipes ?? this.savedRecipes,
+      likedRecipes: likedRecipes ?? this.likedRecipes,
+      avoidances: avoidances ?? this.avoidances,
       language: language ?? this.language,
       notifications: notifications ?? this.notifications,
       linkedDevices: linkedDevices ?? this.linkedDevices);
@@ -173,17 +174,21 @@ class Settings extends amplify_core.Model {
   
   Settings copyWithModelFieldValues({
     ModelFieldValue<int>? dietType,
-    ModelFieldValue<List<Ingredient>?>? avoidances,
     ModelFieldValue<List<int>?>? cuisineTypes,
-    ModelFieldValue<int>? language,
-    ModelFieldValue<bool>? notifications,
+    ModelFieldValue<List<String>?>? savedRecipes,
+    ModelFieldValue<List<String>?>? likedRecipes,
+    ModelFieldValue<List<String>?>? avoidances,
+    ModelFieldValue<int?>? language,
+    ModelFieldValue<bool?>? notifications,
     ModelFieldValue<List<String>?>? linkedDevices
   }) {
     return Settings._internal(
       id: id,
       dietType: dietType == null ? this.dietType : dietType.value,
-      avoidances: avoidances == null ? this.avoidances : avoidances.value,
       cuisineTypes: cuisineTypes == null ? this.cuisineTypes : cuisineTypes.value,
+      savedRecipes: savedRecipes == null ? this.savedRecipes : savedRecipes.value,
+      likedRecipes: likedRecipes == null ? this.likedRecipes : likedRecipes.value,
+      avoidances: avoidances == null ? this.avoidances : avoidances.value,
       language: language == null ? this.language : language.value,
       notifications: notifications == null ? this.notifications : notifications.value,
       linkedDevices: linkedDevices == null ? this.linkedDevices : linkedDevices.value
@@ -193,13 +198,10 @@ class Settings extends amplify_core.Model {
   Settings.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _dietType = (json['dietType'] as num?)?.toInt(),
-      _avoidances = json['avoidances'] is List
-        ? (json['avoidances'] as List)
-          .where((e) => e?['serializedData'] != null)
-          .map((e) => Ingredient.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
-          .toList()
-        : null,
       _cuisineTypes = (json['cuisineTypes'] as List?)?.map((e) => (e as num).toInt()).toList(),
+      _savedRecipes = json['savedRecipes']?.cast<String>(),
+      _likedRecipes = json['likedRecipes']?.cast<String>(),
+      _avoidances = json['avoidances']?.cast<String>(),
       _language = (json['language'] as num?)?.toInt(),
       _notifications = json['notifications'],
       _linkedDevices = json['linkedDevices']?.cast<String>(),
@@ -207,14 +209,16 @@ class Settings extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'dietType': _dietType, 'avoidances': _avoidances?.map((Ingredient? e) => e?.toJson()).toList(), 'cuisineTypes': _cuisineTypes, 'language': _language, 'notifications': _notifications, 'linkedDevices': _linkedDevices, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'dietType': _dietType, 'cuisineTypes': _cuisineTypes, 'savedRecipes': _savedRecipes, 'likedRecipes': _likedRecipes, 'avoidances': _avoidances, 'language': _language, 'notifications': _notifications, 'linkedDevices': _linkedDevices, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'dietType': _dietType,
-    'avoidances': _avoidances,
     'cuisineTypes': _cuisineTypes,
+    'savedRecipes': _savedRecipes,
+    'likedRecipes': _likedRecipes,
+    'avoidances': _avoidances,
     'language': _language,
     'notifications': _notifications,
     'linkedDevices': _linkedDevices,
@@ -225,10 +229,10 @@ class Settings extends amplify_core.Model {
   static final amplify_core.QueryModelIdentifier<SettingsModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<SettingsModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final DIETTYPE = amplify_core.QueryField(fieldName: "dietType");
-  static final AVOIDANCES = amplify_core.QueryField(
-    fieldName: "avoidances",
-    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Ingredient'));
   static final CUISINETYPES = amplify_core.QueryField(fieldName: "cuisineTypes");
+  static final SAVEDRECIPES = amplify_core.QueryField(fieldName: "savedRecipes");
+  static final LIKEDRECIPES = amplify_core.QueryField(fieldName: "likedRecipes");
+  static final AVOIDANCES = amplify_core.QueryField(fieldName: "avoidances");
   static final LANGUAGE = amplify_core.QueryField(fieldName: "language");
   static final NOTIFICATIONS = amplify_core.QueryField(fieldName: "notifications");
   static final LINKEDDEVICES = amplify_core.QueryField(fieldName: "linkedDevices");
@@ -266,13 +270,6 @@ class Settings extends amplify_core.Model {
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
-      key: Settings.AVOIDANCES,
-      isRequired: false,
-      ofModelName: 'Ingredient',
-      associatedKey: Ingredient.SETTINGS
-    ));
-    
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Settings.CUISINETYPES,
       isRequired: false,
@@ -281,14 +278,35 @@ class Settings extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Settings.SAVEDRECIPES,
+      isRequired: false,
+      isArray: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Settings.LIKEDRECIPES,
+      isRequired: false,
+      isArray: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Settings.AVOIDANCES,
+      isRequired: false,
+      isArray: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Settings.LANGUAGE,
-      isRequired: true,
+      isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Settings.NOTIFICATIONS,
-      isRequired: true,
+      isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
     ));
     

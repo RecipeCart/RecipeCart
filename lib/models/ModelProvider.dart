@@ -30,7 +30,7 @@ export 'Settings.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "2340c97cb65b9c5a4157d6a9b0a46216";
+  String version = "763b827d2e2612fcc984e024ed4027dd";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [Ingredient.schema, Recipe.schema, Settings.schema];
   @override

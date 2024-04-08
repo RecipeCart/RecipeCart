@@ -97,19 +97,51 @@
     }
   },
   "parameters": {
-    "AMPLIFY_function_S3Triggerb1c1d36c_deploymentBucketName": {
+    "AMPLIFY_function_recipecart9b41d873PostConfirmation_deploymentBucketName": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "S3Triggerb1c1d36c"
+          "resourceName": "recipecart9b41d873PostConfirmation"
         }
       ]
     },
-    "AMPLIFY_function_S3Triggerb1c1d36c_s3Key": {
+    "AMPLIFY_function_recipecart9b41d873PostConfirmation_graphqlEndpointUrl": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "S3Triggerb1c1d36c"
+          "resourceName": "recipecart9b41d873PostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_recipecart9b41d873PostConfirmation_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "recipecart9b41d873PostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_startStopLambda_barcodeDirectory": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "startStopLambda"
+        }
+      ]
+    },
+    "AMPLIFY_function_startStopLambda_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "startStopLambda"
+        }
+      ]
+    },
+    "AMPLIFY_function_startStopLambda_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "startStopLambda"
         }
       ]
     },
