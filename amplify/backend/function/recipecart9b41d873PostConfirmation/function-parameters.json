@@ -1,0 +1,31 @@
+{
+  "trigger": true,
+  "modules": [
+    "custom"
+  ],
+  "parentResource": "recipecart9b41d873",
+  "functionName": "recipecart9b41d873PostConfirmation",
+  "resourceName": "recipecart9b41d873PostConfirmation",
+  "parentStack": "auth",
+  "triggerEnvs": "[]",
+  "triggerDir": "/snapshot/amplify-cli/build/node_modules/@aws-amplify/amplify-category-auth/provider-utils/awscloudformation/triggers/PostConfirmation",
+  "triggerTemplate": "PostConfirmation.json.ejs",
+  "triggerEventPath": "PostConfirmation.event.json",
+  "roleName": "recipecart9b41d873PostConfirmation",
+  "skipEdit": true,
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "graphqlEndpointUrl",
+      "environmentVariableName": "GRAPHQL_ENDPOINT_URL"
+    }
+  ],
+  "permissions": {
+    "api": {
+      "recipecart": [
+        "Query",
+        "Mutation",
+        "Subscription"
+      ]
+    }
+  }
+}

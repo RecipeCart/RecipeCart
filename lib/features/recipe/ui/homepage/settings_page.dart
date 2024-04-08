@@ -3,6 +3,7 @@ import 'package:recipe_cart/features/recipe/ui/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/models/Settings.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system; // Initial theme mode
@@ -72,8 +73,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _logoutButton() {
     return  TextButton(
-      onPressed: () {
-        Amplify.Auth.signOut();
+      onPressed: () async {
+        final result = await Amplify.Auth.signOut();
+        if (result is CognitoCompleteSignOut) {
+          safePrint('Sign out completed successfully');
+        } else if (result is CognitoFailedSignOut) {
+          safePrint('Error signing user out: ${result.exception.message}');
+        }
       },
       child: const Text('Log Out'),
     );

@@ -48,7 +48,7 @@ class IngredientAPIService {
       final Ingredient newIngredient = Ingredient(
         id: id,
         ingredientName: name,
-        
+
       );
       final request = ModelMutations.create()
     }
