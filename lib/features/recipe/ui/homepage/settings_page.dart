@@ -1,5 +1,4 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:recipe_cart/features/recipe/ui/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/models/Settings.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';

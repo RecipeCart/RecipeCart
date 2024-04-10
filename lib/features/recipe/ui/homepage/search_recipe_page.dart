@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/features/recipe/ui/homepage/widgets/search_bar.dart';
+import 'package:recipe_cart/features/recipe/ui/homepage/widgets/recipe_element.dart';
 
 class SearchRecipePage extends StatefulWidget {
   const SearchRecipePage({super.key});
@@ -29,10 +30,28 @@ class _SearchRecipeBuild extends State<SearchRecipePage>{
           ),
           borderRadius: BorderRadius.circular(15),
         ),
-        child: const SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              SearchBarWidget(),
+              const SearchBarWidget(),
+              const Divider(
+                thickness : 0.6,
+                indent: 32,
+                endIndent: 32,
+                color: Colors.white,
+              ),
+              const Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 16.0, left: 20, bottom: 10),
+                      child: Text('Discover', style: TextStyle(fontSize: 25),),
+                    ),
+                  ],
+              ),
+              RecipeCard(name: 'poopoo', list: ['qwe','rer','qwefd','asas'], instructions: 'haha'),
+              RecipeCard(name: 'dfnkfnwk', list: ['qwe','rer','qwefd','asas'], instructions: 'haha'),
+              RecipeCard(name: 'WLDKDVDS', list: ['qwe','rer','qwefd','asas'], instructions: 'haha'),
+              RecipeCard(name: 'dlkkldkwlkd', list: ['qwe','rer','qwefd','asas'], instructions: 'haha'),
             ],
           ),
         ),

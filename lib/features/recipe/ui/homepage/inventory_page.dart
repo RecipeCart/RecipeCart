@@ -49,12 +49,12 @@ class _InventoryBuild extends State<InventoryPage> {
                 weightController: weightController, // Share the controller
               ),
             InventoryCard(
-                name: 'Watermelon', // Set the name
+                name: 'a', // Set the name
                 weight: weight, // Provide initial weight
                 weightController: weightController, // Share the controller
               ),
             InventoryCard(
-                name: 'Watermelon', // Set the name
+                name: 'dakhsdsasskldmsa', // Set the name
                 weight: weight, // Provide initial weight
                 weightController: weightController, // Share the controller
               ),
