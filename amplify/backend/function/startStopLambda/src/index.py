@@ -6,7 +6,7 @@ import os
 ssm_client = boto3.client('ssm')
 
 def handler(event, context):
-    cognitoID = context.identity.cognito_identity_id if context.identity.cognito_identity_id is not None else ""
+    cognitoID = event['body']['cognitoID'] if event['body']['cognitoID'] is not None else ""
     
     #instanceID = event['body'] # obtain from QR code on Jetson
     
@@ -15,12 +15,12 @@ def handler(event, context):
     cd {}
     . barcode_venv/bin/activate
     nohup python barcode3.py {} >/dev/null 2>&1 &
-    '''.format(os.environ.BARCODE_DIRECTORY, cognitoID)
+    '''.format(os.environ['BARCODE_DIRECTORY'], cognitoID)
     
     stopScript = """
     cd {}
     kill `cat app.pid`
-    """.format(os.environ.BARCODE_DIRECTORY)
+    """.format(os.environ['BARCODE_DIRECTORY'])
     
     script = ""
     

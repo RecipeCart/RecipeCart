@@ -13,12 +13,7 @@
   "triggerEventPath": "PostConfirmation.event.json",
   "roleName": "recipecart9b41d873PostConfirmation",
   "skipEdit": true,
-  "environmentVariableList": [
-    {
-      "cloudFormationParameterName": "graphqlEndpointUrl",
-      "environmentVariableName": "GRAPHQL_ENDPOINT_URL"
-    }
-  ],
+  "environmentVariableList": [],
   "permissions": {
     "api": {
       "recipecart": [

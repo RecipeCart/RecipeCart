@@ -53,6 +53,9 @@ dependencies:
   cupertino_icons: ^1.0.5
   camera: ^0.10.5+9
   path_provider: ^2.1.2
+  mqtt5_client: ^4.2.2
+  aws_lambda_api: ^2.0.0
+  ndialog: ^4.3.1
 
 dev_dependencies:
   amplify_lints: ^3.0.0
@@ -83,6 +86,10 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/certs/certificatePem.cert.pem
+    - assets/certs/root.ca.pem
+    - assets/certs/privateKey.private.key
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

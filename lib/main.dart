@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
-import 'package:provider/provider.dart';
 
 List<CameraDescription> cameras = [];
 
