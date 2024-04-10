@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/main.dart';
+import 'package:image/image.dart' as img;
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -20,7 +23,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
       // Instantiating the camera controller
       final CameraController cameraController = CameraController(
         cameraDescription,
-        ResolutionPreset.high,
+        ResolutionPreset.medium,
         imageFormatGroup: ImageFormatGroup.jpeg,
       );
 
@@ -87,6 +90,17 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
             // Attempt to take a picture and then get the location
             // where the image file is saved.
             final image = await controller?.takePicture();
+            final path = image?.path;
+            final bytes = await File(path!).readAsBytes();
+            // final img.Image? finalImage = img.decodeImage(bytes);
+            List<int> imageBytes = File(path).readAsBytesSync();
+            // print('debugging bit: ');
+            // print(finalImage);
+            // print('bits: ');
+            // print(bytes);
+            String base64Image = base64Encode(imageBytes);
+            print("image bytes");
+            print(base64Image);
             if (!context.mounted) return;
 
             // If the picture was taken, display it on a new screen.
