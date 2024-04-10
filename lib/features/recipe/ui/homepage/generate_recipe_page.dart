@@ -2,7 +2,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/features/recipe/ui/api.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
-import 'package:recipe_cart/features/recipe/ui/inventory_card.dart';
+import 'package:recipe_cart/features/recipe/ui/homepage/widgets/inventory_card.dart';
 
 class GenerateRecipePage extends StatefulWidget {
   const GenerateRecipePage({super.key});

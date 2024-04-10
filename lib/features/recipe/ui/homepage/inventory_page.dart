@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:recipe_cart/features/recipe/ui/api.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
-import 'package:recipe_cart/features/recipe/ui/inventory_card.dart';
+import 'package:recipe_cart/features/recipe/ui/homepage/widgets/inventory_card.dart';
 
 import 'package:recipe_cart/features/iot/iot_mqtt5_client.dart';
 import 'package:recipe_cart/features/ingredient/service/barcode_script_controller.dart';

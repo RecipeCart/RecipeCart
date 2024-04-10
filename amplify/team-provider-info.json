@@ -17,7 +17,21 @@
         "recipecart9b41d873": {}
       },
       "api": {
-        "recipecart": {}
+        "recipecartAPI": {}
+      },
+      "function": {
+        "S3Triggerb1c1d36c": {
+          "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+          "s3Key": "amplify-builds/S3Triggerb1c1d36c-34466154624a504c664b-build.zip"
+        },
+        "startStopLambda": {
+          "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+          "s3Key": "amplify-builds/startStopLambda-74382b4567354d364236-build.zip"
+        },
+        "recipecart9b41d873PostConfirmation": {
+          "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
+          "s3Key": "amplify-builds/recipecart9b41d873PostConfirmation-352f474c72647247574f-build.zip"
+        }
       },
       "storage": {
         "recipeCartStorageBucket": {}
