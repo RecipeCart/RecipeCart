@@ -10,34 +10,34 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONL
 # Get Recipe by ingredients above a certain rating
 # Owners can CRUD their own recipes
 
-type Recipe @model @auth(rules: [{allow: private, operations: [read]}, {allow: owner, ownerField: "userID"}, {allow: public, provider: apiKey}]) {
-  id: ID!
-  recipeName: String! @index(name: "byRecipeName", queryField: "recipeByName")
-  dietType: Int! @index(name: "byDietByCuisine", sortKeyFields: ["cuisineType"], queryField: "recipeByDietByCuisine")
-  cuisineType: Int!
-  userID: String 
-    @auth(rules: [{allow: owner, operations: [read, delete]}])
-    @index(name: "byUserID", queryField: "recipeByUserID")
+# type Recipe @model @auth(rules: [{allow: private, operations: [read]}, {allow: owner, ownerField: "userID"}, {allow: public, provider: apiKey}]) {
+#   id: ID!
+#   recipeName: String! @index(name: "byRecipeName", queryField: "recipeByName")
+#   dietType: Int! @index(name: "byDietByCuisine", sortKeyFields: ["cuisineType"], queryField: "recipeByDietByCuisine")
+#   cuisineType: Int!
+#   userID: String 
+#     @auth(rules: [{allow: owner, operations: [read, delete]}])
+#     @index(name: "byUserID", queryField: "recipeByUserID")
 
-  ingredients: [Ingredient!]! @hasMany(indexName: "byRecipe", fields: ["id"])
-    #@manyToMany(relationName: "recipeIngredient") 
+#   ingredients: [Ingredient!]! @hasMany(indexName: "byRecipe", fields: ["id"])
+#     #@manyToMany(relationName: "recipeIngredient") 
 
-  instructions: String!
+#   instructions: String!
 
-  # calculate average ratings based on average of 0-5 ratings
-  ratings: Float! @index(name: "byRatings", queryField: "recipeByRatings")
-  fives: Int
-  fours: Int
-  threes: Int
-  twos: Int
-  ones: Int
-  zeroes: Int
+#   # calculate average ratings based on average of 0-5 ratings
+#   ratings: Float! @index(name: "byRatings", queryField: "recipeByRatings")
+#   fives: Int
+#   fours: Int
+#   threes: Int
+#   twos: Int
+#   ones: Int
+#   zeroes: Int
 
-  likes: Int! @index(name: "byLikes", queryField: "recipeByLikes")
-  saved: Int!
-  views: Int! @index(name: "byViews", queryField: "recipeByViews")
-  image: String
-}
+#   likes: Int! @index(name: "byLikes", queryField: "recipeByLikes")
+#   saved: Int!
+#   views: Int! @index(name: "byViews", queryField: "recipeByViews")
+#   image: String
+# }
 
 
 # access patterns for Ingredient
@@ -53,23 +53,29 @@ type Ingredient @model @auth(rules: [
   {allow: owner, ownerField: "userID"}, 
   {allow: public, provider: apiKey}
   ]) {
-  id: ID! @primaryKey(sortKeyFields: ["ingredientName"])
+  id: ID! @primaryKey
+  # ingredient name as obtained from WOFF
   ingredientName: String! @index(name: "byIngredientName", queryField: "ingredientByName")
+  # owner of ingredient (i.e. user)
   userID: String 
     @auth(rules: [{allow: owner, operations: [read, delete]}])
     @index(name: "byUserID", queryField: "ingredientByUserID")
   barcode: String @index(name: "byBarcode", queryField: "ingredientByBarcode") 
 
+  # field to be populated by Weaviate ingredient database
+  # list of names stored in Weaviate. Used to search for recipes containing similar ingredient names
+  commonNames: [String!]!
+
   # boolean to check if removed from user inventory or not. Default to false upon creation
   removed: Boolean
 
-  # quantity is different based on whether this is a recipe ingredient or a user inventory ingredient
+  # user's ingredient quantity
   quantity: Float!
   unit: String
 
   # recipe: [Recipe] @manyToMany(relationName: "recipeIngredient")
-  recipe: Recipe @belongsTo(fields: ["recipeID"])
-  recipeID: ID @index(name: "byRecipe") # customized foreign key for parent primary key
+  # recipe: Recipe @belongsTo(fields: ["recipeID"])
+  # recipeID: ID @index(name: "byRecipe") # customized foreign key for parent primary key
 }
 
 
@@ -82,8 +88,8 @@ type Settings @model @auth(rules: [
   owner: String!
   dietType: Int
   cuisineTypes: [Int]
-  savedRecipes: [String] # recipeID
-  likedRecipes: [String] #recipeID
+  savedRecipes: [String] # recipeID from Weaviate recipe database
+  likedRecipes: [String] #recipeID from Weaviate recipe database
   avoidances: [String] # ingredientName 
   language: Int
   notifications: Boolean

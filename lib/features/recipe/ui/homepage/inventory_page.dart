@@ -16,15 +16,13 @@ import 'dart:convert';
 
 class InventoryPage extends StatefulWidget {
   const InventoryPage({super.key});
-  
+
   @override
-    State<InventoryPage> createState() => _InventoryBuild();
-
-
+  State<InventoryPage> createState() => _InventoryScreenState();
 }
 
-
-class _InventoryBuild extends State<InventoryPage> {
+class _InventoryScreenState extends State<InventoryPage> {
+  int numBarcodeItems = 0;
   String weight = "0"; // Initial weight
   bool isConnected = false;
   final TextEditingController weightController = TextEditingController();
@@ -33,11 +31,11 @@ class _InventoryBuild extends State<InventoryPage> {
   final BarcodeScriptController barcodeController = BarcodeScriptController();
   // client for receiving IoT messages from Jetson Nano
   final Mqtt5Client client = Mqtt5Client();
-
+  // controller calling lambda to process barcode
   final BarcodeInterpreter barcodeInterpreter = BarcodeInterpreter();
 
   // const api = new api();
-  // final Ingredient test = queryItem('raisins') as Ingredient; 
+  // final Ingredient test = queryItem('raisins') as Ingredient;
   @override
   void initState() {
     super.initState();
@@ -49,7 +47,8 @@ class _InventoryBuild extends State<InventoryPage> {
       appBar: AppBar(
         title: const Text('Inventory Page'),
       ),
-      body: Card(
+      body: SafeArea(
+          child: Card(
         shape: RoundedRectangleBorder(
           side: const BorderSide(
             color: Colors.transparent,
@@ -58,106 +57,108 @@ class _InventoryBuild extends State<InventoryPage> {
           borderRadius: BorderRadius.circular(15),
         ),
         margin: const EdgeInsets.only(top: 10.0),
-        child: SingleChildScrollView(
-          child: Column( // Use Row for horizontal layout
-            children: [
-              // InventoryCard(
-              //   name: 'Watermelon', // Set the name
-              //   weight: weight, // Provide initial weight
-              //   weightController: weightController, // Share the controller
-              // ),
-              // InventoryCard(
-              //   name: 'Watermelon', // Set the name
-              //   weight: weight, // Provide initial weight
-              //   weightController: weightController, // Share the controller
-              // ),
-              // InventoryCard(
-              //   name: 'Watermelon', // Set the name
-              //   weight: weight, // Provide initial weight
-              //   weightController: weightController, // Share the controller
-              // ),
-              if (isConnected == true) ingredientStream()
-            ],
-          ),
+        child: isConnected
+            ? ingredientStream()
+            : ListView.builder(
+                itemBuilder: (context, index) {
+                  return SizedBox(
+                      height: MediaQuery.of(context).size.height * .2,
+                      child: InventoryCard(
+                          name: "name",
+                          weight: "weight",
+                          weightController: weightController));
+                },
+                scrollDirection: Axis.vertical,
+                itemCount: 2,
+              ),
+      )),
+      floatingActionButton: Column(children: [
+        FloatingActionButton(
+          onPressed: () => context.go('/camera'),
+          child: const Icon(Icons.camera_alt_outlined),
         ),
-
-      ),
-      floatingActionButton: Column(
-        children: [
-          FloatingActionButton(
-            onPressed: () => context.go('/camera'),
-            child: const Icon(Icons.camera_alt_outlined),
-          ),
-          FloatingActionButton(
-            onPressed: () async {
-              bool state = await _startBarcode();
-              setState(() {
-                isConnected = state;
-              });
-            },
-            child: const Icon(Icons.add_circle_outlined),
-          ),
-          FloatingActionButton(
-            onPressed: () async {
-              bool state = await _stopBarcode();
-              setState(() {
-                isConnected = state;
-              });
-            },
-            child: const Icon(Icons.close),
-          )
-        ]
-      ),
+        FloatingActionButton(
+          onPressed: () async {
+            bool state = await _startBarcode();
+            setState(() {
+              isConnected = state;
+            });
+          },
+          child: const Icon(Icons.add_circle_outlined),
+        ),
+        FloatingActionButton(
+          onPressed: () async {
+            bool state = await _stopBarcode();
+            setState(() {
+              isConnected = state;
+            });
+          },
+          child: const Icon(Icons.close),
+        )
+      ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
     );
   }
 
   Widget ingredientStream() {
-    return Container(
-      child: StreamBuilder(
-        stream: client.mqttServerClient.updates,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text('No barcode yet')
-              // child: CircularProgressIndicator(
-              //   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              // )
-            );
-          }
-          else {
-            // get message and decode from bytes into Strings
-            final mqttReceivedMessages = snapshot.data; // as List<MqttReceivedMessage<MqttMessage?>>?;
-            final receivedMessage = mqttReceivedMessages!.first.payload as MqttPublishMessage;
-            // final barcodeData = receivedMessage.payload.toString();
-            final barcodeData = MqttUtilities.bytesToStringAsString(receivedMessage.payload.message!);
-            safePrint("barcode data: $barcodeData");
-            
-            // pass message to barcodeInterpreter
-            String productInfo = "";
-            barcodeInterpreter.fetchProductInfo(barcodeData).then((value) => {productInfo = value});
+    return StreamBuilder<List<MqttReceivedMessage<MqttMessage>>>(
+      stream: client.mqttServerClient.updates,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+              //child: Text('No barcode yet')
+              child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ));
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          // get message and decode from bytes into Strings
+          final mqttReceivedMessages =
+              snapshot.data; // as List<MqttReceivedMessage<MqttMessage?>>?;
+          final receivedMessage =
+              mqttReceivedMessages!.first.payload as MqttPublishMessage;
 
-            safePrint(const JsonEncoder.withIndent(' ').convert(productInfo));
+          final barcodeData = MqttUtilities.bytesToStringAsString(
+              receivedMessage.payload.message!);
+          safePrint("barcode data: $barcodeData");
 
-            return Center(
-              child: Text('Latest barcode message: $barcodeData'),
-            );
-          }
-        },
-      )
+          // pass message to barcodeInterpreter
+          String productInfo = "";
+          barcodeInterpreter
+              .fetchProductInfo(barcodeData)
+              .then((value) => {productInfo = value});
+
+          safePrint(const JsonEncoder.withIndent(' ').convert(productInfo));
+
+          setState(() {
+            numBarcodeItems += 1;
+          });
+          return ListView.builder(
+            // reverse: false,
+            itemBuilder: (context, index) {
+              return SizedBox(
+                  height: MediaQuery.of(context).size.height * .5,
+                  child: ListTile(
+                      title: const Text("Ingredient"),
+                      subtitle: Text('Latest barcode message: $barcodeData')));
+            },
+            itemCount: numBarcodeItems,
+            scrollDirection: Axis.vertical,
+          );
+          // child: Text('Latest barcode message: $barcodeData'),
+        }
+      },
     );
   }
 
-
   Future<bool> _startBarcode() async {
-    ProgressDialog progressDialog = ProgressDialog(
-      context,
-      blur: 0,
-      dialogTransitionType: DialogTransitionType.Shrink,
-      dismissable: false, 
-      title: null, 
-      message: null
-    );
+    ProgressDialog progressDialog = ProgressDialog(context,
+        blur: 0,
+        dialogTransitionType: DialogTransitionType.Shrink,
+        dismissable: false,
+        title: null,
+        message: null);
 
     progressDialog.setLoadingWidget(const CircularProgressIndicator(
       valueColor: AlwaysStoppedAnimation(Colors.red),
@@ -170,7 +171,7 @@ class _InventoryBuild extends State<InventoryPage> {
     bool barcodeStarted = await barcodeController.startBarcodeScript();
 
     bool status = await client.mqttConnect();
-    
+
     progressDialog.dismiss();
 
     return status;
@@ -179,6 +180,10 @@ class _InventoryBuild extends State<InventoryPage> {
   Future<bool> _stopBarcode() async {
     // call stop barcode detection lambda
     bool barcodeStopped = await barcodeController.stopBarcodeScript();
+
+    setState(() {
+      numBarcodeItems = 0;
+    });
 
     return client.mqttDisconnect();
   }
