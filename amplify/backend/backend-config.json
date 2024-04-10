@@ -105,14 +105,6 @@
         }
       ]
     },
-    "AMPLIFY_function_recipecart9b41d873PostConfirmation_graphqlEndpointUrl": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "recipecart9b41d873PostConfirmation"
-        }
-      ]
-    },
     "AMPLIFY_function_recipecart9b41d873PostConfirmation_s3Key": {
       "usedBy": [
         {

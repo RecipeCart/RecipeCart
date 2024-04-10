@@ -55,9 +55,6 @@
     },
     "s3Key": {
       "Type": "String"
-    },
-    "graphqlEndpointUrl": {
-      "Type": "String"
     }
   },
   "Conditions": {
@@ -119,9 +116,6 @@
             },
             "API_RECIPECART_GRAPHQLAPIKEYOUTPUT": {
               "Ref": "apirecipecartGraphQLAPIKeyOutput"
-            },
-            "GRAPHQL_ENDPOINT_URL": {
-              "Ref": "graphqlEndpointUrl"
             }
           }
         },

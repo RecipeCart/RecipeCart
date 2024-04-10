@@ -1,8 +1,8 @@
 # recipe_cart
 
-A new Flutter project.
+A Senior Design II Project from the College of Engineering and Computer Science
 
-## Getting Started
+## About
 
 This project is a starting point for a Flutter application.
 
