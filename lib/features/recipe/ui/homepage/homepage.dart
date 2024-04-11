@@ -61,11 +61,11 @@ class _NavigationExampleState extends State<NavigationExample> {
             icon: Icon(Icons.search),
             label: 'Explore',
           ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.fastfood),
-            icon: Icon(Icons.fastfood_outlined),
-            label: 'Generate',
-          ),
+          // NavigationDestination(
+          //   selectedIcon: Icon(Icons.fastfood),
+          //   icon: Icon(Icons.fastfood_outlined),
+          //   label: 'Generate',
+          // ),
           NavigationDestination(
             icon: Icon(Icons.settings),
             label: 'Settings',
@@ -81,7 +81,7 @@ class _NavigationExampleState extends State<NavigationExample> {
         // search recipes page
         const SearchRecipePage(),
         /// Generate Recipe Page
-        const GenerateRecipePage(),       
+        // const GenerateRecipePage(),       
         /// Messages page
         const SettingsPage(),
 
