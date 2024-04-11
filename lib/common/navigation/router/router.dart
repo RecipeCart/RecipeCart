@@ -3,6 +3,8 @@ import 'package:recipe_cart/features/recipe/ui/homepage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:recipe_cart/features/recipe/ui/homepage/widgets/camera_screen.dart';
+import 'package:recipe_cart/features/recipe/ui/homepage/widgets/preference_page.dart';
+import 'package:recipe_cart/features/recipe/ui/homepage/widgets/avoidance_page.dart';
 
 final router = GoRouter(
   routes: [
@@ -16,7 +18,17 @@ final router = GoRouter(
           path: 'camera',
           // name: AppRoute.home.name,
           builder: (context, state) => const CameraScreen(), 
-        ),  
+        ), 
+        GoRoute(
+          path: 'preference',
+          // name: AppRoute.home.name,
+          builder: (context, state) => const PreferencePage(), 
+        ),
+        GoRoute(
+          path: 'avoidance',
+          // name: AppRoute.home.name,
+          builder: (context, state) => const AvoidancePage(), 
+        ),
       ],
     ),
   

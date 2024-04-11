@@ -32,35 +32,38 @@ class _RecipeCardState extends State<RecipeCard> {
     // int ingreLen = ingredients.length;
     
     ingredients = list.join(',');
-    return Card(
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(
-          color: Colors.white,
-          width: 0.3,
+    return GestureDetector(
+      onTap: () => showCard(context, name, ingredients, instructions),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(
+            color: Colors.white,
+            width: 0.3,
+          ),
+          borderRadius: BorderRadius.circular(15),
         ),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      margin: const EdgeInsets.only(top: 10.0, right: 5.0, left: 5.0),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(name),
-                const SizedBox(width: 20.0),
-                IconButton(
-                  icon: const Icon(Icons.bookmark),
-                  onPressed: () => showCard(context, name, ingredients, instructions),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text('indgredients: $ingredients'),
-              ],
-            ),            
-          ]
+        margin: const EdgeInsets.only(top: 10.0, right: 5.0, left: 5.0),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(name),
+                  const SizedBox(width: 20.0),
+                  IconButton(
+                    icon: const Icon(Icons.bookmark),
+                    onPressed: () => showCard(context, name, ingredients, instructions),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text('indgredients: $ingredients'),
+                ],
+              ),            
+            ]
+          ),
         ),
       ),
     );
@@ -69,6 +72,7 @@ class _RecipeCardState extends State<RecipeCard> {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
+        insetPadding: const EdgeInsets.all(10),
         title: Text(name), // Add a title
         content: Card(
           child: SingleChildScrollView(
