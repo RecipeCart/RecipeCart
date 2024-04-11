@@ -1,5 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:recipe_cart/models/Settings.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -46,10 +47,10 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(16.0), // Add some padding
         child: Column(
           children: [
-            // ... other settings options
             _buildThemeModeButton(),
             _logoutButton(),
-            // Text(test as String),
+            _preferenceButton(),
+            _avoidanceButton(),
           ],
         ),
       ),
@@ -66,6 +67,7 @@ class _SettingsPageState extends State<SettingsPage> {
       },
       child: Text(
         _themeProvider.themeMode == ThemeMode.light ? 'Dark Mode' : 'Light Mode',
+        style: _themeProvider.themeMode == ThemeMode.light ? const TextStyle(color: Colors.black) : const TextStyle(color: Colors.white),
       ),
     );
   }
@@ -80,7 +82,30 @@ class _SettingsPageState extends State<SettingsPage> {
           safePrint('Error signing user out: ${result.exception.message}');
         }
       },
-      child: const Text('Log Out'),
+      child: const Text(
+        'Log Out',
+        style: TextStyle(color: Colors.white),
+        ),
+    );
+                    
+  }
+  Widget _preferenceButton() {
+    return  TextButton(
+      onPressed: () => context.go('/preference'),
+      child: const Text(
+        'Preference',
+        style: TextStyle(color: Colors.white),
+        ),
+    );
+                    
+  }
+  Widget _avoidanceButton() {
+    return  TextButton(
+      onPressed: () => context.go('/avoidance'),
+      child: const Text(
+        'Avoidance',
+        style: TextStyle(color: Colors.white),
+        ),
     );
                     
   }
