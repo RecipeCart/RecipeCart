@@ -1,11 +1,8 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
-import 'package:recipe_cart/features/recipe/ui/api.dart';
-import 'package:recipe_cart/models/ModelProvider.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/widgets/inventory_card.dart';
+import 'package:recipe_cart/common/ui/homepage/widgets/inventory_card.dart';
 
 import 'package:recipe_cart/features/iot/iot_mqtt5_client.dart';
 import 'package:recipe_cart/features/ingredient/service/barcode_script_controller.dart';

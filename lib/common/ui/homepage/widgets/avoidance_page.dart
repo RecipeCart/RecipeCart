@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/search_recipe_page.dart';
 
 class AvoidancePage extends StatefulWidget {
   const AvoidancePage({super.key});

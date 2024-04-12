@@ -6,17 +6,18 @@ class SearchRecipePage extends StatefulWidget {
   const SearchRecipePage({super.key});
 
   @override
-  State<SearchRecipePage> createState() => _SearchRecipeBuild();
+    State<SearchRecipePage> createState() => _SearchRecipeBuild();
+  
 }
 
-class _SearchRecipeBuild extends State<SearchRecipePage> {
+class _SearchRecipeBuild extends State<SearchRecipePage>{
   @override
-  void initState() {
+  void initState(){
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build (BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Explore Recipes'),
@@ -34,41 +35,29 @@ class _SearchRecipeBuild extends State<SearchRecipePage> {
             children: [
               const SearchBarWidget(),
               const Divider(
-                thickness: 0.6,
+                thickness : 0.6,
                 indent: 32,
                 endIndent: 32,
                 color: Colors.white,
               ),
               const Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 16.0, left: 20, bottom: 10),
-                    child: Text(
-                      'Discover',
-                      style: TextStyle(fontSize: 25),
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 16.0, left: 20, bottom: 10),
+                      child: Text('Discover', style: TextStyle(fontSize: 25),),
                     ),
-                  ),
-                ],
+                  ],
               ),
-              RecipeCard(
-                  name: 'poopoo',
-                  list: ['qwe', 'rer', 'qwefd', 'asas'],
-                  instructions: 'haha'),
-              RecipeCard(
-                  name: 'dfnkfnwk',
-                  list: ['qwe', 'rer', 'qwefd', 'asas'],
-                  instructions: 'haha'),
-              RecipeCard(
-                  name: 'WLDKDVDS',
-                  list: ['qwe', 'rer', 'qwefd', 'asas'],
-                  instructions: 'haha'),
-              RecipeCard(
-                  name: 'dlkkldkwlkd',
-                  list: ['qwe', 'rer', 'qwefd', 'asas'],
-                  instructions: 'haha'),
+              RecipeCard(name: 'Big Man Chilling in Ice', list: ['watermelon','wintermelon','melonmelon','bananamelon'], instructions: 'haha'),
+              RecipeCard(name: 'dfnkfnwk', list: ['qwe','rer','qwefd','asas'], instructions: 'haha'),
+              RecipeCard(name: 'WLDKDVDS', list: ['qwe','rer','qwefd','asas'], instructions: 'haha'),
+              RecipeCard(name: 'dlkkldkwlkd', list: ['qwe','rer','qwefd','asas'], instructions: 'haha'),
+              RecipeCard(name: 'new maen :3', list: ['qwe','rer','qwefd','asas'], instructions: 'haha'),
             ],
           ),
         ),
+      
+
       ),
     );
   }
