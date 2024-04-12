@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/inventory_page.dart';
+import 'package:recipe_cart/common/ui/homepage/inventory_page.dart';
 
 class InventoryCard extends StatefulWidget {
   final String name; // Name of the inventory item
@@ -12,11 +12,13 @@ class InventoryCard extends StatefulWidget {
     required this.name,
     required this.weight,
     required this.weightController,
-    // required this.onWeightChange,  
+    // required this.onWeightChange,
   });
   @override
-  State<InventoryCard> createState() => _InventoryCardState(name: name, weight: weight, weightController: weightController);
+  State<InventoryCard> createState() => _InventoryCardState(
+      name: name, weight: weight, weightController: weightController);
 }
+
 class _InventoryCardState extends State<InventoryCard> {
   final String name; // Name of the inventory item
   String weight; // Initial weight of the item
@@ -41,21 +43,26 @@ class _InventoryCardState extends State<InventoryCard> {
       margin: const EdgeInsets.only(top: 10.0, right: 5.0, left: 5.0),
       child: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Column( // Use Column for vertical stacking
+        child: Column(
+          // Use Column for vertical stacking
           children: [
-            Row( // Use Row for horizontal name & weight
+            Row(
+              // Use Row for horizontal name & weight
               children: [
-                Expanded( // Ensure name takes most space
+                Expanded(
+                  // Ensure name takes most space
                   child: Text(name),
                 ),
                 const SizedBox(width: 10.0), // Spacing between name & weight
-                Flexible( // Wrap weight text to prevent overflow
+                Flexible(
+                  // Wrap weight text to prevent overflow
                   child: Text('Weight: $weight'),
                 ), // Consider removing padding here
               ],
             ),
             // ... other child widgets, e.g., TextField
-            Row( // Separate Row for edit icon at the end
+            Row(
+              // Separate Row for edit icon at the end
               mainAxisAlignment: MainAxisAlignment.end, // Align right
               children: [
                 IconButton(
@@ -67,16 +74,19 @@ class _InventoryCardState extends State<InventoryCard> {
           ],
         ),
       ),
-
     );
   }
+
   void updateWeight(String newWeight) {
     setState(() {
       weight = newWeight;
     });
   }
-  void showModal(BuildContext context, String initialText, Function(String) onTextUpdate) {
-    final TextEditingController textController = TextEditingController(text: initialText);
+
+  void showModal(
+      BuildContext context, String initialText, Function(String) onTextUpdate) {
+    final TextEditingController textController =
+        TextEditingController(text: initialText);
 
     showDialog<void>(
       context: context,
@@ -103,5 +113,4 @@ class _InventoryCardState extends State<InventoryCard> {
       ),
     );
   }
-
 }
