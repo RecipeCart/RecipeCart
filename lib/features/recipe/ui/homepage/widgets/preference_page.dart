@@ -8,38 +8,37 @@ class PreferencePage extends StatefulWidget {
   
 }
 
+enum DietTypes {
+  none,
+  vegan,
+  vegetarian,
+  pescatarian,
+  dairyfree,
+  keto
+}
+
 class _PreferencePageBuild extends State<PreferencePage> {
   @override
   void initState(){
     super.initState();
   }
 
-  Map<String, bool> values = {
-    'vegan': false,
-    'vegetarian': false,
-    'carnivore': false,
-    'pescatarian': false,
-    'dairy-free': false,
-    'keto': false,
-  };
+  DietTypes type = DietTypes.none;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Preferencecheckbox')),
+      appBar: AppBar(title: const Text('Preference Options')),
       body: Column(
-            children: values.keys.map((String key) {
-              return CheckboxListTile(
-                title: Text(key),
-                value: values[key],
-                onChanged: (value) {
-                  setState(() {
-                    values[key] = value!;
-                  });
-                },
-              );
-            }).toList(),
-
+            children: [
+              optionItem(context, DietTypes.none, 'None'),
+              optionItem(context, DietTypes.vegan, 'Vegan'),
+              optionItem(context, DietTypes.vegetarian, 'Vegetarian'),
+              optionItem(context, DietTypes.pescatarian, 'Pescatarian'),
+              optionItem(context, DietTypes.dairyfree, 'Dairy-free'),
+              optionItem(context, DietTypes.keto, 'Keto'),
+              
+            ],
           ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {Navigator.pop(context);},
@@ -48,6 +47,22 @@ class _PreferencePageBuild extends State<PreferencePage> {
 
     );
     
+  }
+  Widget optionItem(BuildContext context, DietTypes value, String stwing) {
+    return ListTile(
+          title: Text(stwing),
+          leading: Radio<DietTypes>(
+            value: value,
+            groupValue: type,
+            onChanged: (DietTypes? value) {
+              setState(() {
+                type = value!;
+                print(type);
+              });
+              
+            },
+          ),
+    );
   }
   
 }
