@@ -1,27 +1,27 @@
-import 'dart:async';
+// import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:recipe_cart/features/ingredient/data/ingredient_message_model.dart';
+// import 'package:flutter/material.dart';
+// import 'package:recipe_cart/features/ingredient/data/ingredient_message_model.dart';
 
-class IngredientDetectedList extends StatefulWidget {
-  @override
-  _IngredientDetectedListState createState() = _IngredientDetectedListState();
-}
+// class IngredientDetectedList extends StatefulWidget {
+//   @override
+//   _IngredientDetectedListState createState() = _IngredientDetectedListState();
+// }
 
-class _IngredientDetectedListState extends State<IngredientDetectedList> {
-  StreamController<IngredientMessageModel> _streamController;
+// class _IngredientDetectedListState extends State<IngredientDetectedList> {
+//   StreamController<IngredientMessageModel> _streamController;
 
-  List<IngredientMessageModel> list = [];
+//   List<IngredientMessageModel> list = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _streamController = StreamController.broadcast();
+//   @override
+//   void initState() {
+//     super.initState();
+//     _streamController = StreamController.broadcast();
 
-    _streamController.stream.listen((m) => setState(() => list.add(m)));
+//     _streamController.stream.listen((m) => setState(() => list.add(m)));
 
-    load(_streamController);
-  }
+//     load(_streamController);
+//   }
 
 
-}
+// }

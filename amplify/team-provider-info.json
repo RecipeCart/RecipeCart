@@ -17,7 +17,8 @@
         "recipecart9b41d873": {}
       },
       "api": {
-        "recipecartAPI": {}
+        "recipecartAPI": {},
+        "recipecart": {}
       },
       "function": {
         "startStopLambda": {

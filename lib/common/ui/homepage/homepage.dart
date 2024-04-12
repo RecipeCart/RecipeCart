@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/common/utils/colors.dart' as constants;
-import 'package:recipe_cart/features/recipe/ui/homepage/generate_recipe_page.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/inventory_page.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/saved_recipe_page.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/settings_page.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/search_recipe_page.dart';
+import 'package:recipe_cart/common/ui/homepage/generate_recipe_page.dart';
+import 'package:recipe_cart/common/ui/homepage/inventory_page.dart';
+import 'package:recipe_cart/common/ui/homepage/saved_recipe_page.dart';
+import 'package:recipe_cart/common/ui/homepage/settings_page.dart';
+import 'package:recipe_cart/common/ui/homepage/search_recipe_page.dart';
 
 class HomePage extends StatelessWidget {
-
   const HomePage({
     super.key,
   });
@@ -34,9 +33,9 @@ class _NavigationExampleState extends State<NavigationExample> {
   int currentPageIndex = 0;
   String weight = "";
   final weightController = TextEditingController();
-  
+
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -61,30 +60,31 @@ class _NavigationExampleState extends State<NavigationExample> {
             icon: Icon(Icons.search),
             label: 'Explore',
           ),
-          // NavigationDestination(
-          //   selectedIcon: Icon(Icons.fastfood),
-          //   icon: Icon(Icons.fastfood_outlined),
-          //   label: 'Generate',
-          // ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.fastfood),
+            icon: Icon(Icons.fastfood_outlined),
+            label: 'Generate',
+          ),
           NavigationDestination(
             icon: Icon(Icons.settings),
             label: 'Settings',
           ),
-
         ],
       ),
       body: <Widget>[
         /// Home page
         const InventoryPage(),
+
         /// Saved Recipe page
         const SavedRecipePage(),
         // search recipes page
         const SearchRecipePage(),
+
         /// Generate Recipe Page
-        // const GenerateRecipePage(),       
+        const GenerateRecipePage(),
+
         /// Messages page
         const SettingsPage(),
-
       ][currentPageIndex],
     );
   }

@@ -3,9 +3,9 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
-import 'package:recipe_cart/features/recipe/ui/api.dart';
+import 'package:recipe_cart/common/ui/api.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/widgets/inventory_card.dart';
+import 'package:recipe_cart/common/ui/homepage/widgets/inventory_card.dart';
 
 import 'package:recipe_cart/features/iot/iot_mqtt5_client.dart';
 import 'package:recipe_cart/features/ingredient/service/barcode_script_controller.dart';
@@ -127,13 +127,15 @@ class _InventoryScreenState extends State<InventoryPage> {
           String productInfo = "";
           barcodeInterpreter
               .fetchProductInfo(barcodeData)
-              .then((value) => {productInfo = value});
+              .then((String value) => {productInfo = value});
 
-          safePrint(const JsonEncoder.withIndent(' ').convert(productInfo));
+          final barcodeDataJson = json.decode(barcodeData);
+          final int startTime = barcodeDataJson['start_time'];
+          final DateTime date = DateTime.now();
+          final int currentTime =
+              date.millisecondsSinceEpoch ~/ Duration.millisecondsPerSecond;
+          safePrint("time elapsed : ${(currentTime - startTime)}");
 
-          setState(() {
-            numBarcodeItems += 1;
-          });
           return ListView.builder(
             // reverse: false,
             itemBuilder: (context, index) {
@@ -141,9 +143,8 @@ class _InventoryScreenState extends State<InventoryPage> {
                   height: MediaQuery.of(context).size.height * .5,
                   child: ListTile(
                       title: const Text("Ingredient"),
-                      subtitle: Text('Latest barcode message: $barcodeData')));
+                      subtitle: Text('Latest barcode message: $productInfo')));
             },
-            itemCount: numBarcodeItems,
             scrollDirection: Axis.vertical,
           );
           // child: Text('Latest barcode message: $barcodeData'),
