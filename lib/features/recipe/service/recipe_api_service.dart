@@ -27,8 +27,10 @@ class RecipeAPIService {
   Future<List<Recipe?>> searchRecipes(
       String searchEntry,
       List<List<String>> allRelatedNames,
-      Settings settings) async {
-
+      List<List<String>> allRelatedAvoidances,
+      String dietType) async {
+    
+        
     // convert avoidances to allRelatedAvoidances
     List<List<String>> allRelatedAvoidances = [];
 
@@ -36,7 +38,7 @@ class RecipeAPIService {
 
     try {
       final response = await searchRecipeLambdaInvoker.searchRecipes(
-          searchEntry, allRelatedNames, dietType, avoidances, offset);
+          searchEntry, allRelatedNames, dietType, allRelatedAvoidances, offset);
 
       // convert to json
       final data = jsonDecode(response);
