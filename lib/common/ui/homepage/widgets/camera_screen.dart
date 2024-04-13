@@ -97,10 +97,7 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
             final bytes = await File(path!).readAsBytes();
             // final img.Image? finalImage = img.decodeImage(bytes);
             List<int> imageBytes = File(path).readAsBytesSync();
-            // print('debugging bit: ');
-            // print(finalImage);
-            // print('bits: ');
-            // print(bytes);
+
             String base64Image = base64Encode(imageBytes);
             print("image bytes");
             print(base64Image);
@@ -109,16 +106,6 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
             print('imageInterpretor() executed in ${stopwatch.elapsed}');
             if (!context.mounted) return;
 
-            // If the picture was taken, display it on a new screen.
-            // await Navigator.of(context).push(
-            //   MaterialPageRoute(
-            //     builder: (context) => DisplayPictureScreen(
-            //       // Pass the automatically generated path to
-            //       // the DisplayPictureScreen widget.
-            //       imagePath: image?.path,
-            //     ),
-            //   ),
-            // );
           } catch (e) {
             // If an error occurs, log the error to the console.
             print(e);
