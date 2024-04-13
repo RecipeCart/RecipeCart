@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/inventory_card.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/search_bar.dart';
+import 'package:recipe_cart/common/ui/homepage/widgets/expandable_fab.dart';
+import 'package:recipe_cart/common/ui/homepage/widgets/action_button.dart';
+
 
 import 'package:recipe_cart/features/iot/iot_mqtt5_client.dart';
 import 'package:recipe_cart/features/ingredient/service/barcode_script_controller.dart';
@@ -12,9 +15,6 @@ import 'package:recipe_cart/features/ingredient/controller/ingredient_controller
 import 'package:ndialog/ndialog.dart';
 
 import 'dart:convert';
-
-import 'package:recipe_cart/features/settings/service/settings_api_service.dart';
-import 'package:recipe_cart/models/ModelProvider.dart';
 
 class InventoryPage extends StatefulWidget {
   const InventoryPage({super.key});
@@ -35,9 +35,10 @@ class _InventoryScreenState extends State<InventoryPage> {
   final Mqtt5Client client = Mqtt5Client();
   // controller calling lambda to process barcode
   final BarcodeInterpreter barcodeInterpreter = BarcodeInterpreter();
-
+  // receives all live incoming data as list
   List<String> receiver = [];
-  List<String> fetcher = [];
+  // receives all existing ingredients in user's inventory as list
+  List<InventoryCard> fetcher = [];
   String productInfo = "";
   // const api = new api();
   // final Ingredient test = queryItem('raisins') as Ingredient;
@@ -54,37 +55,21 @@ class _InventoryScreenState extends State<InventoryPage> {
       ),
       extendBody: true,
       body: SafeArea(
-        child: Card(
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(
-              color: Colors.transparent,
-              width: 0.3,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(
+                color: Colors.transparent,
+                width: 0.3,
+              ),
+              borderRadius: BorderRadius.circular(15),
             ),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          margin: const EdgeInsets.only(top: 10.0),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 40),
-            child: Column(
+            margin: const EdgeInsets.only(top: 10.0),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(bottom: 40),
+              child: Column(
               children: [
                 const SearchBarWidget(),
                 Expanded(
-<<<<<<< HEAD
-                  child: isConnected
-                      ? ingredientStream()
-                      : ListView.builder(
-                          itemBuilder: (context, index) {
-                            return SizedBox(
-                                height: MediaQuery.of(context).size.height * .2,
-                                child: InventoryCard(
-                                    name: "name",
-                                    weight: "weight",
-                                    weightController: weightController));
-                          },
-                          scrollDirection: Axis.vertical,
-                          itemCount: 7,
-                        ),
-=======
                   child: 
                       isConnected
                         ? ingredientStream()
@@ -102,47 +87,42 @@ class _InventoryScreenState extends State<InventoryPage> {
                             scrollDirection: Axis.vertical,
                             itemCount: 7,
                         ),
-                    
-                  
-                
->>>>>>> 20b77de (unique barcode listed imventory page)
                 ),
               ],
             ),
+            ),
           ),
+      ),
+      floatingActionButton: Container(
+        padding: const EdgeInsetsDirectional.only(start: 30, end: 10),
+        alignment: Alignment.bottomRight,
+        child: Column(
+          verticalDirection: VerticalDirection.up,
+          children: [
+            ActionButton(
+                onPressed: () async {
+                  bool state;
+                  state = !isConnected ? await _startBarcode() : await _stopBarcode();
+                  setState(() {
+                    isConnected = state;
+                  });
+                },
+                icon: isConnected ? const Icon(Icons.close) : const Icon(Icons.add_circle_outlined),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Visibility(
+              visible: isConnected ? true : false,
+                child: ActionButton (
+                onPressed: () => context.go('/camera'),
+                icon: const Icon(Icons.camera_alt_outlined),
+                ),
+              ),
+            ),
+
+          ],
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsetsDirectional.only(start: 30, end: 30),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          FloatingActionButton(
-            shape: const CircleBorder(),
-            onPressed: () => context.go('/camera'),
-            child: const Icon(Icons.camera_alt_outlined),
-          ),
-          FloatingActionButton(
-            shape: const CircleBorder(),
-            onPressed: () async {
-              bool state = await _startBarcode();
-              setState(() {
-                isConnected = state;
-              });
-            },
-            child: const Icon(Icons.add_circle_outlined),
-          ),
-          FloatingActionButton(
-            shape: const CircleBorder(),
-            onPressed: () async {
-              bool state = await _stopBarcode();
-              setState(() {
-                isConnected = state;
-              });
-            },
-            child: const Icon(Icons.close),
-          )
-        ]),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -171,43 +151,91 @@ class _InventoryScreenState extends State<InventoryPage> {
           safePrint("barcode data: $barcodeData");
 
           receiver.add(barcodeData);
-
-          // pass message to barcodeInterpreter
-          // productInfo = "";
-          // barcodeInterpreter
-          //     .fetchProductInfo(barcodeData)
-          //     .then((value) => {productInfo = value});
-          // print('stwing: $productInfo');
-          // print('hewwo');
-          retrieveProduct(barcodeData);
-          // print(getter);
           safePrint(const JsonEncoder.withIndent(' ').convert(productInfo));
-          // print(jsonDecode(productInfo));
-          // setState(() {
+
           numBarcodeItems += 1;
-          // });
-          return ListView.builder(
-            // reverse: false,
-            itemBuilder: (context, index) {
-              return SizedBox(
-                  height: MediaQuery.of(context).size.height * .5,
-                  child: ListTile(
-                      title: const Text("Ingredient"),
-                      subtitle: Text('Latest barcode message: ${receiver[index]}')));
-            },
-            itemCount: numBarcodeItems,
-            scrollDirection: Axis.vertical,
+          
+    return DefaultTextStyle(
+      style: Theme.of(context).textTheme.displayMedium!,
+      textAlign: TextAlign.center,
+      child: FutureBuilder<String>(
+        future: retrieveProduct(barcodeData), // a previously-obtained Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          List<Widget> children;
+          if (snapshot.hasData) {
+            final ingredient = jsonDecode(snapshot.data!)['body'];
+            final String ingredientName = ingredient['ingredientName'];
+            safePrint(ingredientName);
+            children = <Widget>[
+              const Icon(
+                Icons.check_circle_outline,
+                color: Colors.green,
+                size: 30,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(
+                  'Result: $ingredientName',
+                  style: const TextStyle(fontSize: 10),  
+                ),
+              ),
+            ];
+          } else if (snapshot.hasError) {
+            children = <Widget>[
+              const Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 60,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text('Error: ${snapshot.error}'),
+              ),
+            ];
+          } else {
+            children = const <Widget>[
+              SizedBox(
+                width: 60,
+                height: 60,
+                child: CircularProgressIndicator(),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('Awaiting result...'),
+              ),
+            ];
+          }
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: children,
+            ),
           );
+        },
+      ),
+    );
+          // return ListView.builder(
+          //   // reverse: false,
+          //   itemBuilder: (context, index) {
+          //     return SizedBox(
+          //         height: MediaQuery.of(context).size.height * .5,
+          //         child: ListTile(
+          //             title: const Text("Ingredient"),
+          //             subtitle: Text('Latest barcode message: ${receiver[index]}')));
+          //   },
+          //   itemCount: numBarcodeItems,
+          //   scrollDirection: Axis.vertical,
+          // );
           // child: Text('Latest barcode message: $barcodeData');
         }
       },
     );
   }
-  Future<void> retrieveProduct(String barcodeData) async {
-              barcodeInterpreter
-              .fetchProductInfo(barcodeData)
-              .then((value) => {productInfo = value});
-          print(productInfo);
+  Future<String> retrieveProduct(String barcodeData) async {
+              return barcodeInterpreter
+              .fetchProductInfo(barcodeData);
+              // .then((value) => {productInfo = value});
+          // print(productInfo);
           
   }
   Future<bool> _startBarcode() async {
