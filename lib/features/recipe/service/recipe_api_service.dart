@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:http/http.dart';
 import 'package:recipe_cart/features/recipe/service/search_recipe_lambda_invoker.dart';
 import 'package:recipe_cart/models/Recipe.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'package:recipe_cart/features/settings/service/settings_api_service.dart';
 
 final recipeAPIServiceProvider = Provider<RecipeAPIService>((ref) {
   final service = RecipeAPIService();
@@ -17,8 +18,7 @@ final recipeAPIServiceProvider = Provider<RecipeAPIService>((ref) {
 class RecipeAPIService {
   RecipeAPIService();
 
-  late List<Ingredient> ingredientAvoidances;
-
+  final SettingsAPIService settingsAPIService = SettingsAPIService();
   final SearchRecipeLambdaInvoker searchRecipeLambdaInvoker =
       SearchRecipeLambdaInvoker();
 
@@ -29,12 +29,14 @@ class RecipeAPIService {
       List<List<String>> allRelatedNames,
       List<List<String>> allRelatedAvoidances,
       String dietType) async {
-    
-        
     // convert avoidances to allRelatedAvoidances
+    List<Ingredient> ingredientAvoidances =
+        settingsAPIService.ingredientAvoidances;
     List<List<String>> allRelatedAvoidances = [];
 
-
+    if (ingredientAvoidances.isNotEmpty) {
+      ingredientAvoidances.map((e) => allRelatedAvoidances.add(e.relatedNames));
+    }
 
     try {
       final response = await searchRecipeLambdaInvoker.searchRecipes(
@@ -60,54 +62,8 @@ class RecipeAPIService {
     }
   }
 
-  Future<List<Recipe?>>getSavedRecipes(Settings settings) async  {
-    List<String> queries = [];
-
-    for (final saved in settings.savedRecipes!) {
-      queries.add("""
-        Recipe(id: $saved) {
-          id,
-          title,
-          ingredients_sliced,
-          instructions,
-          ratings
-        }
-      """);
-    }
-
-    try {
-      // Weaviate URL
-      String? url = dotenv.env['WEAVIATE_GRAPHQL_ENDPOINT'];
-      Response response = await post(
-        Uri.parse("${url!}/v1/graphql/batch"),
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8'
-        },
-        body: jsonEncode(queries)
-      );
-
-      final jsonResponse = jsonDecode(response.body);
-      if (jsonResponse['data']['Get']['Recipe'] != null) {
-        List<Recipe> savedRecipes = parseRecipes(jsonResponse['data']['Get']['Recipe']);
-
-        for (int i = 0; i < savedRecipes.length; i++) {
-          savedRecipes[i].saved = true;
-        }
-
-        return savedRecipes;
-      }
-      else {
-        safePrint("getSavedRecipes returned empty");
-        return const[];
-      }
-
-    } on Exception catch (error) {
-      safePrint("getSavedRecipes error: $error");
-      return const [];
-    }
-  }
-
-  Future<void> saveRecipe(bool reverse, String recipeID, String settingsID, List<String> savedRecipes) async {
+  Future<void> saveRecipe(
+      bool reverse, String recipeID, Settings settings) async {
     const operationName = "updateSettings";
     const graphQLDocument =
         '''mutation SaveRecipe(\$id: ID!, \$savedRecipes: [String]) {
@@ -120,7 +76,10 @@ class RecipeAPIService {
       }
     }''';
 
-    savedRecipes.add(recipeID);
+    if (settings.savedRecipes!.isEmpty) {
+      return <String>[].add(recipeID);
+    }
+    settings.savedRecipes!.add(recipeID);
 
     try {
       // updateUserSettings is a custom GraphQL request
@@ -128,15 +87,15 @@ class RecipeAPIService {
         document: graphQLDocument,
         modelType: Settings.classType,
         variables: <String, String>{
-          'id': settingsID,
-          'savedRecipes': jsonEncode(savedRecipes)
+          'id': settings.id,
+          'savedRecipes': jsonEncode(settings.savedRecipes)
         },
         decodePath: operationName,
       );
 
       final response = await Amplify.API
           .mutate(
-            request: updateUserSettingsRequest,
+            request: saveRecipeRequest,
           )
           .response;
 
@@ -146,9 +105,7 @@ class RecipeAPIService {
     }
   }
 
-  }
-
   Future<Recipe> rateRecipe() async {
-    
+    // call bryan's lambda
   }
 }
