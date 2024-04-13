@@ -23,7 +23,9 @@ export function override(resources: AmplifyRootStackTemplate, amplifyProjectInfo
             "Resource": [
               "arn:aws:lambda:us-east-2:988119534577:function:startStopLambda-deve",
               "arn:aws:lambda:us-east-2:988119534577:function:processBarcodeLambda",
-              "arn:aws:lambda:us-east-2:988119534577:function:dinov2weaviate-lambda"
+              "arn:aws:lambda:us-east-2:988119534577:function:dinov2weaviate-lambda",
+              "arn:aws:lambda:us-east-2:988119534577:function:updateRecipeRating",
+              "arn:aws:lambda:us-east-2:988119534577:function:recipeSearchWeaviate"
             ]
           },
         ],
