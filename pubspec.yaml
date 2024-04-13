@@ -58,6 +58,7 @@ dependencies:
   ndialog: ^4.3.1
   http: ^0.13.6
   flutter_dotenv: ^5.1.0
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   amplify_lints: ^3.0.0
