@@ -28,7 +28,7 @@
         },
         "recipecart9b41d873PostConfirmation": {
           "deploymentBucketName": "amplify-recipecart-deve-90955-deployment",
-          "s3Key": "amplify-builds/recipecart9b41d873PostConfirmation-352f474c72647247574f-build.zip"
+          "s3Key": "amplify-builds/recipecart9b41d873PostConfirmation-384b534a475972576e58-build.zip"
         }
       },
       "storage": {

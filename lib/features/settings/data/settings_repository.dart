@@ -12,11 +12,13 @@ class SettingsRepository {
 
   final SettingsAPIService settingsAPIService;
 
-  Future<void> updateUserSettings(Settings updatedSettings) async {
-    return settingsAPIService.updateUserSettings(updatedSettings);
+  Future<void> updateUserSettings(String settingsID, List<String> avoidances,
+      int dietType, bool notificationStatus, int language) async {
+    return settingsAPIService.updateUserSettings(
+        settingsID, avoidances, dietType, notificationStatus, language);
   }
 
-  Future<Settings> getSettings() async {
+  Future<Settings> getUserSettings() async {
     return settingsAPIService.getUserSettings();
   }
 }

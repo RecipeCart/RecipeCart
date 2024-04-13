@@ -7,15 +7,30 @@ part 'ingredient_controller.g.dart';
 
 @riverpod
 class IngredientListController extends _$IngredientListController {
+  // for re-populating the inventory page
   Future<List<Ingredient?>> _getIngredientInventory() async {
     final ingredientRepository = ref.read(ingredientRepositoryProvider);
-    final ingredients = await ingredientRepository.searchIngredients();
+    final ingredients = await ingredientRepository.searchInventory();
     return ingredients;
   }
 
   @override
   FutureOr<List<Ingredient?>> build() async {
     return _getIngredientInventory();
+  }
+
+  // for users to search inventory
+  Future<List<Ingredient?>> getIngredientInventory(
+      {required String searchEntry}) async {
+    final ingredientRepository = ref.read(ingredientRepositoryProvider);
+    return ingredientRepository.searchInventory(searchEntry: searchEntry);
+  }
+
+  // for users to search all ingredients
+  Future<List<Ingredient?>> searchAllIngredients(
+      {required String searchEntry}) async {
+    final ingredientRepository = ref.read(ingredientRepositoryProvider);
+    return ingredientRepository.searchAllIngredients(searchEntry: searchEntry);
   }
 
   Future<void> addIngredient({

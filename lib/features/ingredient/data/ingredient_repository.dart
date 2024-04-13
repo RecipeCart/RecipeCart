@@ -16,19 +16,23 @@ class IngredientRepository {
   //   return ingredientAPIService.getIngredientsInventory();
   // }
 
-  Future<List<Ingredient?>> searchIngredients(String? searchEntry) async {
-    return ingredientAPIService.searchIngredients(searchEntry: searchEntry);
+  Future<List<Ingredient?>> searchInventory(String? searchEntry) async {
+    return ingredientAPIService.searchInventory(searchEntry: searchEntry);
+  }
+
+  Future<List<Ingredient?>> searchAllIngredients(String? searchEntry) async {
+    return ingredientAPIService.searchAllIngredients(searchEntry: searchEntry);
   }
 
   Future<void> addIngredient(Ingredient newIngredient) async {
     return ingredientAPIService.addIngredient(newIngredient);
   }
 
-  Future<void> updateIngredient(final id, final quantity) async {
+  Future<void> updateIngredient(final String id, final double quantity) async {
     return ingredientAPIService.updateIngredientQuantity(id, quantity);
   }
 
-  Future<void> removeIngredient(final id) async {
+  Future<void> removeIngredient(final String id) async {
     return ingredientAPIService.removeIngredient(id);
   }
 }

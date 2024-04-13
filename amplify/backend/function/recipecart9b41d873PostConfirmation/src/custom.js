@@ -15,9 +15,8 @@ const query = /* GraphQL */ `
       owner: $owner,
 
       dietType: 0,
-      cuisineTypes: [],
       savedRecipes: [],
-      likedRecipes: [],
+      ratedRecipes: [],
       avoidances: [],
       language: 0,
       notifications: false,
@@ -36,15 +35,15 @@ const query = /* GraphQL */ `
 /**
  * @type {import('@types/aws-lambda').PostConfirmationTriggerHandler}
  */
- exports.handler = async (event) => {
+exports.handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
 
 
   const variables = {
-    
-      email: event.request.userAttributes.email,
-      owner: `${event.request.userAttributes.sub}::${event.userName}`
-    
+
+    email: event.request.userAttributes.email,
+    owner: `${event.request.userAttributes.sub}::${event.userName}`
+
   };
 
 
