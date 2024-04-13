@@ -57,21 +57,23 @@ type Ingredient @model @auth(rules: [
   # ingredient name as obtained from WOFF
   ingredientName: String! @index(name: "byIngredientName", queryField: "ingredientByName")
   # owner of ingredient (i.e. user)
-  userID: String 
-    @auth(rules: [{allow: owner, operations: [read, delete]}])
-    @index(name: "byUserID", queryField: "ingredientByUserID")
+  userID: String  @index(name: "byUserID", queryField: "ingredientByUserID")
+    @auth(rules: [{allow: owner, operations: [read]}, {allow: private, operations: [read]}])
   barcode: String @index(name: "byBarcode", queryField: "ingredientByBarcode") 
 
   # field to be populated by Weaviate ingredient database
-  # list of names stored in Weaviate. Used to search for recipes containing similar ingredient names
-  commonNames: [String!]!
+  # list of related names stored in Weaviate. Used to search for recipes containing similar ingredient names
+  relatedNames: [String!]!
 
   # boolean to check if removed from user inventory or not. Default to false upon creation
-  removed: Boolean
+  removed: Boolean!
 
   # user's ingredient quantity
-  quantity: Float!
+  quantity: Float
   unit: String
+
+  # user's ingredient quantity in grams
+  standardQuantity: Float
 
   # recipe: [Recipe] @manyToMany(relationName: "recipeIngredient")
   # recipe: Recipe @belongsTo(fields: ["recipeID"])
@@ -85,14 +87,12 @@ type Settings @model @auth(rules: [
   ]) {
   id: ID!
   email: String!
-  owner: String!
+  owner: String! @index(name: "ByOwner", queryField: "settingsByOwner")
   dietType: Int
-  cuisineTypes: [Int]
   savedRecipes: [String] # recipeID from Weaviate recipe database
-  likedRecipes: [String] #recipeID from Weaviate recipe database
+  ratedRecipes: [String] #recipeID from Weaviate recipe database
   avoidances: [String] # ingredientName 
   language: Int
   notifications: Boolean
   linkedDevices: [String]
 }
-

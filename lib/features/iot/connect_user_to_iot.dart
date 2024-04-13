@@ -1,8 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:aws_iot_api/iot-2015-05-28.dart';
 
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-
 class IoTPolicyConnector {
   IoTPolicyConnector();
 

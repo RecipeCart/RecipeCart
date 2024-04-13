@@ -31,10 +31,11 @@ class Ingredient extends amplify_core.Model {
   final String? _ingredientName;
   final String? _userID;
   final String? _barcode;
-  final List<String>? _commonNames;
+  final List<String>? _relatedNames;
   final bool? _removed;
   final double? _quantity;
   final String? _unit;
+  final double? _standardQuantity;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -72,9 +73,9 @@ class Ingredient extends amplify_core.Model {
     return _barcode;
   }
   
-  List<String> get commonNames {
+  List<String> get relatedNames {
     try {
-      return _commonNames!;
+      return _relatedNames!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -85,13 +86,9 @@ class Ingredient extends amplify_core.Model {
     }
   }
   
-  bool? get removed {
-    return _removed;
-  }
-  
-  double get quantity {
+  bool get removed {
     try {
-      return _quantity!;
+      return _removed!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -100,10 +97,18 @@ class Ingredient extends amplify_core.Model {
           underlyingException: e.toString()
           );
     }
+  }
+  
+  double? get quantity {
+    return _quantity;
   }
   
   String? get unit {
     return _unit;
+  }
+  
+  double? get standardQuantity {
+    return _standardQuantity;
   }
   
   amplify_core.TemporalDateTime? get createdAt {
@@ -114,18 +119,19 @@ class Ingredient extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Ingredient._internal({required this.id, required ingredientName, userID, barcode, required commonNames, removed, required quantity, unit, createdAt, updatedAt}): _ingredientName = ingredientName, _userID = userID, _barcode = barcode, _commonNames = commonNames, _removed = removed, _quantity = quantity, _unit = unit, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Ingredient._internal({required this.id, required ingredientName, userID, barcode, required relatedNames, required removed, quantity, unit, standardQuantity, createdAt, updatedAt}): _ingredientName = ingredientName, _userID = userID, _barcode = barcode, _relatedNames = relatedNames, _removed = removed, _quantity = quantity, _unit = unit, _standardQuantity = standardQuantity, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Ingredient({String? id, required String ingredientName, String? userID, String? barcode, required List<String> commonNames, bool? removed, required double quantity, String? unit}) {
+  factory Ingredient({String? id, required String ingredientName, String? userID, String? barcode, required List<String> relatedNames, required bool removed, double? quantity, String? unit, double? standardQuantity}) {
     return Ingredient._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       ingredientName: ingredientName,
       userID: userID,
       barcode: barcode,
-      commonNames: commonNames != null ? List<String>.unmodifiable(commonNames) : commonNames,
+      relatedNames: relatedNames != null ? List<String>.unmodifiable(relatedNames) : relatedNames,
       removed: removed,
       quantity: quantity,
-      unit: unit);
+      unit: unit,
+      standardQuantity: standardQuantity);
   }
   
   bool equals(Object other) {
@@ -140,10 +146,11 @@ class Ingredient extends amplify_core.Model {
       _ingredientName == other._ingredientName &&
       _userID == other._userID &&
       _barcode == other._barcode &&
-      DeepCollectionEquality().equals(_commonNames, other._commonNames) &&
+      DeepCollectionEquality().equals(_relatedNames, other._relatedNames) &&
       _removed == other._removed &&
       _quantity == other._quantity &&
-      _unit == other._unit;
+      _unit == other._unit &&
+      _standardQuantity == other._standardQuantity;
   }
   
   @override
@@ -158,10 +165,11 @@ class Ingredient extends amplify_core.Model {
     buffer.write("ingredientName=" + "$_ingredientName" + ", ");
     buffer.write("userID=" + "$_userID" + ", ");
     buffer.write("barcode=" + "$_barcode" + ", ");
-    buffer.write("commonNames=" + (_commonNames != null ? _commonNames!.toString() : "null") + ", ");
+    buffer.write("relatedNames=" + (_relatedNames != null ? _relatedNames!.toString() : "null") + ", ");
     buffer.write("removed=" + (_removed != null ? _removed!.toString() : "null") + ", ");
     buffer.write("quantity=" + (_quantity != null ? _quantity!.toString() : "null") + ", ");
     buffer.write("unit=" + "$_unit" + ", ");
+    buffer.write("standardQuantity=" + (_standardQuantity != null ? _standardQuantity!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -169,36 +177,39 @@ class Ingredient extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Ingredient copyWith({String? ingredientName, String? userID, String? barcode, List<String>? commonNames, bool? removed, double? quantity, String? unit}) {
+  Ingredient copyWith({String? ingredientName, String? userID, String? barcode, List<String>? relatedNames, bool? removed, double? quantity, String? unit, double? standardQuantity}) {
     return Ingredient._internal(
       id: id,
       ingredientName: ingredientName ?? this.ingredientName,
       userID: userID ?? this.userID,
       barcode: barcode ?? this.barcode,
-      commonNames: commonNames ?? this.commonNames,
+      relatedNames: relatedNames ?? this.relatedNames,
       removed: removed ?? this.removed,
       quantity: quantity ?? this.quantity,
-      unit: unit ?? this.unit);
+      unit: unit ?? this.unit,
+      standardQuantity: standardQuantity ?? this.standardQuantity);
   }
   
   Ingredient copyWithModelFieldValues({
     ModelFieldValue<String>? ingredientName,
     ModelFieldValue<String?>? userID,
     ModelFieldValue<String?>? barcode,
-    ModelFieldValue<List<String>>? commonNames,
-    ModelFieldValue<bool?>? removed,
-    ModelFieldValue<double>? quantity,
-    ModelFieldValue<String?>? unit
+    ModelFieldValue<List<String>>? relatedNames,
+    ModelFieldValue<bool>? removed,
+    ModelFieldValue<double?>? quantity,
+    ModelFieldValue<String?>? unit,
+    ModelFieldValue<double?>? standardQuantity
   }) {
     return Ingredient._internal(
       id: id,
       ingredientName: ingredientName == null ? this.ingredientName : ingredientName.value,
       userID: userID == null ? this.userID : userID.value,
       barcode: barcode == null ? this.barcode : barcode.value,
-      commonNames: commonNames == null ? this.commonNames : commonNames.value,
+      relatedNames: relatedNames == null ? this.relatedNames : relatedNames.value,
       removed: removed == null ? this.removed : removed.value,
       quantity: quantity == null ? this.quantity : quantity.value,
-      unit: unit == null ? this.unit : unit.value
+      unit: unit == null ? this.unit : unit.value,
+      standardQuantity: standardQuantity == null ? this.standardQuantity : standardQuantity.value
     );
   }
   
@@ -207,15 +218,16 @@ class Ingredient extends amplify_core.Model {
       _ingredientName = json['ingredientName'],
       _userID = json['userID'],
       _barcode = json['barcode'],
-      _commonNames = json['commonNames']?.cast<String>(),
+      _relatedNames = json['relatedNames']?.cast<String>(),
       _removed = json['removed'],
       _quantity = (json['quantity'] as num?)?.toDouble(),
       _unit = json['unit'],
+      _standardQuantity = (json['standardQuantity'] as num?)?.toDouble(),
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'ingredientName': _ingredientName, 'userID': _userID, 'barcode': _barcode, 'commonNames': _commonNames, 'removed': _removed, 'quantity': _quantity, 'unit': _unit, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'ingredientName': _ingredientName, 'userID': _userID, 'barcode': _barcode, 'relatedNames': _relatedNames, 'removed': _removed, 'quantity': _quantity, 'unit': _unit, 'standardQuantity': _standardQuantity, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -223,10 +235,11 @@ class Ingredient extends amplify_core.Model {
     'ingredientName': _ingredientName,
     'userID': _userID,
     'barcode': _barcode,
-    'commonNames': _commonNames,
+    'relatedNames': _relatedNames,
     'removed': _removed,
     'quantity': _quantity,
     'unit': _unit,
+    'standardQuantity': _standardQuantity,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -236,10 +249,11 @@ class Ingredient extends amplify_core.Model {
   static final INGREDIENTNAME = amplify_core.QueryField(fieldName: "ingredientName");
   static final USERID = amplify_core.QueryField(fieldName: "userID");
   static final BARCODE = amplify_core.QueryField(fieldName: "barcode");
-  static final COMMONNAMES = amplify_core.QueryField(fieldName: "commonNames");
+  static final RELATEDNAMES = amplify_core.QueryField(fieldName: "relatedNames");
   static final REMOVED = amplify_core.QueryField(fieldName: "removed");
   static final QUANTITY = amplify_core.QueryField(fieldName: "quantity");
   static final UNIT = amplify_core.QueryField(fieldName: "unit");
+  static final STANDARDQUANTITY = amplify_core.QueryField(fieldName: "standardQuantity");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Ingredient";
     modelSchemaDefinition.pluralName = "Ingredients";
@@ -300,7 +314,7 @@ class Ingredient extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Ingredient.COMMONNAMES,
+      key: Ingredient.RELATEDNAMES,
       isRequired: true,
       isArray: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
@@ -308,13 +322,13 @@ class Ingredient extends amplify_core.Model {
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Ingredient.REMOVED,
-      isRequired: false,
+      isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Ingredient.QUANTITY,
-      isRequired: true,
+      isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.double)
     ));
     
@@ -322,6 +336,12 @@ class Ingredient extends amplify_core.Model {
       key: Ingredient.UNIT,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Ingredient.STANDARDQUANTITY,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.double)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(

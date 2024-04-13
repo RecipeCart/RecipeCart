@@ -1,24 +1,21 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:recipe_cart/features/recipe/ui/api.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/widgets/inventory_card.dart';
+import 'package:recipe_cart/common/ui/homepage/widgets/inventory_card.dart';
 
 class GenerateRecipePage extends StatefulWidget {
   const GenerateRecipePage({super.key});
-  
+
   @override
-    State<GenerateRecipePage> createState() => _GenerateRecipeBuild();
-
-
+  State<GenerateRecipePage> createState() => _GenerateRecipeBuild();
 }
 
-class _GenerateRecipeBuild extends State<GenerateRecipePage>{
+class _GenerateRecipeBuild extends State<GenerateRecipePage> {
   @override
   void initState() {
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +40,5 @@ class _GenerateRecipeBuild extends State<GenerateRecipePage>{
     );
   }
 
-
-  void onPressed() {
-  }
+  void onPressed() {}
 }

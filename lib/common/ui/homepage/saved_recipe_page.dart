@@ -1,7 +1,7 @@
 // import 'package:amplify_api/amplify_api.dart';
 
 import 'package:flutter/material.dart';
-import 'package:recipe_cart/features/recipe/ui/homepage/widgets/camera_screen.dart';
+import 'package:recipe_cart/common/ui/homepage/widgets/camera_screen.dart';
 
 // import 'package:recipe_cart/features/recipe/ui/camera_module.dart';
 // import 'package:recipe_cart/models/ModelProvider.dart';
@@ -9,16 +9,14 @@ import 'package:recipe_cart/features/recipe/ui/homepage/widgets/camera_screen.da
 
 class SavedRecipePage extends StatefulWidget {
   const SavedRecipePage({super.key});
-  
+
   @override
-    State<SavedRecipePage> createState() => _SavedRecipeBuild();
-
-
+  State<SavedRecipePage> createState() => _SavedRecipeBuild();
 }
 
-class _SavedRecipeBuild extends State<SavedRecipePage>{
+class _SavedRecipeBuild extends State<SavedRecipePage> {
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 
@@ -31,6 +29,4 @@ class _SavedRecipeBuild extends State<SavedRecipePage>{
     return const MaterialApp();
     // return const CameraScreen();
   }
-
 }
-
