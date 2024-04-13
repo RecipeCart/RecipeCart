@@ -5,7 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const pageLimit = 20;
+const pageLimit = 1000;
 
 final ingredientAPIServiceProvider = Provider<IngredientAPIService>((ref) {
   final service = IngredientAPIService();
@@ -16,7 +16,7 @@ class IngredientAPIService {
   IngredientAPIService();
 
   // // return a list of ingredients in pages of 20
-  // Future<List<Ingredient?>> getIngredientsInventory() async {
+  // Future<List<Ingredient?>> searchInventory() async {
   //   try {
   //     final currentUser = await Amplify.Auth.getCurrentUser();
   //     final String cognitoID = currentUser.userId;
@@ -28,7 +28,7 @@ class IngredientAPIService {
   //     final ingredientsPage1 = firstResponse.data;
 
   //     if (ingredientsPage1 == null) {
-  //       safePrint('getIngredientsInventory errors: ${firstResponse.errors}');
+  //       safePrint('searchInventory errors: ${firstResponse.errors}');
   //       return const [];
   //     }
 
@@ -41,38 +41,39 @@ class IngredientAPIService {
   //       return ingredientsPage1.items;
   //     }
   //   } on Exception catch (error) {
-  //     safePrint('getIngredientsInventory failed: $error');
+  //     safePrint('searchInventory failed: $error');
   //     return const [];
   //   }
   // }
 
-  Future<List<Ingredient?>> searchIngredients(
-      {String? searchEntry = ""}) async {
+  Future<List<Ingredient?>> searchInventory({String? searchEntry = ""}) async {
     // if no searchEntry, return all ingredient in user inventory
     final String? searchFilterEntry = searchEntry == ""
         ? searchEntry
-        : "ingredientName: {contains: $searchEntry},";
+        : "ingredientName: {contains: \"$searchEntry\"},";
 
     const operationName = "listIngredients";
-    final graphQLDocument =
-        '''query SearchIngredients(\$searchEntry: String!, \$cognitoID: String!) {
-          $operationName(filter: {$searchFilterEntry userID: {contains: \$cognitoID}, removed: {equals: false}}, limit: $pageLimit) {
+    final graphQLDocument = '''query SearchInventory(\$cognitoID: String!) {
+          $operationName(filter: {$searchFilterEntry userID: {contains: \$cognitoID}, removed: {eq: false}}, limit: $pageLimit) {
             items {
               id
               ingredientName
               quantity
               relatedNames
               unit
+              removed
             }
           }
         }''';
+
+    safePrint(graphQLDocument);
 
     try {
       final currentUser = await Amplify.Auth.getCurrentUser();
       final String cognitoID = currentUser.userId;
 
-      // SearchIngredients is a custom GraphQL request
-      final searchIngredientsRequest =
+      // SearchInventory is a custom GraphQL request
+      final searchInventoryRequest =
           GraphQLRequest<PaginatedResult<Ingredient>>(
         document: graphQLDocument,
         modelType: const PaginatedModelType(Ingredient.classType),
@@ -82,10 +83,10 @@ class IngredientAPIService {
 
       // get results paginated
       final firstResponse =
-          await Amplify.API.query(request: searchIngredientsRequest).response;
+          await Amplify.API.query(request: searchInventoryRequest).response;
       final ingredientsPage1 = firstResponse.data;
       if (ingredientsPage1 == null) {
-        safePrint('getIngredientsInventory errors: ${firstResponse.errors}');
+        safePrint('searchInventory errors: ${firstResponse.errors}');
         return const [];
       }
 
@@ -98,7 +99,61 @@ class IngredientAPIService {
         return ingredientsPage1.items;
       }
     } on Exception catch (error) {
-      safePrint('getIngredientsInventory failed: $error');
+      safePrint('searchInventory failed: $error');
+      return const [];
+    }
+  }
+
+  Future<List<Ingredient?>> searchAllIngredients(
+      {String? searchEntry = ""}) async {
+    // if no searchEntry, return all non-user ingredients in Table
+    final String? searchFilterEntry = searchEntry == ""
+        ? searchEntry
+        : "ingredientName: {contains: \"$searchEntry\"},";
+
+    const operationName = "listIngredients";
+    final graphQLDocument = '''query SearchAllIngredients {
+          $operationName(filter: {$searchFilterEntry userID: {attributeExists: false}, removed: {eq: true}}, limit: $pageLimit) {
+            items {
+              id
+              ingredientName
+              quantity
+              relatedNames
+              unit
+              removed
+            }
+          }
+        }''';
+
+    try {
+      // searchAllIngredients is a custom GraphQL request
+      final searchAllIngredientsRequest =
+          GraphQLRequest<PaginatedResult<Ingredient>>(
+        document: graphQLDocument,
+        modelType: const PaginatedModelType(Ingredient.classType),
+        decodePath: operationName,
+      );
+
+      // get results paginated
+      final firstResponse = await Amplify.API
+          .query(request: searchAllIngredientsRequest)
+          .response;
+      final ingredientsPage1 = firstResponse.data;
+      if (ingredientsPage1 == null) {
+        safePrint('searchAllIngredients errors: ${firstResponse.errors}');
+        return const [];
+      }
+
+      if (ingredientsPage1.hasNextResult) {
+        final secondRequest = ingredientsPage1.requestForNextResult;
+        final secondResponse =
+            await Amplify.API.query(request: secondRequest!).response;
+        return secondResponse.data?.items ?? <Ingredient?>[];
+      } else {
+        return ingredientsPage1.items;
+      }
+    } on Exception catch (error) {
+      safePrint('searchAllIngredients failed: $error');
       return const [];
     }
   }
@@ -112,12 +167,15 @@ class IngredientAPIService {
         safePrint('addIngredient errors: ${response.errors}');
         return;
       }
+      safePrint(
+          "Successfully added ingredient ${createdIngredient.ingredientName}");
     } on Exception catch (e) {
-      safePrint("addIngredient failed:$e");
+      safePrint("addIngredient failed: $e");
     }
   }
 
-  Future<void> updateIngredientQuantity(final id, final quantity) async {
+  Future<void> updateIngredientQuantity(
+      final String id, final double quantity) async {
     const operationName = "updateIngredient";
     const graphQLDocument =
         '''mutation UpdateIngredientQuantity(\$id: ID!, \$quantity: Float!) {
@@ -134,7 +192,7 @@ class IngredientAPIService {
       final updateQuantityRequest = GraphQLRequest<Ingredient>(
         document: graphQLDocument,
         modelType: Ingredient.classType,
-        variables: <String, String>{'id': id, 'quantity': quantity},
+        variables: <String, String>{'id': id, 'quantity': quantity.toString()},
         decodePath: operationName,
       );
 
@@ -144,13 +202,13 @@ class IngredientAPIService {
           )
           .response;
 
-      safePrint(response);
+      safePrint("Update ingredient response: $response");
     } on Exception catch (error) {
       safePrint('updateIngredientQuantity failed: $error');
     }
   }
 
-  Future<void> removeIngredient(final id) async {
+  Future<void> removeIngredient(final String id) async {
     const operationName = "updateIngredient";
     const graphQLDocument = '''mutation RemoveIngredient(\$id: ID!) {
       $operationName(input: {id: \$id, removed: true}) {
@@ -159,6 +217,7 @@ class IngredientAPIService {
         quantity
         relatedNames
         unit
+        removed
       }
     }''';
     try {
@@ -176,7 +235,7 @@ class IngredientAPIService {
           )
           .response;
 
-      safePrint(response);
+      safePrint("Removed ingredient response: $response");
     } on Exception catch (error) {
       safePrint('removeIngredient failed: $error');
     }

@@ -17,4 +17,19 @@ class SettingsController extends _$SettingsController {
   FutureOr<Settings> build() async {
     return _getUserSettings();
   }
+
+  Future<void> updateSettings(
+      {required String settingsID,
+      required List<String> avoidances,
+      required int dietType,
+      required bool notificationStatus,
+      required int language}) async {
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      final settingsRepository = ref.read(settingsRepositoryProvider);
+      await settingsRepository.getUserSettings();
+      return _getUserSettings();
+    });
+  }
 }

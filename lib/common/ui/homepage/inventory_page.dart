@@ -11,6 +11,9 @@ import 'package:ndialog/ndialog.dart';
 
 import 'dart:convert';
 
+import 'package:recipe_cart/features/settings/service/settings_api_service.dart';
+import 'package:recipe_cart/models/ModelProvider.dart';
+
 class InventoryPage extends StatefulWidget {
   const InventoryPage({super.key});
 
@@ -91,7 +94,26 @@ class _InventoryScreenState extends State<InventoryPage> {
             });
           },
           child: const Icon(Icons.close),
-        )
+        ),
+        // for api testing only
+        //
+        //
+        FloatingActionButton(onPressed: () async {
+          SettingsAPIService settingsAPIService = SettingsAPIService();
+          const String settingsID = "49514985-1544-4b65-a090-4c68520cc45f";
+          const avoidances = ['peanut', 'cashew', 'pistachio', 'walnut'];
+          const dietType = 0;
+          const notificationStatus = false;
+          const language = 0;
+
+          await settingsAPIService.updateUserSettings(
+              settingsID, avoidances, dietType, notificationStatus, language);
+
+          //safePrint(ingredient.toString());
+        })
+        //
+        ///
+        /////
       ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
     );

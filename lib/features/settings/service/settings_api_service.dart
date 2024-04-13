@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
+import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final settingsAPIServiceProvider = Provider<SettingsAPIService>((ref) {
@@ -13,33 +14,39 @@ final settingsAPIServiceProvider = Provider<SettingsAPIService>((ref) {
 class SettingsAPIService {
   SettingsAPIService();
 
+  List<Ingredient> ingredientAvoidances = [];
+
   // get Settings for current user
   Future<Settings> getUserSettings() async {
     final currentUser = await Amplify.Auth.getCurrentUser();
     final String cognitoID = currentUser.userId;
 
     const operationName = "settingsByOwner";
-    const graphQLDocument = '''query getUserSettings(\$user: String!) {
-      $operationName(owner: \$user) {
-        avoidances
-        dietType
-        email
-        id
-        ratedRecipes
-        savedRecipes
-        linkedDevices
-        language
-        notifications
-        owner
+    final graphQLDocument = '''query getUserSettings {
+      $operationName(owner: "$cognitoID::$cognitoID") {
+        items {
+              owner
+              email
+              avoidances
+              createdAt
+              dietType
+              id
+              language
+              linkedDevices
+              notifications
+              ratedRecipes
+              savedRecipes
+              updatedAt
+            }
       }
     }''';
     try {
       // getUserSettings is a custom GraphQL request
-      final getUserSettingsRequest = GraphQLRequest<Settings>(
+      final getUserSettingsRequest = GraphQLRequest<PaginatedResult<Settings>>(
         document: graphQLDocument,
-        modelType: Settings.classType,
-        variables: <String, String>{'user': "$cognitoID::$cognitoID"},
-        decodePath: operationName,
+        modelType: const PaginatedModelType(Settings.classType),
+        // variables: <String, String>{'value': "$cognitoID::$cognitoID"},
+        decodePath: "$operationName",
       );
 
       final response = await Amplify.API
@@ -48,8 +55,20 @@ class SettingsAPIService {
           )
           .response;
 
-      safePrint(response);
-      final settings = response.data!;
+      if (response.data == null) {
+        safePrint("User settings not found. Force sign out.");
+        Amplify.Auth.signOut();
+      }
+
+      final Settings settings = response.data!.items[0]!;
+
+      safePrint("User settings retrieved: $settings");
+
+      // re-fetch the avoidances as ingredients
+      if (settings.avoidances!.isNotEmpty) {
+        _populateIngredientAvoidances(settings.avoidances!);
+      }
+
       return settings;
     } on Exception catch (error) {
       safePrint('getSettings failed: $error');
@@ -58,7 +77,8 @@ class SettingsAPIService {
   }
 
   // update Settings
-  Future<void> updateUserSettings(Settings updatedSettings) async {
+  Future<void> updateUserSettings(String settingsID, List<String> avoidances,
+      int dietType, bool notificationStatus, int language) async {
     const operationName = "updateSettings";
     const graphQLDocument =
         '''mutation UpdateUserSettings(\$id: ID!, \$avoidances: [String]!, \$dietType: Int!, \$notificationStatus: Boolean!, \$language: Int!) {
@@ -82,11 +102,11 @@ class SettingsAPIService {
         document: graphQLDocument,
         modelType: Settings.classType,
         variables: <String, String>{
-          'id': updatedSettings.id,
-          'avoidances': jsonEncode(updatedSettings.avoidances),
-          'dietType': updatedSettings.dietType.toString(),
-          'language': updatedSettings.language.toString(),
-          'notificationStatus': updatedSettings.notifications.toString()
+          'id': settingsID,
+          'avoidances': jsonEncode(avoidances),
+          'dietType': dietType.toString(),
+          'language': language.toString(),
+          'notificationStatus': notificationStatus.toString()
         },
         decodePath: operationName,
       );
@@ -100,6 +120,35 @@ class SettingsAPIService {
       safePrint(response);
     } on Exception catch (error) {
       safePrint('updateUserSettings failed: $error');
+    }
+  }
+
+  Future<void> _populateIngredientAvoidances(
+      final List<String> avoidances) async {
+    for (final String avoidance in avoidances) {
+      try {
+        final request = ModelQueries.get(
+            Ingredient.classType, IngredientModelIdentifier(id: avoidance));
+        final response = await Amplify.API.query(request: request).response;
+        final ingredient = response.data;
+        if (ingredient == null) {
+          safePrint('populateAvoidances errors: ${response.errors}');
+          return;
+        }
+        safePrint(
+            "Successfully retrieved ingredient avoidance ${ingredient.ingredientName}");
+
+        // add to ingredient avoidance list
+        ingredientAvoidances.add(ingredient);
+      } on Exception catch (e) {
+        safePrint("populateAvoidances failed: $e");
+      }
+    }
+
+    if (avoidances.length == ingredientAvoidances.length) {
+      safePrint("Successfully retrieved all avoidances as ingredients");
+    } else {
+      safePrint("Avoidance ingredients list incompleted");
     }
   }
 }
