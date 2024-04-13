@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/inventory_card.dart';
+import 'package:recipe_cart/common/ui/homepage/widgets/search_bar.dart';
 
 import 'package:recipe_cart/features/iot/iot_mqtt5_client.dart';
 import 'package:recipe_cart/features/ingredient/service/barcode_script_controller.dart';
 import 'package:recipe_cart/features/ingredient/service/barcode_interpreter.dart';
+import 'package:recipe_cart/features/ingredient/controller/ingredient_controller.dart';
 import 'package:ndialog/ndialog.dart';
 
 import 'dart:convert';
@@ -47,75 +49,74 @@ class _InventoryScreenState extends State<InventoryPage> {
       appBar: AppBar(
         title: const Text('Inventory Page'),
       ),
+      extendBody: true,
       body: SafeArea(
-          child: Card(
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(
-            color: Colors.transparent,
-            width: 0.3,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(
+              color: Colors.transparent,
+              width: 0.3,
+            ),
+            borderRadius: BorderRadius.circular(15),
           ),
-          borderRadius: BorderRadius.circular(15),
+          margin: const EdgeInsets.only(top: 10.0),
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(bottom: 40),
+            child: Column(
+              children: [
+                const SearchBarWidget(),
+                Expanded(
+                  child: isConnected
+                      ? ingredientStream()
+                      : ListView.builder(
+                          itemBuilder: (context, index) {
+                            return SizedBox(
+                                height: MediaQuery.of(context).size.height * .2,
+                                child: InventoryCard(
+                                    name: "name",
+                                    weight: "weight",
+                                    weightController: weightController));
+                          },
+                          scrollDirection: Axis.vertical,
+                          itemCount: 7,
+                        ),
+                ),
+              ],
+            ),
+          ),
         ),
-        margin: const EdgeInsets.only(top: 10.0),
-        child: isConnected
-            ? ingredientStream()
-            : ListView.builder(
-                itemBuilder: (context, index) {
-                  return SizedBox(
-                      height: MediaQuery.of(context).size.height * .2,
-                      child: InventoryCard(
-                          name: "name",
-                          weight: "weight",
-                          weightController: weightController));
-                },
-                scrollDirection: Axis.vertical,
-                itemCount: 2,
-              ),
-      )),
-      floatingActionButton: Column(children: [
-        FloatingActionButton(
-          onPressed: () => context.go('/camera'),
-          child: const Icon(Icons.camera_alt_outlined),
-        ),
-        FloatingActionButton(
-          onPressed: () async {
-            bool state = await _startBarcode();
-            setState(() {
-              isConnected = state;
-            });
-          },
-          child: const Icon(Icons.add_circle_outlined),
-        ),
-        FloatingActionButton(
-          onPressed: () async {
-            bool state = await _stopBarcode();
-            setState(() {
-              isConnected = state;
-            });
-          },
-          child: const Icon(Icons.close),
-        ),
-        // for api testing only
-        //
-        //
-        FloatingActionButton(onPressed: () async {
-          SettingsAPIService settingsAPIService = SettingsAPIService();
-          const String settingsID = "49514985-1544-4b65-a090-4c68520cc45f";
-          const avoidances = ['peanut', 'cashew', 'pistachio', 'walnut'];
-          const dietType = 0;
-          const notificationStatus = false;
-          const language = 0;
-
-          await settingsAPIService.updateUserSettings(
-              settingsID, avoidances, dietType, notificationStatus, language);
-
-          //safePrint(ingredient.toString());
-        })
-        //
-        ///
-        /////
-      ]),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsetsDirectional.only(start: 30, end: 30),
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () => context.go('/camera'),
+            child: const Icon(Icons.camera_alt_outlined),
+          ),
+          FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () async {
+              bool state = await _startBarcode();
+              setState(() {
+                isConnected = state;
+              });
+            },
+            child: const Icon(Icons.add_circle_outlined),
+          ),
+          FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () async {
+              bool state = await _stopBarcode();
+              setState(() {
+                isConnected = state;
+              });
+            },
+            child: const Icon(Icons.close),
+          )
+        ]),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -150,9 +151,9 @@ class _InventoryScreenState extends State<InventoryPage> {
 
           safePrint(const JsonEncoder.withIndent(' ').convert(productInfo));
 
-          setState(() {
-            numBarcodeItems += 1;
-          });
+          // setState(() {
+          numBarcodeItems += 1;
+          // });
           return ListView.builder(
             // reverse: false,
             itemBuilder: (context, index) {
