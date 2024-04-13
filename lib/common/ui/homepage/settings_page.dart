@@ -1,8 +1,11 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:recipe_cart/models/Settings.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:recipe_cart/common/ui/homepage/widgets/avoidance_page.dart';
+import 'package:recipe_cart/common/ui/homepage/widgets/preference_page.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system; // Initial theme mode
@@ -45,10 +48,13 @@ class _SettingsPageState extends State<SettingsPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0), // Add some padding
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // ... other settings options
-            _buildThemeModeButton(),
-            _logoutButton(),
+            // _buildThemeModeButton(),
+            Center(child: _preferenceButton()),
+            Center(child: _avoidanceButton()),
+            Center(child: _logoutButton()),
             // Text(test as String),
           ],
         ),
@@ -56,22 +62,22 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildThemeModeButton() {
-    return TextButton(
-      onPressed: () {
-        final newThemeMode = _themeProvider.themeMode == ThemeMode.light
-            ? ThemeMode.dark
-            : ThemeMode.light;
-        _themeProvider.toggleTheme(newThemeMode); // Toggle theme mode
-      },
-      child: Text(
-        _themeProvider.themeMode == ThemeMode.light ? 'Dark Mode' : 'Light Mode',
-      ),
-    );
-  }
+  // Widget _buildThemeModeButton() {
+  //   return TextButton(
+  //     onPressed: () {
+  //       final newThemeMode = _themeProvider.themeMode == ThemeMode.light
+  //           ? ThemeMode.dark
+  //           : ThemeMode.light;
+  //       _themeProvider.toggleTheme(newThemeMode); // Toggle theme mode
+  //     },
+  //     child: Text(
+  //       _themeProvider.themeMode == ThemeMode.light ? 'Dark Mode' : 'Light Mode',
+  //     ),
+  //   );
+  // }
 
   Widget _logoutButton() {
-    return  TextButton(
+    return  OutlinedButton(
       onPressed: () async {
         final result = await Amplify.Auth.signOut();
         if (result is CognitoCompleteSignOut) {
@@ -80,7 +86,43 @@ class _SettingsPageState extends State<SettingsPage> {
           safePrint('Error signing user out: ${result.exception.message}');
         }
       },
-      child: const Text('Log Out'),
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
+      ),
+      child: const Text(
+        'Log Out',
+        style: TextStyle(color: Colors.white)
+      ),
+    );
+                    
+  }
+  Widget _preferenceButton() {
+    return  OutlinedButton(
+      onPressed: () async {
+        context.go('/preference');
+      },
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
+      ),
+      child: const Text(
+        'Preferences',
+        style: TextStyle(color: Colors.white)
+      ),
+    );
+                    
+  }
+  Widget _avoidanceButton() {
+    return  OutlinedButton(
+      onPressed: () async {
+        context.go('/avoidance');
+      },
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
+      ),
+      child: const Text(
+        'Avoidances',
+        style: TextStyle(color: Colors.white)
+      ),
     );
                     
   }
