@@ -36,6 +36,9 @@ class _InventoryScreenState extends State<InventoryPage> {
   // controller calling lambda to process barcode
   final BarcodeInterpreter barcodeInterpreter = BarcodeInterpreter();
 
+  List<String> receiver = [];
+  List<String> fetcher = [];
+  String productInfo = "";
   // const api = new api();
   // final Ingredient test = queryItem('raisins') as Ingredient;
   @override
@@ -66,6 +69,7 @@ class _InventoryScreenState extends State<InventoryPage> {
               children: [
                 const SearchBarWidget(),
                 Expanded(
+<<<<<<< HEAD
                   child: isConnected
                       ? ingredientStream()
                       : ListView.builder(
@@ -80,6 +84,28 @@ class _InventoryScreenState extends State<InventoryPage> {
                           scrollDirection: Axis.vertical,
                           itemCount: 7,
                         ),
+=======
+                  child: 
+                      isConnected
+                        ? ingredientStream()
+                        : ListView.builder(
+                            itemBuilder: (context, index) {
+                              return SizedBox(
+                                height: MediaQuery.of(context).size.height * .2,
+                                child: InventoryCard(
+                                  name: "name",
+                                  weight: "weight",
+                                  weightController: weightController
+                                )
+                              );
+                            },
+                            scrollDirection: Axis.vertical,
+                            itemCount: 7,
+                        ),
+                    
+                  
+                
+>>>>>>> 20b77de (unique barcode listed imventory page)
                 ),
               ],
             ),
@@ -121,6 +147,7 @@ class _InventoryScreenState extends State<InventoryPage> {
   }
 
   Widget ingredientStream() {
+    
     return StreamBuilder<List<MqttReceivedMessage<MqttMessage>>>(
       stream: client.mqttServerClient.updates,
       builder: (context, snapshot) {
@@ -143,14 +170,19 @@ class _InventoryScreenState extends State<InventoryPage> {
               receivedMessage.payload.message!);
           safePrint("barcode data: $barcodeData");
 
+          receiver.add(barcodeData);
+
           // pass message to barcodeInterpreter
-          String productInfo = "";
-          barcodeInterpreter
-              .fetchProductInfo(barcodeData)
-              .then((value) => {productInfo = value});
-
+          // productInfo = "";
+          // barcodeInterpreter
+          //     .fetchProductInfo(barcodeData)
+          //     .then((value) => {productInfo = value});
+          // print('stwing: $productInfo');
+          // print('hewwo');
+          retrieveProduct(barcodeData);
+          // print(getter);
           safePrint(const JsonEncoder.withIndent(' ').convert(productInfo));
-
+          // print(jsonDecode(productInfo));
           // setState(() {
           numBarcodeItems += 1;
           // });
@@ -161,17 +193,23 @@ class _InventoryScreenState extends State<InventoryPage> {
                   height: MediaQuery.of(context).size.height * .5,
                   child: ListTile(
                       title: const Text("Ingredient"),
-                      subtitle: Text('Latest barcode message: $barcodeData')));
+                      subtitle: Text('Latest barcode message: ${receiver[index]}')));
             },
             itemCount: numBarcodeItems,
             scrollDirection: Axis.vertical,
           );
-          // child: Text('Latest barcode message: $barcodeData'),
+          // child: Text('Latest barcode message: $barcodeData');
         }
       },
     );
   }
-
+  Future<void> retrieveProduct(String barcodeData) async {
+              barcodeInterpreter
+              .fetchProductInfo(barcodeData)
+              .then((value) => {productInfo = value});
+          print(productInfo);
+          
+  }
   Future<bool> _startBarcode() async {
     ProgressDialog progressDialog = ProgressDialog(context,
         blur: 0,
@@ -203,6 +241,7 @@ class _InventoryScreenState extends State<InventoryPage> {
 
     setState(() {
       numBarcodeItems = 0;
+      receiver = [];
     });
 
     return client.mqttDisconnect();
