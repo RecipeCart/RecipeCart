@@ -5,6 +5,9 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recipe_cart/models/Recipe.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart';
 
 final settingsAPIServiceProvider = Provider<SettingsAPIService>((ref) {
   final service = SettingsAPIService();
@@ -15,6 +18,7 @@ class SettingsAPIService {
   SettingsAPIService();
 
   List<Ingredient> ingredientAvoidances = [];
+  List<Recipe> savedRecipes = [];
 
   // get Settings for current user
   Future<Settings> getUserSettings() async {
@@ -46,7 +50,7 @@ class SettingsAPIService {
         document: graphQLDocument,
         modelType: const PaginatedModelType(Settings.classType),
         // variables: <String, String>{'value': "$cognitoID::$cognitoID"},
-        decodePath: "$operationName",
+        decodePath: operationName,
       );
 
       final response = await Amplify.API
@@ -68,6 +72,8 @@ class SettingsAPIService {
       if (settings.avoidances!.isNotEmpty) {
         _populateIngredientAvoidances(settings.avoidances!);
       }
+      // re-fetch savedRecipes
+      savedRecipes = await _getSavedRecipes(settings);
 
       return settings;
     } on Exception catch (error) {
@@ -123,6 +129,14 @@ class SettingsAPIService {
     }
   }
 
+  List<Ingredient> getAvoidances() {
+    return ingredientAvoidances;
+  }
+
+  List<Recipe> getSavedRecipes() {
+    return savedRecipes;
+  }
+
   Future<void> _populateIngredientAvoidances(
       final List<String> avoidances) async {
     for (final String avoidance in avoidances) {
@@ -132,9 +146,10 @@ class SettingsAPIService {
         final response = await Amplify.API.query(request: request).response;
         final ingredient = response.data;
         if (ingredient == null) {
-          safePrint('populateAvoidances errors: ${response.errors}');
-          return;
+          safePrint("Unable to fetch ingredient avoidance: $avoidance");
+          continue;
         }
+
         safePrint(
             "Successfully retrieved ingredient avoidance ${ingredient.ingredientName}");
 
@@ -147,8 +162,58 @@ class SettingsAPIService {
 
     if (avoidances.length == ingredientAvoidances.length) {
       safePrint("Successfully retrieved all avoidances as ingredients");
+    } else if (avoidances.isEmpty) {
+      safePrint("No avoidances specified");
     } else {
       safePrint("Avoidance ingredients list incompleted");
+    }
+  }
+
+  Future<List<Recipe>> _getSavedRecipes(Settings settings) async {
+    if (settings.savedRecipes == null || settings.savedRecipes!.isEmpty) {
+      return const [];
+    }
+
+    List<String> queries = [];
+
+    for (final saved in settings.savedRecipes!) {
+      queries.add("""
+        Recipe(id: $saved) {
+          id,
+          title,
+          ingredients_sliced,
+          instructions,
+          ratings
+        }
+      """);
+    }
+
+    try {
+      // Weaviate URL from environment
+      String? url = dotenv.env['WEAVIATE_GRAPHQL_ENDPOINT'];
+      Response response = await post(Uri.parse("${url!}/v1/graphql/batch"),
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+          body: jsonEncode(queries));
+
+      final jsonResponse = jsonDecode(response.body);
+      if (jsonResponse['data']['Get']['Recipe'] != null) {
+        List<Recipe> savedRecipes =
+            parseRecipes(jsonResponse['data']['Get']['Recipe']);
+
+        // mark these recipes as save on client side
+        for (int i = 0; i < savedRecipes.length; i++) {
+          savedRecipes[i].saved = true;
+        }
+
+        safePrint("Successfully retrieved savedRecipes");
+        return savedRecipes;
+      } else {
+        safePrint("getSavedRecipes returned empty");
+        return const [];
+      }
+    } on Exception catch (error) {
+      safePrint("getSavedRecipes error: $error");
+      return const [];
     }
   }
 }
