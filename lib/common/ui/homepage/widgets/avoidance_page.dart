@@ -29,7 +29,7 @@ class _AvoidancePageBuild extends State<AvoidancePage> {
       appBar: AppBar(title: const Text('Preferencecheckbox')),
       body: Column(
             children: [
-              SearchBar(),
+              const SearchBar(),
               ingredientCard(context, 'watermetion'),
               ingredientCard(context, 'eggs'),
             ],

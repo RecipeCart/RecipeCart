@@ -50,7 +50,7 @@ class ImageIngredientDetector {
       // payload is returned in a Uint8List but we want to convert it to something readable
       jsonPayload =
           String.fromCharCodes(lambdaResponse.payload as Iterable<int>);
-      safePrint(jsonPayload);
+      // safePrint(jsonPayload);
     } catch (e) {
       safePrint("error");
       safePrint(e);

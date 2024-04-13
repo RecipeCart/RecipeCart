@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/main.dart';
 import 'package:image/image.dart' as img;
+import 'package:recipe_cart/features/ingredient/service/image_ingredient_detector.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -17,6 +18,8 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
   CameraController? controller;
   bool _isCameraInitialized = false;
   Future<void>? _initializeControllerFuture;
+
+  final ImageIngredientDetector imageInterpreter = ImageIngredientDetector();
 
    void onNewCameraSelected(CameraDescription cameraDescription) async {
       final previousCameraController = controller;
@@ -101,6 +104,9 @@ class _CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver
             String base64Image = base64Encode(imageBytes);
             print("image bytes");
             print(base64Image);
+            Stopwatch stopwatch = new Stopwatch()..start();
+            print(await imageInterpreter.fetchProductInfo(base64Image));
+            print('imageInterpretor() executed in ${stopwatch.elapsed}');
             if (!context.mounted) return;
 
             // If the picture was taken, display it on a new screen.
