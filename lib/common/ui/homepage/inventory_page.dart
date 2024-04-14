@@ -16,6 +16,16 @@ import 'package:ndialog/ndialog.dart';
 
 import 'dart:convert';
 
+<<<<<<< HEAD
+=======
+import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
+import 'package:recipe_cart/features/recipe/service/recipe_api_service.dart';
+import 'package:recipe_cart/features/settings/service/settings_api_service.dart';
+import 'package:recipe_cart/models/ModelProvider.dart';
+import 'package:recipe_cart/features/settings/data/settings_api_data.dart';
+import 'package:recipe_cart/models/Recipe.dart';
+
+>>>>>>> 06164d2fe16151ae3c7e2fb5cf2f5b8b87a1cd4b
 class InventoryPage extends StatefulWidget {
   const InventoryPage({super.key});
 
@@ -35,6 +45,7 @@ class _InventoryScreenState extends State<InventoryPage> {
   final Mqtt5Client client = Mqtt5Client();
   // controller calling lambda to process barcode
   final BarcodeInterpreter barcodeInterpreter = BarcodeInterpreter();
+<<<<<<< HEAD
   // receives all live incoming data as list
   List<String> receiver = [];
   // receives all existing ingredients in user's inventory as list
@@ -42,6 +53,12 @@ class _InventoryScreenState extends State<InventoryPage> {
   String productInfo = "";
   // const api = new api();
   // final Ingredient test = queryItem('raisins') as Ingredient;
+=======
+
+  RecipeAPIService recipeAPIService = RecipeAPIService();
+  SettingsAPIService settingsAPIService = SettingsAPIService();
+
+>>>>>>> 06164d2fe16151ae3c7e2fb5cf2f5b8b87a1cd4b
   @override
   void initState() {
     super.initState();
@@ -123,6 +140,69 @@ class _InventoryScreenState extends State<InventoryPage> {
           ],
         ),
       ),
+<<<<<<< HEAD
+=======
+      floatingActionButton: Padding(
+        padding: const EdgeInsetsDirectional.only(start: 30, end: 30),
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () => context.go('/camera'),
+            child: const Icon(Icons.camera_alt_outlined),
+          ),
+          FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () async {
+              bool state = await _startBarcode();
+              setState(() {
+                isConnected = state;
+              });
+            },
+            child: const Icon(Icons.add_circle_outlined),
+          ),
+          FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () async {
+              bool state = await _stopBarcode();
+              setState(() {
+                isConnected = state;
+              });
+            },
+            child: const Icon(Icons.close),
+          ),
+
+          /// for testing
+          ///
+          ///
+          ///
+          ///
+          FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () async {
+              const reverse = false;
+              const recipeID = "476d49a2-5dd2-4d4a-9d9b-d91d8249827d";
+
+              Recipe recipe = Recipe(
+                  id: recipeID,
+                  recipeName: "fdas",
+                  ingredients: ["mem", "mam"],
+                  instructions: "do dab",
+                  averageRatings: 3.3,
+                  numRatings: 1);
+              Settings settings = await settingsAPIService.getUserSettings();
+              recipeAPIService.rateRecipe(4, recipe, settings.id);
+            },
+            child: const Icon(Icons.announcement),
+          ),
+
+          /// for testing
+          ///
+          ///
+          ///
+        ]),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+>>>>>>> 06164d2fe16151ae3c7e2fb5cf2f5b8b87a1cd4b
     );
   }
 

@@ -3,8 +3,10 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
-import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recipe_cart/models/Recipe.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart';
 
 final settingsAPIServiceProvider = Provider<SettingsAPIService>((ref) {
   final service = SettingsAPIService();
@@ -14,7 +16,8 @@ final settingsAPIServiceProvider = Provider<SettingsAPIService>((ref) {
 class SettingsAPIService {
   SettingsAPIService();
 
-  List<Ingredient> ingredientAvoidances = [];
+  List<Ingredient> ingredientAvoidances = <Ingredient>[];
+  List<Recipe> savedRecipes = <Recipe>[];
 
   // get Settings for current user
   Future<Settings> getUserSettings() async {
@@ -46,7 +49,7 @@ class SettingsAPIService {
         document: graphQLDocument,
         modelType: const PaginatedModelType(Settings.classType),
         // variables: <String, String>{'value': "$cognitoID::$cognitoID"},
-        decodePath: "$operationName",
+        decodePath: operationName,
       );
 
       final response = await Amplify.API
@@ -65,9 +68,12 @@ class SettingsAPIService {
       safePrint("User settings retrieved: $settings");
 
       // re-fetch the avoidances as ingredients
-      if (settings.avoidances!.isNotEmpty) {
+      if (settings.avoidances!.length != ingredientAvoidances.length) {
+        ingredientAvoidances = [];
         _populateIngredientAvoidances(settings.avoidances!);
       }
+      // re-fetch savedRecipes
+      savedRecipes = await _getSavedRecipes(settings);
 
       return settings;
     } on Exception catch (error) {
@@ -96,14 +102,15 @@ class SettingsAPIService {
           language
       }
     }''';
+
     try {
       // updateUserSettings is a custom GraphQL request
       final updateUserSettingsRequest = GraphQLRequest<Settings>(
         document: graphQLDocument,
         modelType: Settings.classType,
-        variables: <String, String>{
+        variables: <String, dynamic>{
           'id': settingsID,
-          'avoidances': jsonEncode(avoidances),
+          'avoidances': avoidances,
           'dietType': dietType.toString(),
           'language': language.toString(),
           'notificationStatus': notificationStatus.toString()
@@ -123,23 +130,55 @@ class SettingsAPIService {
     }
   }
 
+  List<Ingredient> getAvoidances() {
+    return ingredientAvoidances;
+  }
+
+  List<Recipe> getSavedRecipes() {
+    return savedRecipes;
+  }
+
   Future<void> _populateIngredientAvoidances(
       final List<String> avoidances) async {
+    const operationName = "ingredientByName";
+
     for (final String avoidance in avoidances) {
+      final graphQLDocument = '''query getAvoidance {
+          $operationName(ingredientName: "$avoidance", filter: {userID: {attributeExists: false}}) {
+            items {
+              id
+              ingredientName
+              relatedNames
+              removed
+            }
+          }
+        }''';
       try {
-        final request = ModelQueries.get(
-            Ingredient.classType, IngredientModelIdentifier(id: avoidance));
-        final response = await Amplify.API.query(request: request).response;
-        final ingredient = response.data;
-        if (ingredient == null) {
-          safePrint('populateAvoidances errors: ${response.errors}');
-          return;
+        // getUserSettings is a custom GraphQL request
+        final getAvoidanceRequest = GraphQLRequest<PaginatedResult<Ingredient>>(
+          document: graphQLDocument,
+          modelType: const PaginatedModelType(Ingredient.classType),
+          decodePath: operationName,
+        );
+
+        final response = await Amplify.API
+            .query(
+              request: getAvoidanceRequest,
+            )
+            .response;
+
+        if (response.data!.items.isEmpty) {
+          safePrint("Unable to fetch ingredient avoidance: $avoidance");
+          continue;
         }
+
+        final avoided = response.data!.items[0]!;
+
         safePrint(
-            "Successfully retrieved ingredient avoidance ${ingredient.ingredientName}");
+            "Successfully retrieved ingredient avoidance: ${avoided.ingredientName}");
 
         // add to ingredient avoidance list
-        ingredientAvoidances.add(ingredient);
+        ingredientAvoidances.add(avoided);
       } on Exception catch (e) {
         safePrint("populateAvoidances failed: $e");
       }
@@ -147,8 +186,71 @@ class SettingsAPIService {
 
     if (avoidances.length == ingredientAvoidances.length) {
       safePrint("Successfully retrieved all avoidances as ingredients");
+    } else if (avoidances.isEmpty) {
+      safePrint("No avoidances specified");
     } else {
       safePrint("Avoidance ingredients list incompleted");
+    }
+  }
+
+  Future<List<Recipe>> _getSavedRecipes(Settings settings) async {
+    if (settings.savedRecipes == null || settings.savedRecipes!.isEmpty) {
+      return const [];
+    }
+
+    List<dynamic> queries = [];
+
+    for (final saved in settings.savedRecipes!) {
+      queries.add({
+        "query": """{
+        Get {
+          Recipe(where: {path: ["id"], operator: Equal, valueString: "$saved"}) {
+            title
+            ingredients_sliced
+            instructions
+            rating
+            _additional {
+                id
+            }
+          }
+        }
+      }
+      """
+      });
+    }
+
+    try {
+      // Weaviate URL from environment
+      String? url = dotenv.env['WEAVIATE_GRAPHQL_ENDPOINT'];
+      Response response = await post(Uri.parse("${url!}/v1/graphql/batch"),
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+          body: jsonEncode(queries));
+
+      final List<dynamic> jsonResponse = jsonDecode(response.body);
+      if (response.statusCode != 200) {
+        safePrint("Response from weaviate: $jsonResponse");
+        return const [];
+      } else {
+        safePrint("response from weaviate: $jsonResponse");
+      }
+
+      if (jsonResponse.isNotEmpty) {
+        List<Recipe> savedRecipes = parseFromWeaviate(jsonResponse);
+
+        // mark these recipes as save on client side
+        for (int i = 0; i < savedRecipes.length; i++) {
+          savedRecipes[i].saved = true;
+        }
+
+        safePrint("Successfully retrieved savedRecipes");
+        return savedRecipes;
+      } else {
+        safePrint("getSavedRecipes returned empty");
+        return const [];
+      }
+    } on Exception catch (error) {
+      safePrint("getSavedRecipes error: $error");
+      return const [];
     }
   }
 }
