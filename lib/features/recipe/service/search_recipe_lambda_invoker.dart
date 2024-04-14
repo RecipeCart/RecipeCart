@@ -43,9 +43,9 @@ class SearchRecipeLambdaInvoker {
     {
       "body": {
         "searchEntry": "$searchEntry",
-        "allRelatedNames": "$allRelatedNames",
+        "allRelatedNames": $allRelatedNames,
         "dietType": "$dietType",
-        "avoidances": "$avoidances",
+        "avoidances": $avoidances,
         "offset": $offset
       }
     }
