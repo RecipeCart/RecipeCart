@@ -5,6 +5,10 @@ import 'package:recipe_cart/common/ui/homepage/inventory_page.dart';
 import 'package:recipe_cart/common/ui/homepage/saved_recipe_page.dart';
 import 'package:recipe_cart/common/ui/homepage/settings_page.dart';
 import 'package:recipe_cart/common/ui/homepage/search_recipe_page.dart';
+import 'package:recipe_cart/features/ingredient/controller/ingredient_controller.dart';
+import 'package:recipe_cart/models/ModelProvider.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -22,20 +26,22 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class NavigationExample extends StatefulWidget {
+class NavigationExample extends ConsumerStatefulWidget {
   const NavigationExample({super.key});
 
   @override
-  State<NavigationExample> createState() => _NavigationExampleState();
+  NavigationExampleState createState() => NavigationExampleState();
 }
 
-class _NavigationExampleState extends State<NavigationExample> {
+class NavigationExampleState extends ConsumerState<NavigationExample> {
   int currentPageIndex = 0;
   String weight = "";
   final weightController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final inventoryIngredients = ref.watch(ingredientListControllerProvider);
+
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -73,7 +79,7 @@ class _NavigationExampleState extends State<NavigationExample> {
       ),
       body: <Widget>[
         /// Home page
-        const InventoryPage(),
+         InventoryPage(inventoryIngredients: inventoryIngredients),
 
         /// Saved Recipe page
         const SavedRecipePage(),
