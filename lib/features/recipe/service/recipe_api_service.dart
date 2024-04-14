@@ -3,12 +3,11 @@ import 'dart:convert';
 
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:recipe_cart/features/recipe/service/rate_recipe_lambda.dart';
 import 'package:recipe_cart/features/recipe/service/search_recipe_lambda_invoker.dart';
 import 'package:recipe_cart/models/Recipe.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:recipe_cart/features/settings/service/settings_api_service.dart';
 
 final recipeAPIServiceProvider = Provider<RecipeAPIService>((ref) {
   final service = RecipeAPIService();
@@ -18,20 +17,19 @@ final recipeAPIServiceProvider = Provider<RecipeAPIService>((ref) {
 class RecipeAPIService {
   RecipeAPIService();
 
-  final SettingsAPIService settingsAPIService = SettingsAPIService();
   final SearchRecipeLambdaInvoker searchRecipeLambdaInvoker =
       SearchRecipeLambdaInvoker();
+
+  final RatingProcessor ratingProcessor = RatingProcessor();
 
   int offset = 0;
 
   Future<List<Recipe?>> searchRecipes(
       String searchEntry,
       List<List<String>> allRelatedNames,
-      List<List<String>> allRelatedAvoidances,
+      List<Ingredient> ingredientAvoidances,
       String dietType) async {
     // convert avoidances to allRelatedAvoidances
-    List<Ingredient> ingredientAvoidances =
-        settingsAPIService.ingredientAvoidances;
     List<List<String>> allRelatedAvoidances = [];
 
     if (ingredientAvoidances.isNotEmpty) {
@@ -51,6 +49,8 @@ class RecipeAPIService {
 
       // update offset value for next list fetch
       offset = data['body']['offset'];
+
+      safePrint(data);
 
       // convert list of strings to list of recipes
       List<Recipe> recipes = parseRecipes(data['body']['recipes']);
@@ -76,19 +76,31 @@ class RecipeAPIService {
       }
     }''';
 
-    if (settings.savedRecipes!.isEmpty) {
-      return <String>[].add(recipeID);
+    // check if recipe is already saved before removing
+    if (reverse) {
+      if (settings.savedRecipes!.contains(recipeID)) {
+        settings.savedRecipes!.remove(recipeID);
+      } else {
+        safePrint(
+            "Tried to unsave a recipe that has not been saved: $recipeID");
+      }
+    } // check if recipe is not saved before adding
+    else {
+      if (!settings.savedRecipes!.contains(recipeID)) {
+        settings.savedRecipes!.add(recipeID);
+      } else {
+        safePrint("Tried to save a recipe that is already saved: $recipeID");
+      }
     }
-    settings.savedRecipes!.add(recipeID);
 
     try {
-      // updateUserSettings is a custom GraphQL request
+      // SaveRecipe is a custom GraphQL request
       final saveRecipeRequest = GraphQLRequest<Settings>(
         document: graphQLDocument,
         modelType: Settings.classType,
-        variables: <String, String>{
+        variables: <String, dynamic>{
           'id': settings.id,
-          'savedRecipes': jsonEncode(settings.savedRecipes)
+          'savedRecipes': settings.savedRecipes
         },
         decodePath: operationName,
       );
@@ -101,11 +113,30 @@ class RecipeAPIService {
 
       safePrint(response);
     } on Exception catch (error) {
-      safePrint('updateUserSettings failed: $error');
+      safePrint('SaveRecipe failed: $error');
     }
   }
 
-  Future<Recipe> rateRecipe() async {
-    // call bryan's lambda
+  // rates recipe in Weaviate database and returns newly rated recipe
+  Future<Recipe> rateRecipe(
+      final int rating, Recipe recipe, final String settingsID) async {
+    if (rating < 1 || rating > 5) {
+      safePrint("Invalid Rating Input");
+    } else {
+      String response =
+          await ratingProcessor.updateRating(rating, recipe.id, settingsID);
+
+      final jsonResponse = jsonDecode(response);
+
+      if (jsonResponse['body'].containsKey('recipeID')) {
+        recipe.averageRatings = jsonResponse['body']['averageRatings'];
+        recipe.numRatings = jsonResponse['body']['numRatings'];
+      } else {
+        safePrint(
+            "Recipe rating did not change: ${jsonResponse['body']['message']}");
+      }
+    }
+
+    return recipe;
   }
 }

@@ -13,8 +13,12 @@ import 'package:ndialog/ndialog.dart';
 
 import 'dart:convert';
 
+import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
+import 'package:recipe_cart/features/recipe/service/recipe_api_service.dart';
 import 'package:recipe_cart/features/settings/service/settings_api_service.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
+import 'package:recipe_cart/features/settings/data/settings_api_data.dart';
+import 'package:recipe_cart/models/Recipe.dart';
 
 class InventoryPage extends StatefulWidget {
   const InventoryPage({super.key});
@@ -36,8 +40,9 @@ class _InventoryScreenState extends State<InventoryPage> {
   // controller calling lambda to process barcode
   final BarcodeInterpreter barcodeInterpreter = BarcodeInterpreter();
 
-  // const api = new api();
-  // final Ingredient test = queryItem('raisins') as Ingredient;
+  RecipeAPIService recipeAPIService = RecipeAPIService();
+  SettingsAPIService settingsAPIService = SettingsAPIService();
+
   @override
   void initState() {
     super.initState();
@@ -113,7 +118,36 @@ class _InventoryScreenState extends State<InventoryPage> {
               });
             },
             child: const Icon(Icons.close),
-          )
+          ),
+
+          /// for testing
+          ///
+          ///
+          ///
+          ///
+          FloatingActionButton(
+            shape: const CircleBorder(),
+            onPressed: () async {
+              const reverse = false;
+              const recipeID = "476d49a2-5dd2-4d4a-9d9b-d91d8249827d";
+
+              Recipe recipe = Recipe(
+                  id: recipeID,
+                  recipeName: "fdas",
+                  ingredients: ["mem", "mam"],
+                  instructions: "do dab",
+                  averageRatings: 3.3,
+                  numRatings: 1);
+              Settings settings = await settingsAPIService.getUserSettings();
+              recipeAPIService.rateRecipe(4, recipe, settings.id);
+            },
+            child: const Icon(Icons.announcement),
+          ),
+
+          /// for testing
+          ///
+          ///
+          ///
         ]),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
