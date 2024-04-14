@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:recipe_cart/features/recipe/service/rate_recipe_lambda.dart';
 import 'package:recipe_cart/features/recipe/service/search_recipe_lambda_invoker.dart';
@@ -30,14 +31,20 @@ class RecipeAPIService {
       List<Ingredient> ingredientAvoidances,
       String dietType) async {
     // convert avoidances to allRelatedAvoidances
+    List<Ingredient> ingredientAvoidances =
+        settingsAPIService.ingredientAvoidances;
     List<List<String>> allRelatedAvoidances = [];
 
+    if (ingredientAvoidances.isNotEmpty) {
+      ingredientAvoidances.map((e) => allRelatedAvoidances.add(e.relatedNames));
+    }
     if (ingredientAvoidances.isNotEmpty) {
       ingredientAvoidances.map((e) => allRelatedAvoidances.add(e.relatedNames));
     }
 
     try {
       final response = await searchRecipeLambdaInvoker.searchRecipes(
+          searchEntry, allRelatedNames, dietType, allRelatedAvoidances, offset);
           searchEntry, allRelatedNames, dietType, allRelatedAvoidances, offset);
 
       // convert to json
@@ -62,6 +69,8 @@ class RecipeAPIService {
     }
   }
 
+  Future<void> saveRecipe(
+      bool reverse, String recipeID, Settings settings) async {
   Future<void> saveRecipe(
       bool reverse, String recipeID, Settings settings) async {
     const operationName = "updateSettings";
@@ -107,6 +116,7 @@ class RecipeAPIService {
 
       final response = await Amplify.API
           .mutate(
+            request: saveRecipeRequest,
             request: saveRecipeRequest,
           )
           .response;

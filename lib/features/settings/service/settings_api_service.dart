@@ -7,6 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipe_cart/models/Recipe.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
+import 'package:recipe_cart/models/Recipe.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart';
 
 final settingsAPIServiceProvider = Provider<SettingsAPIService>((ref) {
   final service = SettingsAPIService();
@@ -50,6 +53,7 @@ class SettingsAPIService {
         modelType: const PaginatedModelType(Settings.classType),
         // variables: <String, String>{'value': "$cognitoID::$cognitoID"},
         decodePath: operationName,
+        decodePath: operationName,
       );
 
       final response = await Amplify.API
@@ -72,6 +76,8 @@ class SettingsAPIService {
         ingredientAvoidances = [];
         _populateIngredientAvoidances(settings.avoidances!);
       }
+      // re-fetch savedRecipes
+      savedRecipes = await _getSavedRecipes(settings);
       // re-fetch savedRecipes
       savedRecipes = await _getSavedRecipes(settings);
 
@@ -138,6 +144,14 @@ class SettingsAPIService {
     return savedRecipes;
   }
 
+  List<Ingredient> getAvoidances() {
+    return ingredientAvoidances;
+  }
+
+  List<Recipe> getSavedRecipes() {
+    return savedRecipes;
+  }
+
   Future<void> _populateIngredientAvoidances(
       final List<String> avoidances) async {
     const operationName = "ingredientByName";
@@ -186,6 +200,8 @@ class SettingsAPIService {
 
     if (avoidances.length == ingredientAvoidances.length) {
       safePrint("Successfully retrieved all avoidances as ingredients");
+    } else if (avoidances.isEmpty) {
+      safePrint("No avoidances specified");
     } else if (avoidances.isEmpty) {
       safePrint("No avoidances specified");
     } else {
