@@ -1,4 +1,5 @@
-import 'package:recipe_cart/models/Settings.dart';
+import 'package:recipe_cart/models/ModelProvider.dart';
+import 'package:recipe_cart/models/Recipe.dart';
 import 'package:recipe_cart/features/settings/service/settings_api_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,5 +21,13 @@ class SettingsRepository {
 
   Future<Settings> getUserSettings() async {
     return settingsAPIService.getUserSettings();
+  }
+
+  List<Ingredient> getAvoidances() {
+    return settingsAPIService.getAvoidances();
+  }
+
+  List<Recipe> getSavedRecipes() {
+    return settingsAPIService.getSavedRecipes();
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:recipe_cart/features/settings/data/settings_repository.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
+import 'package:recipe_cart/models/Recipe.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'settings_controller.g.dart';
@@ -31,5 +32,15 @@ class SettingsController extends _$SettingsController {
       await settingsRepository.getUserSettings();
       return _getUserSettings();
     });
+  }
+
+  List<Ingredient> getAvoidances() {
+    final settingsRepository = ref.read(settingsRepositoryProvider);
+    return settingsRepository.getAvoidances();
+  }
+
+  List<Recipe> getSavedRecipes() {
+    final settingsRepository = ref.read(settingsRepositoryProvider);
+    return settingsRepository.getSavedRecipes();
   }
 }

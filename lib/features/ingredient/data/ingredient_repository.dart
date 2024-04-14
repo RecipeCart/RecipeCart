@@ -12,10 +12,6 @@ class IngredientRepository {
 
   final IngredientAPIService ingredientAPIService;
 
-  // Future<List<Ingredient?>> getIngredientsInventory() async {
-  //   return ingredientAPIService.getIngredientsInventory();
-  // }
-
   Future<List<Ingredient?>> searchInventory(String? searchEntry) async {
     return ingredientAPIService.searchInventory(searchEntry: searchEntry);
   }
