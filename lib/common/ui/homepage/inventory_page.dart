@@ -177,10 +177,10 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
           if (snapshot.hasData) {
             final ingredient = jsonDecode(snapshot.data!)['body'];
             final String ingredientName = ingredient['ingredientName'];
-            final String weightValue = ingredient['quantity'] + ' ' + ingredient['unit'];
+            final String weightValue = ingredient['quantity'].toString() + ' ' + ingredient['unit'];
             InventoryCard newCard = InventoryCard(name: ingredientName, weight: weightValue, weightController: weightController);
             cache.add(newCard);
-            Ingredient detectedIngredient = Ingredient(ingredientName: ingredientName, barcode: ingredient['barcode'], quantity: ingredient['quantity'], relatedNames: ingredient['relatedNames'], removed: false, standardQuantity: ingredient['standardQuantity'], unit: ingredient['unit']);
+            Ingredient detectedIngredient = Ingredient(ingredientName: ingredientName, barcode: ingredient['barcode'], quantity: ingredient['quantity'], relatedNames: ingredient['relatedNames'].cast<String>(), removed: false, standardQuantity: ingredient['standardQuantity'], unit: ingredient['unit']);
             detectedIngredients.add(detectedIngredient);
             safePrint(ingredientName);
             children = <Widget>[
