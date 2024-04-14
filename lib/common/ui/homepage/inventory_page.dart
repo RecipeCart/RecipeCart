@@ -20,30 +20,12 @@ import 'package:ndialog/ndialog.dart';
 
 import 'dart:convert';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
-import 'package:recipe_cart/features/recipe/service/recipe_api_service.dart';
-import 'package:recipe_cart/features/settings/service/settings_api_service.dart';
-import 'package:recipe_cart/models/ModelProvider.dart';
-import 'package:recipe_cart/features/settings/data/settings_api_data.dart';
-import 'package:recipe_cart/models/Recipe.dart';
-
->>>>>>> 06164d2fe16151ae3c7e2fb5cf2f5b8b87a1cd4b
-class InventoryPage extends StatefulWidget {
-=======
 class InventoryPage extends ConsumerStatefulWidget {
-<<<<<<< HEAD
->>>>>>> 9e827e5 (cZv)
-  const InventoryPage({super.key});
-=======
   const InventoryPage({
     required this.inventoryIngredients,
     super.key});
 
   final AsyncValue <List<Ingredient?>> inventoryIngredients;
->>>>>>> 45fa6cd (more inventory page)
 
   @override
   InventoryScreenState createState() => InventoryScreenState();
@@ -65,12 +47,8 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
   final Mqtt5Client client = Mqtt5Client();
   // controller calling lambda to process barcode
   final BarcodeInterpreter barcodeInterpreter = BarcodeInterpreter();
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
   List<Ingredient> detectedIngredients = [];
->>>>>>> 45fa6cd (more inventory page)
   // receives all live incoming data as list
   List<String> receiver = [];
   List<InventoryCard> cache = [];
@@ -78,35 +56,15 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
   // receives all existing ingredients in user's inventory as list
   List<InventoryCard> fetcher = [];
   String productInfo = "";
-<<<<<<< HEAD
-  // const api = new api();
-  // final Ingredient test = queryItem('raisins') as Ingredient;
-=======
-
-  RecipeAPIService recipeAPIService = RecipeAPIService();
-  SettingsAPIService settingsAPIService = SettingsAPIService();
-
->>>>>>> 06164d2fe16151ae3c7e2fb5cf2f5b8b87a1cd4b
-  @override
-  void initState() {
-    super.initState();
-  }
-=======
   
   GlobalKey globalKey = GlobalKey();
 
-<<<<<<< HEAD
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
->>>>>>> 9e827e5 (cZv)
-=======
   @override
   void initState() {
     super.initState();
+
+
   }
->>>>>>> 45fa6cd (more inventory page)
 
   @override
   Widget build(BuildContext context) {
@@ -201,69 +159,6 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
           ],
         ),
       ),
-<<<<<<< HEAD
-=======
-      floatingActionButton: Padding(
-        padding: const EdgeInsetsDirectional.only(start: 30, end: 30),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          FloatingActionButton(
-            shape: const CircleBorder(),
-            onPressed: () => context.go('/camera'),
-            child: const Icon(Icons.camera_alt_outlined),
-          ),
-          FloatingActionButton(
-            shape: const CircleBorder(),
-            onPressed: () async {
-              bool state = await _startBarcode();
-              setState(() {
-                isConnected = state;
-              });
-            },
-            child: const Icon(Icons.add_circle_outlined),
-          ),
-          FloatingActionButton(
-            shape: const CircleBorder(),
-            onPressed: () async {
-              bool state = await _stopBarcode();
-              setState(() {
-                isConnected = state;
-              });
-            },
-            child: const Icon(Icons.close),
-          ),
-
-          /// for testing
-          ///
-          ///
-          ///
-          ///
-          FloatingActionButton(
-            shape: const CircleBorder(),
-            onPressed: () async {
-              const reverse = false;
-              const recipeID = "476d49a2-5dd2-4d4a-9d9b-d91d8249827d";
-
-              Recipe recipe = Recipe(
-                  id: recipeID,
-                  recipeName: "fdas",
-                  ingredients: ["mem", "mam"],
-                  instructions: "do dab",
-                  averageRatings: 3.3,
-                  numRatings: 1);
-              Settings settings = await settingsAPIService.getUserSettings();
-              recipeAPIService.rateRecipe(4, recipe, settings.id);
-            },
-            child: const Icon(Icons.announcement),
-          ),
-
-          /// for testing
-          ///
-          ///
-          ///
-        ]),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
->>>>>>> 06164d2fe16151ae3c7e2fb5cf2f5b8b87a1cd4b
     );
       case AsyncError():
         return const Center(child: Text('error'));
@@ -398,10 +293,10 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
           if (snapshot.hasData) {
             final ingredient = jsonDecode(snapshot.data!)['body'];
             final String ingredientName = ingredient['ingredientName'];
-            final String weightValue = ingredient['quantity'].toString() + ' ' + ingredient['unit'];
+            final String weightValue = ingredient['quantity'] + ' ' + ingredient['unit'];
             InventoryCard newCard = InventoryCard(name: ingredientName, weight: weightValue, weightController: weightController);
             cache.add(newCard);
-            Ingredient detectedIngredient = Ingredient(ingredientName: ingredientName, barcode: ingredient['barcode'], quantity: ingredient['quantity'], relatedNames: ingredient['relatedNames'].cast<String>(), removed: false, standardQuantity: ingredient['standardQuantity'], unit: ingredient['unit']);
+            Ingredient detectedIngredient = Ingredient(ingredientName: ingredientName, barcode: ingredient['barcode'], quantity: ingredient['quantity'], relatedNames: ingredient['relatedNames'], removed: false, standardQuantity: ingredient['standardQuantity'], unit: ingredient['unit']);
             detectedIngredients.add(detectedIngredient);
             safePrint(ingredientName);
             children = <Widget>[
