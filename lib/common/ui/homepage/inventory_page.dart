@@ -2,6 +2,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:recipe_cart/features/ingredient/service/ingredient_api_service.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
@@ -33,11 +34,20 @@ import 'package:recipe_cart/models/Recipe.dart';
 class InventoryPage extends StatefulWidget {
 =======
 class InventoryPage extends ConsumerStatefulWidget {
+<<<<<<< HEAD
 >>>>>>> 9e827e5 (cZv)
   const InventoryPage({super.key});
+=======
+  const InventoryPage({
+    required this.inventoryIngredients,
+    super.key});
+
+  final AsyncValue <List<Ingredient?>> inventoryIngredients;
+>>>>>>> 45fa6cd (more inventory page)
 
   @override
   InventoryScreenState createState() => InventoryScreenState();
+
   // State<InventoryPage> createState() => _InventoryScreenState();
 }
 
@@ -45,6 +55,8 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
   int numBarcodeItems = 0;
   String weight = "0"; // Initial weight
   bool isConnected = false;
+
+
   final TextEditingController weightController = TextEditingController();
 
   // controller to send start/stop command to Jetson Nano
@@ -54,11 +66,15 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
   // controller calling lambda to process barcode
   final BarcodeInterpreter barcodeInterpreter = BarcodeInterpreter();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+  List<Ingredient> detectedIngredients = [];
+>>>>>>> 45fa6cd (more inventory page)
   // receives all live incoming data as list
   List<String> receiver = [];
   List<InventoryCard> cache = [];
-  List<Ingredient> detectedIngredients = [];
-
+  
   // receives all existing ingredients in user's inventory as list
   List<InventoryCard> fetcher = [];
   String productInfo = "";
@@ -79,15 +95,31 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
   
   GlobalKey globalKey = GlobalKey();
 
+<<<<<<< HEAD
   // @override
   // void initState() {
   //   super.initState();
   // }
 >>>>>>> 9e827e5 (cZv)
+=======
+  @override
+  void initState() {
+    super.initState();
+  }
+>>>>>>> 45fa6cd (more inventory page)
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final inventoryIngredients = widget.inventoryIngredients;
+    switch (inventoryIngredients) {
+      case AsyncData(:final value): 
+        return value.isEmpty
+          ? Scaffold(
+            appBar: AppBar(
+              title: const Text('Inventory Page'),
+            ),
+          )
+          : Scaffold(
       appBar: AppBar(
         title: const Text('Inventory Page'),
       ),
@@ -109,16 +141,19 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
                 const SearchBarWidget(),
                 Expanded(
                   child: 
-                      isConnected
-                        ? ingredientStream()
-                        : ListView.builder(
-                            itemBuilder: (context, index) {
-                              final inventoryCard = fetcher[index]; // Get the card at current index
-                              return inventoryCard; // Return the card to be built
-                            },
-                            scrollDirection: Axis.vertical,
-                            itemCount: fetcher.length,
-                        ),
+                          isConnected
+                            ? ingredientStream()
+                            : ListView.builder(
+                                itemBuilder: (context, index) {
+                                  String weight = (inventoryIngredients.value[index].toString());
+                                  final inventoryCard = InventoryCard(name: detectedIngredients[index].ingredientName, weight: weight, weightController: weightController,); // Get the card at current index
+                                  return inventoryCard; // Return the card to be built
+                                },
+                                scrollDirection: Axis.vertical,
+                                itemCount: fetcher.length,
+                              
+                            ),
+            
                 ),
               ],
             ),
@@ -143,6 +178,7 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
 
                     for (final ingredient in detectedIngredients) {
                       await ref.watch(ingredientListControllerProvider.notifier).addIngredient(ingredientName: ingredient.ingredientName, relatedNames: ingredient.relatedNames, barcode: ingredient.barcode, quantity: ingredient.quantity, standardQuantity: ingredient.standardQuantity, unit: ingredient.unit);
+                
                     }
                     if (context.mounted) {
                       context.pop();
@@ -229,6 +265,98 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 >>>>>>> 06164d2fe16151ae3c7e2fb5cf2f5b8b87a1cd4b
     );
+      case AsyncError():
+        return const Center(child: Text('error'));
+
+      case AsyncLoading():
+        return const Center(child: CircularProgressIndicator(),);
+
+      case _:
+        return const Center(child: Text("other errors"));
+    }
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: const Text('Inventory Page'),
+    //   ),
+    //   extendBody: true,
+    //   body: SafeArea(
+    //       child: Card(
+    //         shape: RoundedRectangleBorder(
+    //           side: const BorderSide(
+    //             color: Colors.transparent,
+    //             width: 0.3,
+    //           ),
+    //           borderRadius: BorderRadius.circular(15),
+    //         ),
+    //         margin: const EdgeInsets.only(top: 10.0),
+    //         child: Padding(
+    //           padding: const EdgeInsetsDirectional.only(bottom: 40),
+    //           child: Column(
+    //           children: [
+    //             const SearchBarWidget(),
+    //             Expanded(
+    //               child: 
+    //                       isConnected
+    //                         ? ingredientStream()
+    //                         : ListView.builder(
+    //                             itemBuilder: (context, index) {
+    //                               String weight = (inventoryIngredients.value[index].quantity.toString()) + detectedIngredients[index].unit!;
+    //                               final inventoryCard = InventoryCard(name: detectedIngredients[index].ingredientName, weight: weight, weightController: weightController,); // Get the card at current index
+    //                               return inventoryCard; // Return the card to be built
+    //                             },
+    //                             scrollDirection: Axis.vertical,
+    //                             itemCount: fetcher.length,
+                              
+    //                         ),
+            
+    //             ),
+    //           ],
+    //         ),
+    //         ),
+    //       ),
+    //   ),
+    //   floatingActionButton: Container(
+    //     padding: const EdgeInsetsDirectional.only(start: 30, end: 10),
+    //     alignment: Alignment.bottomRight,
+    //     child: Column(
+    //       verticalDirection: VerticalDirection.up,
+    //       children: [
+    //         ActionButton(
+    //             onPressed: () async {
+    //               bool state;
+    //               state = !isConnected ? await _startBarcode() : await _stopBarcode();
+    //               setState(() {
+    //                 isConnected = state;
+    //               });
+    //               if (!isConnected){
+    //                 fetcher.addAll(cache);
+
+    //                 for (final ingredient in detectedIngredients) {
+    //                   await ref.watch(ingredientListControllerProvider.notifier).addIngredient(ingredientName: ingredient.ingredientName, relatedNames: ingredient.relatedNames, barcode: ingredient.barcode, quantity: ingredient.quantity, standardQuantity: ingredient.standardQuantity, unit: ingredient.unit);
+                
+    //                 }
+    //                 if (context.mounted) {
+    //                   context.pop();
+    //                 }
+    //               } 
+    //             },
+    //             icon: isConnected ? const Icon(Icons.close) : const Icon(Icons.add_circle_outlined),
+    //         ),
+    //         Padding(
+    //           padding: const EdgeInsets.only(bottom: 10),
+    //           child: Visibility(
+    //           visible: isConnected ? true : false,
+    //             child: ActionButton (
+    //             onPressed: () => context.go('/camera'),
+    //             icon: const Icon(Icons.camera_alt_outlined),
+    //             ),
+    //           ),
+    //         ),
+
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 
   Widget ingredientStream() {
