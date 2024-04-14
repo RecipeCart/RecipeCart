@@ -1,6 +1,9 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:recipe_cart/models/ModelProvider.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/inventory_card.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/search_bar.dart';
@@ -17,6 +20,7 @@ import 'package:ndialog/ndialog.dart';
 import 'dart:convert';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
 import 'package:recipe_cart/features/recipe/service/recipe_api_service.dart';
@@ -27,13 +31,17 @@ import 'package:recipe_cart/models/Recipe.dart';
 
 >>>>>>> 06164d2fe16151ae3c7e2fb5cf2f5b8b87a1cd4b
 class InventoryPage extends StatefulWidget {
+=======
+class InventoryPage extends ConsumerStatefulWidget {
+>>>>>>> 9e827e5 (cZv)
   const InventoryPage({super.key});
 
   @override
-  State<InventoryPage> createState() => _InventoryScreenState();
+  InventoryScreenState createState() => InventoryScreenState();
+  // State<InventoryPage> createState() => _InventoryScreenState();
 }
 
-class _InventoryScreenState extends State<InventoryPage> {
+class InventoryScreenState extends ConsumerState<InventoryPage> {
   int numBarcodeItems = 0;
   String weight = "0"; // Initial weight
   bool isConnected = false;
@@ -48,9 +56,13 @@ class _InventoryScreenState extends State<InventoryPage> {
 <<<<<<< HEAD
   // receives all live incoming data as list
   List<String> receiver = [];
+  List<InventoryCard> cache = [];
+  List<Ingredient> detectedIngredients = [];
+
   // receives all existing ingredients in user's inventory as list
   List<InventoryCard> fetcher = [];
   String productInfo = "";
+<<<<<<< HEAD
   // const api = new api();
   // final Ingredient test = queryItem('raisins') as Ingredient;
 =======
@@ -63,6 +75,15 @@ class _InventoryScreenState extends State<InventoryPage> {
   void initState() {
     super.initState();
   }
+=======
+  
+  GlobalKey globalKey = GlobalKey();
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
+>>>>>>> 9e827e5 (cZv)
 
   @override
   Widget build(BuildContext context) {
@@ -92,17 +113,11 @@ class _InventoryScreenState extends State<InventoryPage> {
                         ? ingredientStream()
                         : ListView.builder(
                             itemBuilder: (context, index) {
-                              return SizedBox(
-                                height: MediaQuery.of(context).size.height * .2,
-                                child: InventoryCard(
-                                  name: "name",
-                                  weight: "weight",
-                                  weightController: weightController
-                                )
-                              );
+                              final inventoryCard = fetcher[index]; // Get the card at current index
+                              return inventoryCard; // Return the card to be built
                             },
                             scrollDirection: Axis.vertical,
-                            itemCount: 7,
+                            itemCount: fetcher.length,
                         ),
                 ),
               ],
@@ -123,6 +138,16 @@ class _InventoryScreenState extends State<InventoryPage> {
                   setState(() {
                     isConnected = state;
                   });
+                  if (!isConnected){
+                    fetcher.addAll(cache);
+
+                    for (final ingredient in detectedIngredients) {
+                      await ref.watch(ingredientListControllerProvider.notifier).addIngredient(ingredientName: ingredient.ingredientName, relatedNames: ingredient.relatedNames, barcode: ingredient.barcode, quantity: ingredient.quantity, standardQuantity: ingredient.standardQuantity, unit: ingredient.unit);
+                    }
+                    if (context.mounted) {
+                      context.pop();
+                    }
+                  } 
                 },
                 icon: isConnected ? const Icon(Icons.close) : const Icon(Icons.add_circle_outlined),
             ),
@@ -245,20 +270,23 @@ class _InventoryScreenState extends State<InventoryPage> {
           if (snapshot.hasData) {
             final ingredient = jsonDecode(snapshot.data!)['body'];
             final String ingredientName = ingredient['ingredientName'];
+            final String weightValue = ingredient['quantity'] + ' ' + ingredient['unit'];
+            InventoryCard newCard = InventoryCard(name: ingredientName, weight: weightValue, weightController: weightController);
+            cache.add(newCard);
+            Ingredient detectedIngredient = Ingredient(ingredientName: ingredientName, barcode: ingredient['barcode'], quantity: ingredient['quantity'], relatedNames: ingredient['relatedNames'], removed: false, standardQuantity: ingredient['standardQuantity'], unit: ingredient['unit']);
+            detectedIngredients.add(detectedIngredient);
             safePrint(ingredientName);
             children = <Widget>[
-              const Icon(
-                Icons.check_circle_outline,
-                color: Colors.green,
-                size: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text(
-                  'Result: $ingredientName',
-                  style: const TextStyle(fontSize: 10),  
-                ),
-              ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: cache.length, // Set itemCount based on list length
+                      itemBuilder: (context, index) {
+                        final inventoryCard = cache[index]; // Get the card at current index
+                        return inventoryCard; // Return the card to be built
+                      },
+                      scrollDirection: Axis.vertical,
+                    ),
+                  ),
             ];
           } else if (snapshot.hasError) {
             children = <Widget>[
@@ -287,26 +315,13 @@ class _InventoryScreenState extends State<InventoryPage> {
           }
           return Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: children,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                        children: children,
+                  ),
+                );
+              },
             ),
           );
-        },
-      ),
-    );
-          // return ListView.builder(
-          //   // reverse: false,
-          //   itemBuilder: (context, index) {
-          //     return SizedBox(
-          //         height: MediaQuery.of(context).size.height * .5,
-          //         child: ListTile(
-          //             title: const Text("Ingredient"),
-          //             subtitle: Text('Latest barcode message: ${receiver[index]}')));
-          //   },
-          //   itemCount: numBarcodeItems,
-          //   scrollDirection: Axis.vertical,
-          // );
-          // child: Text('Latest barcode message: $barcodeData');
         }
       },
     );
@@ -318,6 +333,8 @@ class _InventoryScreenState extends State<InventoryPage> {
           // print(productInfo);
           
   }
+
+
   Future<bool> _startBarcode() async {
     ProgressDialog progressDialog = ProgressDialog(context,
         blur: 0,
@@ -325,6 +342,8 @@ class _InventoryScreenState extends State<InventoryPage> {
         dismissable: false,
         title: null,
         message: null);
+
+    cache = [];
 
     progressDialog.setLoadingWidget(const CircularProgressIndicator(
       valueColor: AlwaysStoppedAnimation(Colors.red),
