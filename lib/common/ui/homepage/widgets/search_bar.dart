@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatefulWidget {
   const SearchBarWidget({super.key});
+  
 
   @override
   State<SearchBarWidget> createState() => _SearchInputState();
@@ -9,6 +10,7 @@ class SearchBarWidget extends StatefulWidget {
     
     class _SearchInputState extends State<SearchBarWidget> {
       @override
+      String searchValue = '';
       Widget build(BuildContext context) {
         return Container(
           color: Colors.transparent,
@@ -20,6 +22,7 @@ class SearchBarWidget extends StatefulWidget {
                   Flexible(
                     flex: 1,
                     child: TextField(
+                      onSubmitted: (value) {searchValue = value;},
                       cursorColor: Colors.grey,
                       style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                       decoration: InputDecoration(
