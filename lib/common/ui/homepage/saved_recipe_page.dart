@@ -96,7 +96,7 @@ class _SavedRecipeBuild extends ConsumerState<SavedRecipePage> {
                             ),
                             Padding(
                               padding: EdgeInsets.only(top: 16),
-                              child: Text('Searching...'),
+                              child: Text('Loading...'),
                             ),
                           ],
                         ))
