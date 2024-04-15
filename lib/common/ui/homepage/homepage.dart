@@ -19,6 +19,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // int currentPageIndex = 0;
+
     return const Scaffold(
       // theme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
       body: NavigationExample(),
@@ -42,13 +43,11 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
   void initState() {
     super.initState();
     ref.read(ingredientListControllerProvider);
-    ref.read(settingsControllerProvider);
   }
 
   @override
   Widget build(BuildContext context) {
     final inventoryIngredients = ref.watch(ingredientListControllerProvider);
-    final settings = ref.watch(settingsControllerProvider);
 
     return Scaffold(
       bottomNavigationBar: NavigationBar(
@@ -92,7 +91,7 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
         /// Saved Recipe page
         const SavedRecipePage(),
         // search recipes page
-        SearchRecipePage(userSettings: settings, inventory: inventoryIngredients),
+        const SearchRecipePage(),
 
         /// Generate Recipe Page
         // const GenerateRecipePage(),

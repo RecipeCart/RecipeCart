@@ -20,9 +20,9 @@ import 'package:ndialog/ndialog.dart';
 import 'dart:convert';
 
 class InventoryPage extends ConsumerStatefulWidget {
-  const InventoryPage({super.key, required this.inventoryIngredients});
+  InventoryPage({super.key, required this.inventoryIngredients});
 
-  final AsyncValue<List<Ingredient?>> inventoryIngredients;
+  AsyncValue<List<Ingredient?>> inventoryIngredients;
 
   @override
   InventoryScreenState createState() => InventoryScreenState();
@@ -62,13 +62,13 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
     final inventoryIngredients = ref.watch(ingredientListControllerProvider);
 
     return inventoryIngredients.when(data: (inventoryIngredients) {
-      // if (inventoryIngredients.isEmpty) {
-      //   return Scaffold(
-      //       appBar: AppBar(
-      //         title: const Text('Inventory Page'),
-      //       ),
-      //       body: const Center(child: Text("No ingredients in inventory")));
-      // }
+      if (inventoryIngredients.isEmpty) {
+        return Scaffold(
+            appBar: AppBar(
+              title: const Text('Inventory Page'),
+            ),
+            body: const Center(child: Text("No ingredients in inventory")));
+      }
 
       return Scaffold(
         appBar: AppBar(
