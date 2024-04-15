@@ -30,8 +30,6 @@ class RecipeAPIService {
       List<Ingredient> ingredientAvoidances,
       String dietType) async {
     // convert avoidances to allRelatedAvoidances
-    List<Ingredient> ingredientAvoidances =
-        settingsAPIService.ingredientAvoidances;
     List<List<String>> allRelatedAvoidances = [];
 
     if (ingredientAvoidances.isNotEmpty) {
