@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
+import 'package:recipe_cart/models/ModelProvider.dart';
 
-class PreferencePage extends StatefulWidget {
+class PreferencePage extends ConsumerStatefulWidget {
   const PreferencePage({super.key});
 
   @override
-    State<PreferencePage> createState() => _PreferencePageBuild();
+    ConsumerState<PreferencePage> createState() => _PreferencePageBuild();
   
 }
 
@@ -17,47 +20,62 @@ enum DietTypes {
   keto
 }
 
-class _PreferencePageBuild extends State<PreferencePage> {
+class _PreferencePageBuild extends ConsumerState<PreferencePage> {
   @override
   void initState(){
     super.initState();
+    // ref.read(settingsControllerProvider);
+    final currentSettings = ref.read(settingsControllerProvider);
+    switch(currentSettings){
+      case AsyncValue(:final value):
+        current = DietTypes.values[value!.dietType!];
+      }
   }
-
-  DietTypes type = DietTypes.none;
-
+  DietTypes current = DietTypes.none;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Preference Options')),
-      body: Column(
-            children: [
-              optionItem(context, DietTypes.none, 'None'),
-              optionItem(context, DietTypes.vegan, 'Vegan'),
-              optionItem(context, DietTypes.vegetarian, 'Vegetarian'),
-              optionItem(context, DietTypes.pescatarian, 'Pescatarian'),
-              optionItem(context, DietTypes.dairyfree, 'Dairy-free'),
-              optionItem(context, DietTypes.keto, 'Keto'),
-              
-            ],
-          ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {Navigator.pop(context);},
-        child: const Icon(Icons.check),
-      ),
+  print("value of before current is $current");
+  final currentSettings = ref.watch(settingsControllerProvider);
+  switch(currentSettings){
+    case AsyncValue(:final value):
+      // current = DietTypes.values[value!.dietType!];
+      print("value of after current is $current");
+      return Scaffold(
+        appBar: AppBar(title: const Text('Preference Options')),
+        body: Column(
+              children: [
+                optionItem(context, DietTypes.none, 'None'),
+                optionItem(context, DietTypes.vegan, 'Vegan'),
+                optionItem(context, DietTypes.vegetarian, 'Vegetarian'),
+                optionItem(context, DietTypes.pescatarian, 'Pescatarian'),
+                optionItem(context, DietTypes.dairyfree, 'Dairy-free'),
+                optionItem(context, DietTypes.keto, 'Keto'),
+                
+              ],
+            ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            int index = current.index;
+            print(index);
+            ref.read(settingsControllerProvider.notifier).updateSettings(settingsID: value!.id, avoidances: value.avoidances!, dietType: index, notificationStatus: value.notifications!, language: value.language!);
+            Navigator.pop(context);
+          },
+          child: const Icon(Icons.check),
+        ),
 
-    );
-    
+      );
+    }  
   }
   Widget optionItem(BuildContext context, DietTypes value, String stwing) {
     return ListTile(
           title: Text(stwing),
           leading: Radio<DietTypes>(
             value: value,
-            groupValue: type,
+            groupValue: current,
             onChanged: (DietTypes? value) {
               setState(() {
-                type = value!;
-                print(type);
+                current = value!;
+                print("tried to change $value from $current");
               });
               
             },
