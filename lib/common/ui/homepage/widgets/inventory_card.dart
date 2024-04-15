@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:recipe_cart/common/ui/homepage/inventory_page.dart';
 import 'package:recipe_cart/features/ingredient/controller/ingredient_controller.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 
@@ -24,12 +23,14 @@ class InventoryCardState extends ConsumerState<InventoryCard> {
   final TextEditingController weightController =
       TextEditingController(); // Controller for weight editing
   String name = "";
+  bool _validated = false;
 
   @override
   void initState() {
     super.initState();
     name = widget.ingredient.ingredientName;
-    weightController.text = widget.ingredient.quantity.toString();
+    weightController.text =
+        "${widget.ingredient.quantity.toString()} ${widget.ingredient.unit}";
   }
 
   @override
@@ -58,7 +59,7 @@ class InventoryCardState extends ConsumerState<InventoryCard> {
                 const SizedBox(width: 10.0), // Spacing between name & weight
                 Flexible(
                   // Wrap weight text to prevent overflow
-                  child: Text('Weight: ${weightController.text}'),
+                  child: Text('Quantity: ${weightController.text}'),
                 ), // Consider removing padding here
               ],
             ),
@@ -82,10 +83,24 @@ class InventoryCardState extends ConsumerState<InventoryCard> {
   }
 
   Future<void> updateWeight(String newWeight) async {
-    // parse newWeight to get unit
+    // parse newWeight to get quantity and unit
+    final splitted = newWeight.split(' ');
+    final double quantity = double.parse(splitted[0]);
+    final String unit;
+    if (splitted.length > 1) {
+      unit = splitted[1];
+    } else {
+      unit = "g";
+    }
+
+    setState(() {
+      _validated = quantity > 0 ? true : false;
+    });
+
+    if (!_validated) return;
 
     final updatedIngredient =
-        widget.ingredient.copyWith(quantity: double.parse(newWeight));
+        widget.ingredient.copyWith(quantity: quantity, unit: unit);
 
     await ref.watch(ingredientListControllerProvider.notifier).updateIngredient(
         id: updatedIngredient.id, quantity: updatedIngredient.quantity!);
@@ -99,15 +114,23 @@ class InventoryCardState extends ConsumerState<InventoryCard> {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text('Enter Value'), // Add a title
+        title: const Text('Enter the ingredient quantity'), // Add a title
         content: TextField(
           controller: textController,
-          decoration: const InputDecoration(hintText: 'Enter value to update'),
+          decoration: InputDecoration(
+              hintText: 'Enter value and unit here',
+              errorText: _validated ? "Quantity value cannot be empty!" : null),
           autofocus: true, // Automatically focus on the field when opened
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () {
+              if (textController.text == "") {
+                setState(() {
+                  _validated = false;
+                });
+                return;
+              }
               onTextUpdate(textController.text); // Update text value
               Navigator.pop(context); // Close dialog
             },

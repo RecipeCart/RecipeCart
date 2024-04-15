@@ -70,10 +70,13 @@ class SettingsAPIService {
       // re-fetch the avoidances as ingredients
       if (settings.avoidances!.length != ingredientAvoidances.length) {
         ingredientAvoidances = [];
-        _populateIngredientAvoidances(settings.avoidances!);
+        await _populateIngredientAvoidances(settings.avoidances!);
       }
       // re-fetch savedRecipes
-      savedRecipes = await _getSavedRecipes(settings);
+      if (settings.savedRecipes!.length != savedRecipes.length) {
+        savedRecipes = [];
+        savedRecipes = await _getSavedRecipes(settings);
+      }
 
       return settings;
     } on Exception catch (error) {
@@ -230,8 +233,6 @@ class SettingsAPIService {
       if (response.statusCode != 200) {
         safePrint("Response from weaviate: $jsonResponse");
         return const [];
-      } else {
-        safePrint("response from weaviate: $jsonResponse");
       }
 
       if (jsonResponse.isNotEmpty) {
