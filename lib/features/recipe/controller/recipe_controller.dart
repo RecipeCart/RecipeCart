@@ -17,11 +17,6 @@ class RecipeController extends _$RecipeController {
     return recipes;
   }
 
-  // String searchEntry = "";
-  // List<List<String>> allRelatedNames = [];
-  // List<Ingredient> avoidances = [];
-  // DietType dietType = dietType!.value[DietType.all];
-
   @override
   FutureOr<List<Recipe?>> build() async {
     return [];
@@ -45,10 +40,5 @@ class RecipeController extends _$RecipeController {
       required String settingsID}) async {
     final recipeRepository = ref.read(recipeRepositoryProvider);
     return await recipeRepository.rateRecipe(rating, recipe, settingsID);
-  }
-
-  void resetOffset() {
-    final recipeRepository = ref.read(recipeRepositoryProvider);
-    return recipeRepository.resetOffset();
   }
 }
