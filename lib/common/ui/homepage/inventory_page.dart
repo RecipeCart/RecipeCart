@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,18 +48,29 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
 
   String productInfo = "";
 
-  GlobalKey globalKey = GlobalKey();
+  String searchEntry = "";
+  String searchInventoryText = "";
+  List<Ingredient?> copiedInventory = [];
 
   @override
   void initState() {
     super.initState();
-    //ref.read(ingredientListControllerProvider);
+    ref.read(ingredientListControllerProvider(searchEntry: ""));
   }
+
+  // late var ingredientSearchProvider = FutureProvider((ref) async {
+  //   final searchResults = await ref
+  //       .read(ingredientListControllerProvider().notifier)
+  //       .getIngredientInventory(searchEntry: searchEntry);
+  //   return searchResults;
+  // });
 
   @override
   Widget build(BuildContext context) {
-    final inventoryIngredients = ref.watch(ingredientListControllerProvider);
+    final inventoryIngredients =
+        ref.watch(ingredientListControllerProvider(searchEntry: ""));
 
+    // var searchResults = ref.watch(ingredientSearchProvider);
     return inventoryIngredients.when(data: (inventoryIngredients) {
       // if (inventoryIngredients.isEmpty) {
       //   return Scaffold(
@@ -66,10 +79,18 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
       //       ),
       //       body: const Center(child: Text("No ingredients in inventory")));
       // }
+      print("\n\n\ncopied: \n${copiedInventory.length}\n\n\n");
+      print("\n\n\ninventory: \n${inventoryIngredients.length}\n\n\n");
+
+      copiedInventory = inventoryIngredients
+          .where((element) => element!.ingredientName
+              .toLowerCase()
+              .contains(searchEntry.toLowerCase()))
+          .toList();
 
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Inventory Page'),
+          title: const Text('Ingredient Inventory'),
         ),
         extendBody: true,
         body: SafeArea(
@@ -86,7 +107,114 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
               padding: const EdgeInsetsDirectional.only(bottom: 40),
               child: Column(
                 children: [
-                  const SearchBarWidget(),
+                  SearchAnchor(
+                    isFullScreen: false,
+                    builder:
+                        (BuildContext context, SearchController controller) {
+                      return SearchBar(
+                        hintText: "Search Inventory...",
+                        controller: controller,
+                        padding: const MaterialStatePropertyAll<EdgeInsets>(
+                            EdgeInsets.symmetric(horizontal: 16.0)),
+                        onTap: () {
+                          if (controller.isOpen) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            controller.closeView(controller.text);
+                          } else {
+                            setState(() {
+                              searchEntry = controller.text;
+                            });
+                            controller.openView();
+                          }
+                        },
+                        onChanged: (text) {},
+                        onSubmitted: (text) {
+                          controller.closeView(text);
+                        },
+                        leading: const Icon(Icons.search),
+                      );
+                    },
+                    suggestionsBuilder:
+                        (BuildContext context, SearchController controller) {
+                      return List<ListTile>.generate(copiedInventory.length,
+                          (int index) {
+                        final String item =
+                            copiedInventory[index]!.ingredientName;
+
+                        return ListTile(
+                          title: Text(item),
+                          onTap: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
+
+                            setState(() {
+                              // update ingredient inventory view to reflect searched copy
+                              searchEntry = item;
+                            });
+                            controller.closeView(item);
+                          },
+                        );
+                      });
+                      // searchResults = ref.watch(ingredientSearchProvider);
+                      // return searchResults.when(
+                      //     data: (data) {
+                      //       controller.openView();
+                      //       return List<ListTile>.generate(data.length,
+                      //           (int index) {
+                      //         final String item = data[index]!.ingredientName;
+                      //         return ListTile(
+                      //           title: Text(item),
+                      //           onTap: () {
+                      //             print("\n\n\n\ndata length is " +
+                      //                 data.length.toString() +
+                      //                 "$searchEntry\n\n\n\n");
+                      //             setState(() {
+                      //               controller.closeView(item);
+                      //             });
+                      //           },
+                      //         );
+                      //       });
+                      //     },
+                      //     error: (e, s) {
+                      //       print("Error! $e, $s, \n\n\n\n\n\n");
+                      //       return [
+                      //         Column(
+                      //           children: [
+                      //             const Icon(
+                      //               Icons.error_outline,
+                      //               color: Colors.red,
+                      //               size: 60,
+                      //             ),
+                      //             Padding(
+                      //               padding: const EdgeInsets.only(top: 16),
+                      //               child: Text('Error: ${e}, Stack ${s}'),
+                      //             ),
+                      //           ],
+                      //         )
+                      //       ];
+                      //     },
+                      //     loading: () => [
+                      //           const SizedBox(
+                      //             width: 60,
+                      //             height: 60,
+                      //             child: CircularProgressIndicator(),
+                      //           ),
+                      //           const Padding(
+                      //             padding: EdgeInsets.only(top: 16),
+                      //             child: Text('Searching...'),
+                      //           ),
+                      //         ]);
+                    },
+                    viewOnChanged: (text) {
+                      setState(() {
+                        searchEntry = text;
+                      });
+                    },
+                    viewOnSubmitted: (text) {
+                      setState(() {
+                        searchEntry = text;
+                      });
+                    },
+                  ),
                   Expanded(
                     child: isConnected
                         ? ingredientStream()
@@ -125,7 +253,9 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
                   if (!isConnected) {
                     for (final ingredient in detectedIngredients) {
                       await ref
-                          .watch(ingredientListControllerProvider.notifier)
+                          .watch(
+                              ingredientListControllerProvider(searchEntry: "")
+                                  .notifier)
                           .addIngredient(
                               ingredientName: ingredient.ingredientName,
                               relatedNames: ingredient.relatedNames,
