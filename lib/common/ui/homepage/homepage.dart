@@ -6,6 +6,7 @@ import 'package:recipe_cart/common/ui/homepage/saved_recipe_page.dart';
 import 'package:recipe_cart/common/ui/homepage/settings_page.dart';
 import 'package:recipe_cart/common/ui/homepage/search_recipe_page.dart';
 import 'package:recipe_cart/features/ingredient/controller/ingredient_controller.dart';
+import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,8 +36,14 @@ class NavigationExample extends ConsumerStatefulWidget {
 
 class NavigationExampleState extends ConsumerState<NavigationExample> {
   int currentPageIndex = 0;
-  String weight = "";
-  final weightController = TextEditingController();
+  // String weight = "";
+  // final weightController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(ingredientListControllerProvider);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +86,7 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
       ),
       body: <Widget>[
         /// Home page
-         InventoryPage(inventoryIngredients: inventoryIngredients),
+        InventoryPage(inventoryIngredients: inventoryIngredients),
 
         /// Saved Recipe page
         const SavedRecipePage(),

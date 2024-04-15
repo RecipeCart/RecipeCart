@@ -84,20 +84,13 @@ class IngredientAPIService {
       // get results paginated
       final firstResponse =
           await Amplify.API.query(request: searchInventoryRequest).response;
-      final ingredientsPage1 = firstResponse.data;
-      if (ingredientsPage1 == null) {
-        safePrint('searchInventory errors: ${firstResponse.errors}');
+
+      if (firstResponse.data == null) {
         return const [];
       }
+      final ingredients = firstResponse.data!.items;
 
-      if (ingredientsPage1.hasNextResult) {
-        final secondRequest = ingredientsPage1.requestForNextResult;
-        final secondResponse =
-            await Amplify.API.query(request: secondRequest!).response;
-        return secondResponse.data?.items ?? <Ingredient?>[];
-      } else {
-        return ingredientsPage1.items;
-      }
+      return ingredients;
     } on Exception catch (error) {
       safePrint('searchInventory failed: $error');
       return const [];
