@@ -44,7 +44,7 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
   }
   Set<String> savedRecipes = {};
 
-  late final savedRecipeProvider = FutureProvider((ref) async {
+  late var savedRecipeProvider = FutureProvider((ref) async {
     final savedRecipe = await ref.read(settingsControllerProvider.notifier).getSavedRecipes();
     return savedRecipe;
   });
@@ -88,9 +88,15 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
                   IconButton(icon: const Icon(
                     Icons.bookmark_add_outlined,
                     color: Colors.white), selectedIcon: const Icon(Icons.bookmark_add, color: Colors.purple), isSelected: isSaved, onPressed: () async { 
-                      widget.userSettings.whenOrNull(data: (data) {
+                      widget.userSettings.whenOrNull(data: (data) {setState(() {
                         if(!isSaved) {ref.read(recipeControllerProvider.notifier).saveRecipe(recipeID: widget.id, settings: data);}
                         else {ref.read(recipeControllerProvider.notifier).unsaveRecipe(recipeID: widget.id, settings: data);}
+                        savedRecipeProvider = FutureProvider((ref) async {
+    final savedRecipe = await ref.read(settingsControllerProvider.notifier).getSavedRecipes();
+    return savedRecipe;
+  });
+                      });
+                        
                         });
 
                       isSaved = !isSaved; //
