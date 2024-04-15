@@ -72,7 +72,7 @@ class CameraScreenState extends ConsumerState<CameraScreen>
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     onNewCameraSelected(cameras[0]);
     super.initState();
-    ref.read(ingredientListControllerProvider);
+    ref.read(ingredientListControllerProvider(searchEntry: ""));
   }
 
   @override
@@ -163,7 +163,8 @@ class CameraScreenState extends ConsumerState<CameraScreen>
                                   unit = "g";
                                 }
                                 await ref
-                                    .watch(ingredientListControllerProvider
+                                    .watch(ingredientListControllerProvider(
+                                            searchEntry: "")
                                         .notifier)
                                     .addIngredient(
                                         ingredientName: ingredientName,
