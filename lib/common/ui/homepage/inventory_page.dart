@@ -51,12 +51,12 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
   @override
   void initState() {
     super.initState();
-    ref.read(ingredientListControllerProvider);
+    //ref.read(ingredientListControllerProvider);
   }
 
   @override
   Widget build(BuildContext context) {
-    final inventoryIngredients = ref.watch(ingredientListControllerProvider);
+    //final inventoryIngredients = ref.watch(ingredientListControllerProvider);
 
     return inventoryIngredients.when(data: (inventoryIngredients) {
       // if (inventoryIngredients.isEmpty) {

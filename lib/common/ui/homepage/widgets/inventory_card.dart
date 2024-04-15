@@ -4,9 +4,6 @@ import 'package:recipe_cart/features/ingredient/controller/ingredient_controller
 import 'package:recipe_cart/models/ModelProvider.dart';
 
 class InventoryCard extends ConsumerStatefulWidget {
-  // final TextEditingController weightController; // Controller for weight editing
-  // final Function(String) onWeightChange; // Callback for weight updates
-  // ... other properties
   const InventoryCard({
     super.key,
     required this.ingredient,
