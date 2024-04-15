@@ -128,9 +128,6 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
                           }
                         },
                         onChanged: (text) {},
-                        onSubmitted: (text) {
-                          controller.closeView(text);
-                        },
                         leading: const Icon(Icons.search),
                       );
                     },
