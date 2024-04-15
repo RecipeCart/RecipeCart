@@ -6,6 +6,7 @@ import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/avoidance_page.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/preference_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system; // Initial theme mode
@@ -18,26 +19,20 @@ class ThemeProvider extends ChangeNotifier {
   }
 }
 
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+class SettingsPage extends ConsumerStatefulWidget {
+  final AsyncValue<Settings?> settings;
+
+  const SettingsPage({
+    super.key,
+    required this.settings,
+  });
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _themeProvider = ThemeProvider(); // Instance of ThemeProvider
-  // List<Settings> test = getSettings('en') as List<Settings>;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getSettings('en').then((data) { // Call getSettings after initState
-  //     setState(() {
-  //       test = data; // Update state with fetched data
-  //     });
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _preferenceButton() {
     return  OutlinedButton(
       onPressed: () async {
-        context.go('/preference');
+        context.goNamed('preference');
       },
       style: ButtonStyle(
         shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
@@ -112,9 +107,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     
   }
   Widget _avoidanceButton() {
+
     return  OutlinedButton(
       onPressed: () async {
-        context.go('/avoidance');
+        context.goNamed('avoidance');
       },
       style: ButtonStyle(
         shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
