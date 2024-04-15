@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipe_cart/common/ui/homepage/inventory_page.dart';
+import 'package:recipe_cart/features/ingredient/controller/ingredient_controller.dart';
+import 'package:recipe_cart/models/ModelProvider.dart';
 
-class InventoryCard extends StatefulWidget {
-  final String name; // Name of the inventory item
-  String weight; // Initial weight of the item
-  final TextEditingController weightController; // Controller for weight editing
+class InventoryCard extends ConsumerStatefulWidget {
+  // final TextEditingController weightController; // Controller for weight editing
   // final Function(String) onWeightChange; // Callback for weight updates
   // ... other properties
-  InventoryCard({
+  const InventoryCard({
     super.key,
-    required this.name,
-    required this.weight,
-    required this.weightController,
+    required this.ingredient,
+    // required this.weightController,
     // required this.onWeightChange,
   });
   @override
-  State<InventoryCard> createState() => _InventoryCardState(
-      name: name, weight: weight, weightController: weightController);
+  InventoryCardState createState() => InventoryCardState();
+
+  final Ingredient ingredient;
 }
 
-class _InventoryCardState extends State<InventoryCard> {
-  final String name; // Name of the inventory item
-  String weight; // Initial weight of the item
-  final TextEditingController weightController; // Controller for weight editing
+class InventoryCardState extends ConsumerState<InventoryCard> {
+  final TextEditingController weightController =
+      TextEditingController(); // Controller for weight editing
+  String name = "";
 
-  _InventoryCardState({
-    required this.name,
-    required this.weight,
-    required this.weightController,
-  });
+  @override
+  void initState() {
+    super.initState();
+    name = widget.ingredient.ingredientName;
+    weightController.text = widget.ingredient.quantity.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +58,7 @@ class _InventoryCardState extends State<InventoryCard> {
                 const SizedBox(width: 10.0), // Spacing between name & weight
                 Flexible(
                   // Wrap weight text to prevent overflow
-                  child: Text('Weight: $weight'),
+                  child: Text('Weight: ${weightController.text}'),
                 ), // Consider removing padding here
               ],
             ),
@@ -67,7 +69,9 @@ class _InventoryCardState extends State<InventoryCard> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () => showModal(context, weight, updateWeight),
+                  onPressed: () async {
+                    showModal(context, weightController.text, updateWeight);
+                  },
                 ),
               ],
             ),
@@ -77,10 +81,14 @@ class _InventoryCardState extends State<InventoryCard> {
     );
   }
 
-  void updateWeight(String newWeight) {
-    setState(() {
-      weight = newWeight;
-    });
+  Future<void> updateWeight(String newWeight) async {
+    // parse newWeight to get unit
+
+    final updatedIngredient =
+        widget.ingredient.copyWith(quantity: double.parse(newWeight));
+
+    await ref.watch(ingredientListControllerProvider.notifier).updateIngredient(
+        id: updatedIngredient.id, quantity: updatedIngredient.quantity!);
   }
 
   void showModal(
