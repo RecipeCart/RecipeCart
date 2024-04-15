@@ -8,13 +8,14 @@ import 'package:recipe_cart/common/ui/styles/theme_data_style.dart';
 
 // Code to wrap the RecipeCart app in an Amplify Authenticator widget
 
-class RecipeCartApp extends StatelessWidget {
-  RecipeCartApp({
+class RecipeCartApp extends ConsumerWidget {
+  const RecipeCartApp({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
     return Authenticator(
       initialStep: AuthenticatorStep.signIn,
       child: MaterialApp.router(
