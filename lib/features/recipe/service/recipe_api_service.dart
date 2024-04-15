@@ -51,6 +51,7 @@ class RecipeAPIService {
       offset = data['body']['offset'];
 
       safePrint(data);
+      print("offset: $offset");
 
       // convert list of strings to list of recipes
       List<Recipe> recipes = parseRecipes(data['body']['recipes']);
@@ -60,6 +61,10 @@ class RecipeAPIService {
       safePrint('getRecipeList failed: $error');
       return const [];
     }
+  }
+
+  void resetOffset() {
+    offset = 0;
   }
 
   Future<void> saveRecipe(

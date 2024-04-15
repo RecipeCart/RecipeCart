@@ -26,4 +26,8 @@ class RecipeRepository {
   Future<Recipe> rateRecipe(final rating, final recipe, final settingsID) {
     return recipeAPIService.rateRecipe(rating, recipe, settingsID);
   }
+
+  void resetOffset() {
+    return recipeAPIService.resetOffset();
+  }
 }
