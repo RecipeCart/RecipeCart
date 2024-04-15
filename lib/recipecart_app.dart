@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipe_cart/common/navigation/router/router.dart';
 import 'package:recipe_cart/common/utils/colors.dart' as constants;
 import 'package:flutter/material.dart';
-import 'package:recipe_cart/common/ui/homepage/settings_page.dart';
 import 'package:recipe_cart/common/ui/styles/theme_data_style.dart';
 
 // Code to wrap the RecipeCart app in an Amplify Authenticator widget

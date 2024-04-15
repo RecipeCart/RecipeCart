@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/camera_screen.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/preference_page.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/avoidance_page.dart';
-import 'package:recipe_cart/models/ModelProvider.dart';
 
 final routerProvider = Provider((ref) {
   return GoRouter(

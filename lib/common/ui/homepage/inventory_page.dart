@@ -7,7 +7,6 @@ import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/inventory_card.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/search_bar.dart';
-import 'package:recipe_cart/common/ui/homepage/widgets/expandable_fab.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/action_button.dart';
 
 import 'package:recipe_cart/features/iot/iot_mqtt5_client.dart';
