@@ -1,38 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
+import 'package:recipe_cart/models/ModelProvider.dart';
 
-class AvoidancePage extends StatefulWidget {
-  const AvoidancePage({super.key});
+class AvoidancePage extends ConsumerStatefulWidget {
+  const AvoidancePage({
+    super.key
+    });
 
   @override
-    State<AvoidancePage> createState() => _AvoidancePageBuild();
+    ConsumerState<AvoidancePage> createState() => _AvoidancePageBuild();
   
 }
 
-class _AvoidancePageBuild extends State<AvoidancePage> {
+class _AvoidancePageBuild extends ConsumerState<AvoidancePage> {
   @override
   void initState(){
     super.initState();
+    ref.read(settingsControllerProvider);
   }
-
-  Map<String, bool> values = {
-    'vegan': false,
-    'vegetarian': false,
-    'carnivore': false,
-    'pescatarian': false,
-    'dairy-free': false,
-    'keto': false,
-  };
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Preferencecheckbox')),
-      body: Column(
-            children: [
+    List<Ingredient> listIngredients = ref.read(settingsControllerProvider.notifier).getAvoidances();
+    // print(listIngredients.toString())
+;    return Scaffold(
+      appBar: AppBar(title: const Text('Avoidances List')),
+      body: SingleChildScrollView(
+        physics: const ScrollPhysics(),
+        child: Column(
+            children: <Widget>[
               const SearchBar(),
-              ingredientCard(context, 'watermetion'),
-              ingredientCard(context, 'eggs'),
+
+              listIngredients.isNotEmpty ? ListView.builder(
+                itemCount: listIngredients.length,
+                itemBuilder: (context, index) {
+                  final ingredientNode = listIngredients[index];
+                  return ingredientCard(context, ingredientNode.ingredientName);
+                },
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+              ) 
+              : const Text("haha no sick"),
             ],
+        ),
           ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {Navigator.pop(context);},
