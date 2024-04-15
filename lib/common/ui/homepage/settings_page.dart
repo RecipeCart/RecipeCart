@@ -1,11 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:recipe_cart/models/Settings.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:recipe_cart/common/ui/homepage/widgets/avoidance_page.dart';
-import 'package:recipe_cart/common/ui/homepage/widgets/preference_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ThemeProvider extends ChangeNotifier {
@@ -32,7 +28,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  final _themeProvider = ThemeProvider(); // Instance of ThemeProvider
+  // final _themeProvider = ThemeProvider(); // Instance of ThemeProvider
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +68,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   // }
 
   Widget _logoutButton() {
-    return  OutlinedButton(
+    return OutlinedButton(
       onPressed: () async {
         final result = await Amplify.Auth.signOut();
         if (result is CognitoCompleteSignOut) {
@@ -82,57 +78,48 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         }
       },
       style: ButtonStyle(
-        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
       ),
-      child: const Text(
-        'Log Out',
-        style: TextStyle(color: Colors.white)
-      ),
+      child: const Text('Log Out', style: TextStyle(color: Colors.white)),
     );
-                    
   }
+
   Widget _preferenceButton() {
-    return  OutlinedButton(
+    return OutlinedButton(
       onPressed: () async {
         context.goNamed('preference', extra: {});
       },
       style: ButtonStyle(
-        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
       ),
-      child: const Text(
-        'Preferences',
-        style: TextStyle(color: Colors.white)
-      ),
+      child: const Text('Preferences', style: TextStyle(color: Colors.white)),
     );
-                    
   }
-  Widget _avoidanceButton() {
 
-    return  OutlinedButton(
+  Widget _avoidanceButton() {
+    return OutlinedButton(
       onPressed: () async {
         context.goNamed('avoidance');
       },
       style: ButtonStyle(
-        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
       ),
-      child: const Text(
-        'Avoidances',
-        style: TextStyle(color: Colors.white)
-      ),
+      child: const Text('Avoidances', style: TextStyle(color: Colors.white)),
     );
-                    
   }
-  static Future <List<Settings>> getSettings(String itemName) async{
-      try{
-          // ignore: non_constant_identifier_names
-          final Setting = await Amplify.DataStore.query(
-              Settings.classType,
-              where: Settings.LANGUAGE.contains(itemName)
-          );
-          return Setting;
-      } catch (e){
-          throw e;
-      }
-  }
-
+  // static Future <List<Settings>> getSettings(String itemName) async{
+  //     try{
+  //         // ignore: non_constant_identifier_names
+  //         final Setting = await Amplify.DataStore.query(
+  //             Settings.classType,
+  //             where: Settings.LANGUAGE.contains(itemName)
+  //         );
+  //         return Setting;
+  //     } catch (e){
+  //         throw e;
+  //     }
+  // }
 }

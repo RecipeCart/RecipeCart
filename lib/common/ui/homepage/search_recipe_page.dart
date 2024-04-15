@@ -1,18 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:recipe_cart/common/ui/homepage/widgets/search_bar.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/recipe_element.dart';
 import 'package:recipe_cart/features/ingredient/controller/ingredient_controller.dart';
 import 'package:recipe_cart/features/recipe/controller/recipe_controller.dart';
-import 'package:recipe_cart/features/recipe/service/recipe_api_service.dart';
 import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
 import 'package:recipe_cart/features/settings/data/settings_api_data.dart';
-import 'package:recipe_cart/features/settings/service/settings_api_service.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:recipe_cart/models/Recipe.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class SearchRecipePage extends ConsumerStatefulWidget {
   const SearchRecipePage(
