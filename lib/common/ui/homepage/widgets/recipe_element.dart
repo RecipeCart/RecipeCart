@@ -1,40 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recipe_cart/features/recipe/controller/recipe_controller.dart';
+import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
+import 'package:recipe_cart/models/Recipe.dart';
+import 'package:recipe_cart/models/Settings.dart';
 
-class RecipeCard extends StatefulWidget {
+class RecipeCard extends ConsumerStatefulWidget {
   final String name;
   var list;
   final String instructions;
+  double rating;
+  int ratingCount;
+  final String id;
+  final AsyncValue<Settings> userSettings;
 
   RecipeCard({
     super.key,
     required this.name,
     required this.list,
     required this.instructions,
+    required this.rating,
+    required this.ratingCount,
+    required this.id,
+    required this.userSettings
   });
   @override 
-  State <RecipeCard> createState() => _RecipeCardState(name: name, list: list, instructions: instructions);
+  ConsumerState <RecipeCard> createState() => _RecipeCardState();
 }
 
-class _RecipeCardState extends State<RecipeCard> {
-  final String name;
-  var list;
-  final String instructions;
+class _RecipeCardState extends ConsumerState<RecipeCard> {
   String ingredients = '';
+  bool isSaved = false;
 
-  _RecipeCardState ({
-    required this.name,
-    required this.list,
-    required this.instructions,
-  });  
+  @override
+  initState() {
+    super.initState();
+    ref.read(recipeControllerProvider);
+    savedRecipes = ref.read(settingsControllerProvider.notifier).getSavedRecipes().map((e) => e.id).toSet();
+    if (savedRecipes.contains(widget.id)){
+      isSaved = true;
+    }
+  }
+  Set<String> savedRecipes = {};
+
+  late final savedRecipeProvider = FutureProvider((ref) async {
+    final savedRecipe = await ref.read(settingsControllerProvider.notifier).getSavedRecipes();
+    return savedRecipe;
+  });
 
   @override
   Widget build(BuildContext context) {
     // int ingreLen = ingredients.length;
+    final savedRecipesSetting = ref.watch(savedRecipeProvider);
+
+    savedRecipesSetting.when(data: (data) {
+      setState(() {
+        savedRecipes = data.map((e) => e.id).toSet();
+          if (savedRecipes.contains(widget.id)){
+      isSaved = true;
+    }
+      });
+      
+      }, error: (e, s) {print("$e and $s");}, loading: () => {});
     
-    ingredients = list.join(',');
+    ingredients = widget.list.join(',\n');
     return GestureDetector(
-      onTap: () => showCard(context, name, ingredients, instructions),
+      onTap: () => showCard(context, widget.name, ingredients, widget.instructions),
       child: Card(
         shape: RoundedRectangleBorder(
           side: const BorderSide(
@@ -51,10 +83,19 @@ class _RecipeCardState extends State<RecipeCard> {
               Row(
                 children: [
                   Expanded(
-                    child: Text(name),
+                    child: Text(widget.name),
                   ),
-                  const Icon(
-                    Icons.bookmark_add,
+                  IconButton(icon: const Icon(
+                    Icons.bookmark_add_outlined,
+                    color: Colors.white), selectedIcon: const Icon(Icons.bookmark_add, color: Colors.purple), isSelected: isSaved, onPressed: () async { 
+                      widget.userSettings.whenOrNull(data: (data) {
+                        if(!isSaved) {ref.read(recipeControllerProvider.notifier).saveRecipe(recipeID: widget.id, settings: data);}
+                        else {ref.read(recipeControllerProvider.notifier).unsaveRecipe(recipeID: widget.id, settings: data);}
+                        });
+
+                      isSaved = !isSaved; //
+                      //insert command to save/unsave
+                      }
                   ),
                 ],
               ),
@@ -76,6 +117,7 @@ class _RecipeCardState extends State<RecipeCard> {
     );
   }
   void showCard(BuildContext context, String name, String ingredients, String instructions) {
+    
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -97,7 +139,7 @@ class _RecipeCardState extends State<RecipeCard> {
                     ),
                   ),
                   RatingBar.builder(
-                    initialRating: 3,
+                    initialRating: widget.rating,
                     minRating: 1,
                     direction: Axis.horizontal,
                     allowHalfRating: false,
