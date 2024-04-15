@@ -102,7 +102,7 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
         // const GenerateRecipePage(),
 
         /// Messages page
-        SettingsPage(settings: settings),
+        const SettingsPage(),//settings: settings
       ][currentPageIndex],
     );
   }
