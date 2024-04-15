@@ -88,7 +88,7 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
       ),
       body: <Widget>[
         /// Home page
-        InventoryPage(inventoryIngredients: inventoryIngredients),
+        InventoryPage(inventoryIngredients: inventoryIngredients), //
 
         /// Saved Recipe page
         const SavedRecipePage(),

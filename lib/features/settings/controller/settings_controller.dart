@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:recipe_cart/features/settings/data/settings_repository.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:recipe_cart/models/Recipe.dart';
@@ -29,7 +30,8 @@ class SettingsController extends _$SettingsController {
 
     state = await AsyncValue.guard(() async {
       final settingsRepository = ref.read(settingsRepositoryProvider);
-      await settingsRepository.updateUserSettings(settingsID, avoidances, dietType, notificationStatus, language);
+      await settingsRepository.updateUserSettings(
+          settingsID, avoidances, dietType, notificationStatus, language);
       return _getUserSettings();
     });
   }
