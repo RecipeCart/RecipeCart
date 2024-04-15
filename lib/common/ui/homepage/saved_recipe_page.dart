@@ -54,6 +54,13 @@ class _SavedRecipeBuild extends ConsumerState<SavedRecipePage> {
                 recipes.when(
                     data: (data) {
                       print("status is $data");
+                      setState(() {
+                        recipeSearchProvider = FutureProvider<List<Recipe?>>((ref) async {
+                        final recipeResults = await ref
+                            .read(settingsControllerProvider.notifier).getSavedRecipes();
+                        return recipeResults;
+                      }); 
+                      });
                       return ListView.builder(
                         controller: scrollController,
                         shrinkWrap: true,
