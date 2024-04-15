@@ -16,7 +16,7 @@ class IngredientListController extends _$IngredientListController {
 
   @override
   FutureOr<List<Ingredient?>> build() async {
-    return _getIngredientInventory();
+    return await _getIngredientInventory();
   }
 
   // for users to search inventory
@@ -69,14 +69,14 @@ class IngredientListController extends _$IngredientListController {
     });
   }
 
-  // Future<void> updateIngredient(
-  //     {required String id, required double quantity}) async {
-  //   state = const AsyncValue.loading();
+  Future<void> updateIngredient(
+      {required String id, required double quantity}) async {
+    state = const AsyncValue.loading();
 
-  //   state = await AsyncValue.guard(() async {
-  //     final ingredientRepository = ref.read(ingredientRepositoryProvider);
-  //     await ingredientRepository.updateIngredientQuantity(id, quantity);
-  //     return _getIngredientInventory();
-  //   });
-  // }
+    state = await AsyncValue.guard(() async {
+      final ingredientRepository = ref.read(ingredientRepositoryProvider);
+      await ingredientRepository.updateIngredientQuantity(id, quantity);
+      return _getIngredientInventory();
+    });
+  }
 }
