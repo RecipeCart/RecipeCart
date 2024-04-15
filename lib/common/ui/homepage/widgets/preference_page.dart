@@ -24,7 +24,7 @@ class _PreferencePageBuild extends ConsumerState<PreferencePage> {
   @override
   void initState(){
     super.initState();
-    ref.read(settingsControllerProvider);
+    // ref.read(settingsControllerProvider);
     final currentSettings = ref.read(settingsControllerProvider);
     switch(currentSettings){
       case AsyncValue(:final value):
@@ -57,7 +57,7 @@ class _PreferencePageBuild extends ConsumerState<PreferencePage> {
           onPressed: () {
             int index = current.index;
             print(index);
-            ref.watch(settingsControllerProvider.notifier).updateSettings(settingsID: value!.id, avoidances: value.avoidances!, dietType: index, notificationStatus: value.notifications!, language: value.language!);
+            ref.read(settingsControllerProvider.notifier).updateSettings(settingsID: value!.id, avoidances: value.avoidances!, dietType: index, notificationStatus: value.notifications!, language: value.language!);
             Navigator.pop(context);
           },
           child: const Icon(Icons.check),

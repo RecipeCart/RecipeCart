@@ -60,13 +60,13 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
     final inventoryIngredients = ref.watch(ingredientListControllerProvider);
 
     return inventoryIngredients.when(data: (inventoryIngredients) {
-      if (inventoryIngredients.isEmpty) {
-        return Scaffold(
-            appBar: AppBar(
-              title: const Text('Inventory Page'),
-            ),
-            body: const Center(child: Text("No ingredients in inventory")));
-      }
+      // if (inventoryIngredients.isEmpty) {
+      //   return Scaffold(
+      //       appBar: AppBar(
+      //         title: const Text('Inventory Page'),
+      //       ),
+      //       body: const Center(child: Text("No ingredients in inventory")));
+      // }
 
       return Scaffold(
         appBar: AppBar(
