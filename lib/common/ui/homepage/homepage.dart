@@ -70,13 +70,13 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
             label: 'Inventory',
           ),
           NavigationDestination(
+            icon: Icon(Icons.search),
+            label: 'Explore',
+          ),
+          NavigationDestination(
             selectedIcon: Icon(Icons.bookmark_added),
             icon: Icon(Icons.bookmark_added_outlined),
             label: 'Saved',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.search),
-            label: 'Explore',
           ),
           // NavigationDestination(
           //   selectedIcon: Icon(Icons.fastfood),

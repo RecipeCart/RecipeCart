@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:recipe_cart/models/ModelProvider.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/inventory_card.dart';
 import 'package:recipe_cart/common/ui/homepage/widgets/search_bar.dart';
@@ -20,16 +19,15 @@ import 'package:ndialog/ndialog.dart';
 import 'dart:convert';
 
 class InventoryPage extends ConsumerStatefulWidget {
-  InventoryPage({super.key, required this.inventoryIngredients});
+  const InventoryPage({super.key, required this.inventoryIngredients});
 
-  AsyncValue<List<Ingredient?>> inventoryIngredients;
+  final AsyncValue<List<Ingredient?>> inventoryIngredients;
 
   @override
   InventoryScreenState createState() => InventoryScreenState();
 }
 
 class InventoryScreenState extends ConsumerState<InventoryPage> {
-  // int numBarcodeItems = 0;
   String weight = "0"; // Initial weight
   bool isConnected = false;
 
@@ -171,8 +169,6 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
   }
 
   Widget ingredientStream() {
-    int numBarcodeItems = 0;
-
     return StreamBuilder<List<MqttReceivedMessage<MqttMessage>>>(
       stream: client.mqttServerClient.updates,
       builder: (context, snapshot) {
@@ -196,8 +192,6 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
           safePrint("barcode data: $barcodeData");
 
           receiver.add(barcodeData);
-
-          numBarcodeItems += 1;
 
           return DefaultTextStyle(
             style: Theme.of(context).textTheme.displayMedium!,
@@ -318,7 +312,6 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
     bool barcodeStopped = await barcodeController.stopBarcodeScript();
 
     setState(() {
-      // numBarcodeItems = 0;
       receiver = [];
     });
 
