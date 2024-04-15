@@ -4,7 +4,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_cart/main.dart';
-import 'package:image/image.dart' as img;
 import 'package:recipe_cart/features/ingredient/service/image_ingredient_detector.dart';
 
 class CameraScreen extends StatefulWidget {
