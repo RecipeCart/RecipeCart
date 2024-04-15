@@ -20,7 +20,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // int currentPageIndex = 0;
-
     return const Scaffold(
       // theme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
       body: NavigationExample(),
@@ -96,13 +95,14 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
         /// Saved Recipe page
         const SavedRecipePage(),
         // search recipes page
-        const SearchRecipePage(),
+        SearchRecipePage(
+            userSettings: settings, inventory: inventoryIngredients),
 
         /// Generate Recipe Page
         // const GenerateRecipePage(),
 
         /// Messages page
-        SettingsPage(settings: settings),
+        const SettingsPage(), //settings: settings
       ][currentPageIndex],
     );
   }
