@@ -29,7 +29,7 @@ class SettingsController extends _$SettingsController {
 
     state = await AsyncValue.guard(() async {
       final settingsRepository = ref.read(settingsRepositoryProvider);
-      await settingsRepository.getUserSettings();
+      await settingsRepository.updateUserSettings(settingsID, avoidances, dietType, notificationStatus, language);
       return _getUserSettings();
     });
   }

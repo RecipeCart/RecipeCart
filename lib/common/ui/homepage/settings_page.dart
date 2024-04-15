@@ -20,11 +20,11 @@ class ThemeProvider extends ChangeNotifier {
 }
 
 class SettingsPage extends ConsumerStatefulWidget {
-  final AsyncValue<Settings?> settings;
+  // final AsyncValue<Settings?> settings;
 
   const SettingsPage({
     super.key,
-    required this.settings,
+    // required this.settings,
   });
 
   @override
@@ -94,7 +94,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget _preferenceButton() {
     return  OutlinedButton(
       onPressed: () async {
-        context.goNamed('preference');
+        context.goNamed('preference', extra: {});
       },
       style: ButtonStyle(
         shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
