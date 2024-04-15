@@ -99,8 +99,10 @@ class InventoryCardState extends ConsumerState<InventoryCard> {
     final updatedIngredient =
         widget.ingredient.copyWith(quantity: quantity, unit: unit);
 
-    await ref.watch(ingredientListControllerProvider.notifier).updateIngredient(
-        id: updatedIngredient.id, quantity: updatedIngredient.quantity!);
+    await ref
+        .watch(ingredientListControllerProvider(searchEntry: "").notifier)
+        .updateIngredient(
+            id: updatedIngredient.id, quantity: updatedIngredient.quantity!);
   }
 
   void showModal(

@@ -40,14 +40,15 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
   @override
   void initState() {
     super.initState();
-    ref.read(ingredientListControllerProvider);
+    ref.read(ingredientListControllerProvider(searchEntry: ""));
     ref.read(settingsControllerProvider);
     // ref.read(router);
   }
 
   @override
   Widget build(BuildContext context) {
-    final inventoryIngredients = ref.watch(ingredientListControllerProvider);
+    final inventoryIngredients =
+        ref.watch(ingredientListControllerProvider(searchEntry: ""));
     final settings = ref.watch(settingsControllerProvider);
     // final homeRouter = ref.watch(router);
 

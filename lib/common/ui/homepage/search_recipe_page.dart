@@ -33,9 +33,6 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
     ref.read(recipeControllerProvider);
   }
 
-  // RecipeAPIService recipeAPIService = RecipeAPIService();
-
-  // List<Recipe> recipeResults = [];
   String searchValue = "";
   List<Ingredient> avoidances = [];
   List<Ingredient?> ingredientList = [];
@@ -67,7 +64,8 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
       }
       print("reloaded diet type: $dietType");
     });
-    ref.listen(ingredientListControllerProvider, (prev, next) async {
+    ref.listen(ingredientListControllerProvider(searchEntry: ""),
+        (prev, next) async {
       switch (widget.inventory) {
         case AsyncData(:final value):
           ingredientList = value.isEmpty ? [] : value;
