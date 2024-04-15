@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_cart/common/navigation/router/router.dart';
 import 'package:recipe_cart/common/utils/colors.dart' as constants;
 import 'package:recipe_cart/common/ui/homepage/generate_recipe_page.dart';
 import 'package:recipe_cart/common/ui/homepage/inventory_page.dart';
@@ -43,11 +44,15 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
   void initState() {
     super.initState();
     ref.read(ingredientListControllerProvider);
+    ref.read(settingsControllerProvider);
+    // ref.read(router);
   }
 
   @override
   Widget build(BuildContext context) {
     final inventoryIngredients = ref.watch(ingredientListControllerProvider);
+    final settings = ref.watch(settingsControllerProvider);
+    // final homeRouter = ref.watch(router);
 
     return Scaffold(
       bottomNavigationBar: NavigationBar(
@@ -97,7 +102,7 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
         // const GenerateRecipePage(),
 
         /// Messages page
-        const SettingsPage(),
+        SettingsPage(settings: settings),
       ][currentPageIndex],
     );
   }
