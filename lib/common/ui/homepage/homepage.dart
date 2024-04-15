@@ -91,7 +91,7 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
         InventoryPage(inventoryIngredients: inventoryIngredients), //
 
         /// Saved Recipe page
-        const SavedRecipePage(),
+        SavedRecipePage(userSettings: settings),
         // search recipes page
         SearchRecipePage(
             userSettings: settings, inventory: inventoryIngredients),
