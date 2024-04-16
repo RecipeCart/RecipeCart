@@ -33,9 +33,6 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
     ref.read(recipeControllerProvider);
   }
 
-  // RecipeAPIService recipeAPIService = RecipeAPIService();
-
-  // List<Recipe> recipeResults = [];
   String searchValue = "";
   List<Ingredient> avoidances = [];
   List<Ingredient?> ingredientList = [];
@@ -67,7 +64,8 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
       }
       print("reloaded diet type: $dietType");
     });
-    ref.listen(ingredientListControllerProvider, (prev, next) async {
+    ref.listen(ingredientListControllerProvider(searchEntry: ""),
+        (prev, next) async {
       switch (widget.inventory) {
         case AsyncData(:final value):
           ingredientList = value.isEmpty ? [] : value;
@@ -159,23 +157,16 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
                           return RecipeCard(
                               name: data[index]!.recipeName,
                               list: data[index]!.ingredients,
-                              instructions: data[index]!.instructions);
+                              instructions: data[index]!.instructions,
+                              rating: data[index]!.averageRatings,
+                              ratingCount: data[index]!.numRatings,
+                              id: data[index]!.id,
+                              userSettings: widget.userSettings,);
+                             
                         },
                         scrollDirection: Axis.vertical,
                       );
                     },
-                    // ListView.builder(
-                    //       padding: const EdgeInsetsDirectional.all(8),
-                    //       shrinkWrap: true,
-                    //       itemCount: data.length,
-                    //       itemBuilder: (context, index) {
-                    //         return RecipeCard(
-                    //             name: data[index]!.recipeName,
-                    //             list: data[index]!.ingredients,
-                    //             instructions: data[index]!.instructions);
-                    //       },
-                    //       scrollDirection: Axis.vertical,
-                    //     ),
                     error: (e, s) {
                       print("Error! $e, $s, \n\n\n\n\n\n");
                       return Column(
@@ -211,67 +202,4 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
         ));
   }
 
-//   Widget listRecipe(
-//       searchEntry, allRelatedNames, ingredientAvoidances, dietType) {
-//     ScrollController scrollController = ScrollController();
-//     return FutureBuilder(
-//         future: recipeAPIService.searchRecipes(
-//             searchEntry, allRelatedNames, ingredientAvoidances, dietType),
-//         builder: (BuildContext context, AsyncSnapshot snapshot) {
-//           List<Widget> children;
-//           if (snapshot.hasData) {
-//             final List<Recipe> recipes = snapshot.data!.cast<Recipe>();
-//             children = <Widget>[
-//               ListView.builder(
-//                 padding: const EdgeInsetsDirectional.all(8),
-//                 controller: scrollController,
-//                 shrinkWrap: true,
-//                 itemCount: recipes.length,
-//                 itemBuilder: (context, index) {
-//                   return RecipeCard(
-//                       name: recipes[index].recipeName,
-//                       list: recipes[index].ingredients,
-//                       instructions: recipes[index].instructions);
-//                 },
-//                 scrollDirection: Axis.vertical,
-//               ),
-//             ];
-//             print(recipes.length);
-//           } else if (snapshot.hasError) {
-//             children = <Widget>[
-//               const Icon(
-//                 Icons.error_outline,
-//                 color: Colors.red,
-//                 size: 60,
-//               ),
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 16),
-//                 child: Text('Error: ${snapshot.error}'),
-//               ),
-//             ];
-//           } else {
-//             children = const <Widget>[
-//               SizedBox(
-//                 width: 60,
-//                 height: 60,
-//                 child: CircularProgressIndicator(),
-//               ),
-//               Padding(
-//                 padding: EdgeInsets.only(top: 16),
-//                 child: Text('Searching...'),
-//               ),
-//             ];
-//           }
-//           return Center(
-//             //   child: SingleChildScrollView(
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               //mainAxisSize: MainAxisSize.min,
-//               children: children,
-//             ),
-//             // )
-//           );
-//         });
-//   }
-// }
 }
