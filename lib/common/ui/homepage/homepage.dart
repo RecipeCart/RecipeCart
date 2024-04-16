@@ -40,14 +40,15 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
   @override
   void initState() {
     super.initState();
-    ref.read(ingredientListControllerProvider);
+    ref.read(ingredientListControllerProvider(searchEntry: ""));
     ref.read(settingsControllerProvider);
     // ref.read(router);
   }
 
   @override
   Widget build(BuildContext context) {
-    final inventoryIngredients = ref.watch(ingredientListControllerProvider);
+    final inventoryIngredients =
+        ref.watch(ingredientListControllerProvider(searchEntry: ""));
     final settings = ref.watch(settingsControllerProvider);
     // final homeRouter = ref.watch(router);
 
@@ -88,14 +89,13 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
       ),
       body: <Widget>[
         /// Home page
-        InventoryPage(inventoryIngredients: inventoryIngredients),
-
+        InventoryPage(inventoryIngredients: inventoryIngredients), //
         // search recipes page
         SearchRecipePage(
             userSettings: settings, inventory: inventoryIngredients),
 
         /// Saved Recipe page
-        const SavedRecipePage(),
+        SavedRecipePage(userSettings: settings),
 
         /// Generate Recipe Page
         // const GenerateRecipePage(),
