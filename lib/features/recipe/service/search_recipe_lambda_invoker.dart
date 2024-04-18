@@ -51,6 +51,8 @@ class SearchRecipeLambdaInvoker {
     }
     ''';
 
+    print("\n\n\n\n\nRECIPE REQUEST: $json\n\n\n\n\n");
+
     // Payload containing command
     List<int> payload = json.codeUnits;
 

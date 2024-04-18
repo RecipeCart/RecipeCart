@@ -22,6 +22,7 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
   void initState() {
     super.initState();
     avoidances = ref.read(settingsControllerProvider.notifier).getAvoidances();
+    print("\n\n\n\n AVOIDANCES: $avoidances");
     switch (widget.inventory) {
       case AsyncData(:final value):
         ingredientList = value.isEmpty ? [] : value;

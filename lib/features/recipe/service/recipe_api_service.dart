@@ -31,9 +31,12 @@ class RecipeAPIService {
       String dietType) async {
     // convert avoidances to allRelatedAvoidances
     List<List<String>> allRelatedAvoidances = [];
+    print("Avoidances in API: $ingredientAvoidances");
 
     if (ingredientAvoidances.isNotEmpty) {
-      ingredientAvoidances.map((e) => allRelatedAvoidances.add(e.relatedNames));
+      for (var element in ingredientAvoidances) {
+        allRelatedAvoidances.add(element.relatedNames);
+      }
     }
 
     try {

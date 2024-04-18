@@ -9,7 +9,7 @@ class PreferencePage extends ConsumerStatefulWidget {
   ConsumerState<PreferencePage> createState() => _PreferencePageBuild();
 }
 
-enum DietTypes { none, vegan, vegetarian, pescatarian, dairyfree, keto }
+enum DietTypes { none, vegetarian, vegan, pescatarian, dairyfree, keto }
 
 class _PreferencePageBuild extends ConsumerState<PreferencePage> {
   @override
@@ -37,8 +37,8 @@ class _PreferencePageBuild extends ConsumerState<PreferencePage> {
           body: Column(
             children: [
               optionItem(context, DietTypes.none, 'None'),
-              optionItem(context, DietTypes.vegan, 'Vegan'),
               optionItem(context, DietTypes.vegetarian, 'Vegetarian'),
+              optionItem(context, DietTypes.vegan, 'Vegan'),
               optionItem(context, DietTypes.pescatarian, 'Pescatarian'),
               optionItem(context, DietTypes.dairyfree, 'Dairy-free'),
               optionItem(context, DietTypes.keto, 'Keto'),
