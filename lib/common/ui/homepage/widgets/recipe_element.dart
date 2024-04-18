@@ -15,18 +15,17 @@ class RecipeCard extends ConsumerStatefulWidget {
   final String id;
   final AsyncValue<Settings> userSettings;
 
-  RecipeCard({
-    super.key,
-    required this.name,
-    required this.list,
-    required this.instructions,
-    required this.rating,
-    required this.ratingCount,
-    required this.id,
-    required this.userSettings
-  });
-  @override 
-  ConsumerState <RecipeCard> createState() => _RecipeCardState();
+  RecipeCard(
+      {super.key,
+      required this.name,
+      required this.list,
+      required this.instructions,
+      required this.rating,
+      required this.ratingCount,
+      required this.id,
+      required this.userSettings});
+  @override
+  ConsumerState<RecipeCard> createState() => _RecipeCardState();
 }
 
 class _RecipeCardState extends ConsumerState<RecipeCard> {
@@ -37,15 +36,21 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
   initState() {
     super.initState();
     ref.read(recipeControllerProvider);
-    savedRecipes = ref.read(settingsControllerProvider.notifier).getSavedRecipes().map((e) => e.id).toSet();
-    if (savedRecipes.contains(widget.id)){
+    savedRecipes = ref
+        .read(settingsControllerProvider.notifier)
+        .getSavedRecipes()
+        .map((e) => e.id)
+        .toSet();
+    if (savedRecipes.contains(widget.id)) {
       isSaved = true;
     }
   }
+
   Set<String> savedRecipes = {};
 
   late var savedRecipeProvider = FutureProvider((ref) async {
-    final savedRecipe = await ref.read(settingsControllerProvider.notifier).getSavedRecipes();
+    final savedRecipe =
+        await ref.read(settingsControllerProvider.notifier).getSavedRecipes();
     return savedRecipe;
   });
 
@@ -54,19 +59,24 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
     // int ingreLen = ingredients.length;
     final savedRecipesSetting = ref.watch(savedRecipeProvider);
 
-    savedRecipesSetting.when(data: (data) {
-      setState(() {
-        savedRecipes = data.map((e) => e.id).toSet();
-          if (savedRecipes.contains(widget.id)){
-      isSaved = true;
-    }
-      });
-      
-      }, error: (e, s) {print("$e and $s");}, loading: () => {});
-    
+    savedRecipesSetting.when(
+        data: (data) {
+          setState(() {
+            savedRecipes = data.map((e) => e.id).toSet();
+            if (savedRecipes.contains(widget.id)) {
+              isSaved = true;
+            }
+          });
+        },
+        error: (e, s) {
+          print("$e and $s");
+        },
+        loading: () => {});
+
     ingredients = widget.list.join(',\n');
     return GestureDetector(
-      onTap: () => showCard(context, widget.name, ingredients, widget.instructions),
+      onTap: () =>
+          showCard(context, widget.name, ingredients, widget.instructions),
       child: Card(
         shape: RoundedRectangleBorder(
           side: const BorderSide(
@@ -85,24 +95,38 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
                   Expanded(
                     child: Text(widget.name),
                   ),
-                  IconButton(icon: const Icon(
-                    Icons.bookmark_add_outlined,
-                    color: Colors.white), selectedIcon: const Icon(Icons.bookmark_add, color: Colors.purple), isSelected: isSaved, onPressed: () async { 
-                      widget.userSettings.whenOrNull(data: (data) {setState(() {
-                        if(!isSaved) {ref.read(recipeControllerProvider.notifier).saveRecipe(recipeID: widget.id, settings: data);}
-                        else {ref.read(recipeControllerProvider.notifier).unsaveRecipe(recipeID: widget.id, settings: data);}
-                        savedRecipeProvider = FutureProvider((ref) async {
-    final savedRecipe = await ref.read(settingsControllerProvider.notifier).getSavedRecipes();
-    return savedRecipe;
-  });
-                      });
-                        
+                  IconButton(
+                      icon: const Icon(Icons.bookmark_add_outlined,
+                          color: Colors.white),
+                      selectedIcon:
+                          const Icon(Icons.bookmark_add, color: Colors.purple),
+                      isSelected: isSaved,
+                      onPressed: () async {
+                        widget.userSettings.whenOrNull(data: (data) {
+                          setState(() {
+                            if (!isSaved) {
+                              ref
+                                  .watch(recipeControllerProvider.notifier)
+                                  .saveRecipe(
+                                      recipeID: widget.id, settings: data);
+                            } else {
+                              ref
+                                  .watch(recipeControllerProvider.notifier)
+                                  .unsaveRecipe(
+                                      recipeID: widget.id, settings: data);
+                            }
+                            savedRecipeProvider = FutureProvider((ref) async {
+                              final savedRecipe = ref
+                                  .read(settingsControllerProvider.notifier)
+                                  .getSavedRecipes();
+                              return savedRecipe;
+                            });
+                          });
                         });
 
-                      isSaved = !isSaved; //
-                      //insert command to save/unsave
-                      }
-                  ),
+                        isSaved = !isSaved; //
+                        //insert command to save/unsave
+                      }),
                 ],
               ),
               Row(
@@ -118,26 +142,27 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
             ],
           ),
         ),
-
       ),
     );
   }
-  void showCard(BuildContext context, String name, String ingredients, String instructions) {
-    
+
+  void showCard(BuildContext context, String name, String ingredients,
+      String instructions) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         var screenSize = MediaQuery.of(context).size;
         return Dialog(
           child: SizedBox(
-            width: screenSize.width, 
-            height: screenSize.height * 0.9, 
+            width: screenSize.width,
+            height: screenSize.height * 0.9,
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(13),
               child: Column(
-                children: <Widget> [
+                children: <Widget>[
                   Padding(
-                    padding: const EdgeInsetsDirectional.only(top: 40, start: 10, end: 10),
+                    padding: const EdgeInsetsDirectional.only(
+                        top: 40, start: 10, end: 10),
                     child: Text(
                       name,
                       style: const TextStyle(fontSize: 30),
@@ -165,7 +190,8 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
                     endIndent: 20,
                   ),
                   Padding(
-                    padding: const EdgeInsetsDirectional.only(top: 7, start: 10, end: 10),
+                    padding: const EdgeInsetsDirectional.only(
+                        top: 7, start: 10, end: 10),
                     child: Text(
                       'Ingredients: $ingredients',
                       style: const TextStyle(fontSize: 20),
@@ -176,9 +202,7 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
                     indent: 20,
                     endIndent: 20,
                   ),
-                  Text(
-                    instructions
-                  ),
+                  Text(instructions),
                   const Divider(
                     indent: 20,
                     endIndent: 20,
@@ -202,13 +226,13 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.close),
-                    onPressed: () {Navigator.pop(context);},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ],
-                
               ),
             ),
-
           ),
         );
       },

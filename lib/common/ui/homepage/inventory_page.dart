@@ -44,14 +44,13 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
 
   String productInfo = "";
 
-  String searchEntry = "";
-  String searchInventoryText = "";
   List<Ingredient?> copiedInventory = [];
+  List<String> ingredientsToRemove = [];
 
   @override
   void initState() {
     super.initState();
-    ref.read(ingredientListControllerProvider(searchEntry: ""));
+    ref.read(ingredientListControllerProvider);
   }
 
   // late var ingredientSearchProvider = FutureProvider((ref) async {
@@ -62,11 +61,19 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
   // });
   @override
   Widget build(BuildContext context) {
-    final inventoryIngredients =
-        ref.watch(ingredientListControllerProvider(searchEntry: ""));
+    final inventoryIngredients = ref.watch(ingredientListControllerProvider);
 
-    // var searchResults = ref.watch(ingredientSearchProvider);
     return inventoryIngredients.when(data: (inventoryIngredients) {
+      // sort inventory alphabetically
+      inventoryIngredients.sort((a, b) => a!.ingredientName
+          .toLowerCase()
+          .compareTo(b!.ingredientName.toLowerCase()));
+
+      // init state if search is empty
+      if (searchController.text == "") {
+        copiedInventory = List.from(inventoryIngredients);
+      }
+
       // if (inventoryIngredients.isEmpty) {
       //   return Scaffold(
       //       appBar: AppBar(
@@ -74,14 +81,6 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
       //       ),
       //       body: const Center(child: Text("No ingredients in inventory")));
       // }
-      print("\n\n\ncopied: \n${copiedInventory.length}\n\n\n");
-      print("\n\n\ninventory: \n${inventoryIngredients.length}\n\n\n");
-
-      copiedInventory = inventoryIngredients
-          .where((element) => element!.ingredientName
-              .toLowerCase()
-              .contains(searchEntry.toLowerCase()))
-          .toList();
 
       return Scaffold(
         appBar: AppBar(
@@ -113,37 +112,39 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
                         padding: const MaterialStatePropertyAll<EdgeInsets>(
                             EdgeInsets.symmetric(horizontal: 16.0)),
                         onTap: () {
-                          if (controller.isOpen) {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            controller.closeView(controller.text);
-                          } else {
-                            setState(() {
-                              searchEntry = controller.text;
-                            });
-                            controller.openView();
-                          }
+                          controller.openView();
                         },
-                        onChanged: (text) {},
                         leading: const Icon(Icons.search),
                       );
                     },
                     suggestionsBuilder:
                         (BuildContext context, SearchController controller) {
-                      return List<ListTile>.generate(copiedInventory.length,
+                      // suggestions are only for unique ingredients based on currentSearch
+                      Set<String> nameSuggestions = inventoryIngredients
+                          .where((element) => element!.ingredientName
+                              .toLowerCase()
+                              .contains(controller.text.toLowerCase()))
+                          .map((e) => e!.ingredientName)
+                          .toSet();
+                      return List<ListTile>.generate(nameSuggestions.length,
                           (int index) {
-                        final String item =
-                            copiedInventory[index]!.ingredientName;
+                        final String item = nameSuggestions.elementAt(index);
 
                         return ListTile(
                           title: Text(item),
                           onTap: () {
-                            FocusManager.instance.primaryFocus?.unfocus();
+                            setState(
+                              () {
+                                copiedInventory = inventoryIngredients
+                                    .where((element) => element!.ingredientName
+                                        .toLowerCase()
+                                        .contains(item.toLowerCase()))
+                                    .toList();
+                                controller.closeView(item);
+                              },
+                            );
 
-                            setState(() {
-                              // update ingredient inventory view to reflect searched copy
-                              searchEntry = item;
-                            });
-                            controller.closeView(item);
+                            FocusManager.instance.primaryFocus?.unfocus();
                           },
                         );
                       });
@@ -197,30 +198,59 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
                       //           ),
                       //         ]);
                     },
-                    viewOnChanged: (text) {
-                      setState(() {
-                        searchEntry = text;
-                      });
-                    },
                     viewOnSubmitted: (text) {
                       setState(() {
-                        searchEntry = text;
+                        // build a copied version of inventory with only searched elements
+                        if (searchController.text == "") {
+                          copiedInventory = List.from(inventoryIngredients);
+                        } else {
+                          copiedInventory = inventoryIngredients
+                              .where((element) => element!.ingredientName
+                                  .toLowerCase()
+                                  .contains(text.toLowerCase()))
+                              .toList();
+                        }
+                        searchController.closeView(text);
                       });
+
+                      FocusManager.instance.primaryFocus?.unfocus();
                     },
                   ),
                   Expanded(
                     child: isConnected
                         ? ingredientStream()
-                        : ListView.builder(
-                            itemBuilder: (context, index) {
-                              final inventoryCard = InventoryCard(
-                                  ingredient: inventoryIngredients[
-                                      index]!); // Get the card at current index
-                              return inventoryCard; // Return the card to be built
-                            },
-                            scrollDirection: Axis.vertical,
-                            itemCount: inventoryIngredients.length,
-                          ),
+                        : copiedInventory.isEmpty
+                            ? const Center(
+                                child: Text("No such ingredient in inventory"))
+                            : ListView.builder(
+                                /// since we are building a list of stateful widgets, we need to key each element
+                                /// so that Flutter knows which states to update
+                                key:
+                                    UniqueKey(), // VERY IMPORTANT TO INCLUDE THIS FIELD to enable search
+                                itemBuilder: (context, index) {
+                                  final inventoryCard = InventoryCard(
+                                      ingredient: copiedInventory[
+                                          index]!); // Get the card at current index
+                                  return Dismissible(
+                                      key: UniqueKey(),
+                                      background:
+                                          _buildDismissBackground(context),
+                                      onDismissed: (direction) async {
+                                        await ref
+                                            .watch(
+                                                ingredientListControllerProvider
+                                                    .notifier)
+                                            .removeIngredient(
+                                                id: copiedInventory[index]!.id);
+                                        copiedInventory.removeAt(index);
+                                      },
+                                      direction: DismissDirection.endToStart,
+                                      child:
+                                          inventoryCard); // Return the card to be built
+                                },
+                                scrollDirection: Axis.vertical,
+                                itemCount: copiedInventory.length,
+                              ),
                   ),
                 ],
               ),
@@ -246,9 +276,7 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
                   if (!isConnected) {
                     for (final ingredient in detectedIngredients) {
                       await ref
-                          .watch(
-                              ingredientListControllerProvider(searchEntry: "")
-                                  .notifier)
+                          .watch(ingredientListControllerProvider.notifier)
                           .addIngredient(
                               ingredientName: ingredient.ingredientName,
                               relatedNames: ingredient.relatedNames,
@@ -282,7 +310,12 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
         ),
       );
     }, error: (error, stack) {
-      return const Center(child: Text('error'));
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Inventory Page'),
+        ),
+        body: const Center(child: Text("Error loading inventory ingredients")),
+      );
     }, loading: () {
       return const Center(
         child: CircularProgressIndicator(),
@@ -351,9 +384,17 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
                         itemCount:
                             cache.length, // Set itemCount based on list length
                         itemBuilder: (context, index) {
-                          final inventoryCard =
-                              cache[index]; // Get the card at current index
-                          return inventoryCard; // Return the card to be built
+                          return Dismissible(
+                              key: UniqueKey(),
+                              background: _buildDismissBackground(context),
+                              onDismissed: (direction) {
+                                detectedIngredients
+                                    .remove(cache[index].ingredient);
+                                cache.removeAt(index);
+                              },
+                              direction: DismissDirection.endToStart,
+                              child:
+                                  cache[index]); // Return the card to be built
                         },
                         scrollDirection: Axis.vertical,
                       ),
@@ -438,5 +479,22 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
     });
 
     return client.mqttDisconnect();
+  }
+
+  Widget _buildDismissBackground(BuildContext context) {
+    // Extract card shape from your ingredientCard
+    final cardShape = RoundedRectangleBorder(
+      side: const BorderSide(color: Colors.white, width: 0.3),
+      borderRadius: BorderRadius.circular(15),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.red[400], // Background color for swipe
+        borderRadius: cardShape.borderRadius, // Apply card border radius
+      ),
+      child:
+          const Icon(Icons.delete, color: Colors.white), // Optional delete icon
+    );
   }
 }

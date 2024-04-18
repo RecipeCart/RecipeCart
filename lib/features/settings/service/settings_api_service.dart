@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:collection/collection.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipe_cart/models/Recipe.dart';
@@ -128,6 +129,30 @@ class SettingsAPIService {
           .response;
 
       safePrint(response);
+
+      safePrint("Updated settings");
+
+      // re-fetch the avoidances as ingredients
+      if (!const DeepCollectionEquality.unordered().equals(
+          ingredientAvoidances.map((e) => e.ingredientName).toList(),
+          response.data!.avoidances)) {
+        ingredientAvoidances = [];
+        safePrint("\n\n\ngot in here\n\n");
+        await _populateIngredientAvoidances(response.data!.avoidances!);
+      }
+
+      safePrint("\n\n\nAvoidance length after update: " +
+          getAvoidances().length.toString());
+      // re-fetch savedRecipes
+      if (!const DeepCollectionEquality.unordered()
+          .equals(savedRecipes.map((e) => e.id), response.data!.savedRecipes)) {
+        safePrint("\n\n\ngot in here\n\n");
+
+        savedRecipes = [];
+        savedRecipes = await _getSavedRecipes(response.data!);
+      }
+      safePrint("\n\n\nAvoidance length after update: " +
+          getSavedRecipes().length.toString());
     } on Exception catch (error) {
       safePrint('updateUserSettings failed: $error');
     }

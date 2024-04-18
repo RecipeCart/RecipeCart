@@ -24,10 +24,10 @@ class SettingsPage extends ConsumerStatefulWidget {
   });
 
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  SettingsPageState createState() => SettingsPageState();
 }
 
-class _SettingsPageState extends ConsumerState<SettingsPage> {
+class SettingsPageState extends ConsumerState<SettingsPage> {
   // final _themeProvider = ThemeProvider(); // Instance of ThemeProvider
 
   @override

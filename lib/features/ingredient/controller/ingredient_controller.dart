@@ -8,16 +8,15 @@ part 'ingredient_controller.g.dart';
 @riverpod
 class IngredientListController extends _$IngredientListController {
   // for re-populating the inventory page
-  Future<List<Ingredient?>> _getIngredientInventory(
-      {required String searchEntry}) async {
+  Future<List<Ingredient?>> _getIngredientInventory() async {
     final ingredientRepository = ref.read(ingredientRepositoryProvider);
     final ingredients = await ingredientRepository.searchInventory();
     return ingredients;
   }
 
   @override
-  FutureOr<List<Ingredient?>> build({required String searchEntry}) async {
-    return await _getIngredientInventory(searchEntry: searchEntry);
+  FutureOr<List<Ingredient?>> build() async {
+    return await _getIngredientInventory();
   }
 
   // for users to search inventory
@@ -56,7 +55,7 @@ class IngredientListController extends _$IngredientListController {
     state = await AsyncValue.guard(() async {
       final ingredientRepository = ref.read(ingredientRepositoryProvider);
       await ingredientRepository.addIngredient(ingredient);
-      return _getIngredientInventory(searchEntry: "");
+      return _getIngredientInventory();
     });
   }
 
@@ -66,7 +65,7 @@ class IngredientListController extends _$IngredientListController {
     state = await AsyncValue.guard(() async {
       final ingredientRepository = ref.read(ingredientRepositoryProvider);
       await ingredientRepository.removeIngredient(id);
-      return _getIngredientInventory(searchEntry: "");
+      return _getIngredientInventory();
     });
   }
 
@@ -77,7 +76,7 @@ class IngredientListController extends _$IngredientListController {
     state = await AsyncValue.guard(() async {
       final ingredientRepository = ref.read(ingredientRepositoryProvider);
       await ingredientRepository.updateIngredientQuantity(id, quantity);
-      return _getIngredientInventory(searchEntry: "");
+      return _getIngredientInventory();
     });
   }
 }
