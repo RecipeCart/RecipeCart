@@ -1,43 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recipe_cart/features/ingredient/controller/ingredient_controller.dart';
 import 'package:recipe_cart/features/settings/controller/settings_controller.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 
 class AvoidancePage extends ConsumerStatefulWidget {
-  const AvoidancePage({
-    super.key
-    });
+  const AvoidancePage({super.key});
 
   @override
-    ConsumerState<AvoidancePage> createState() => _AvoidancePageBuild();
-  
+  ConsumerState<AvoidancePage> createState() => _AvoidancePageState();
 }
 
-class _AvoidancePageBuild extends ConsumerState<AvoidancePage> {
-  List<Ingredient> displayedIngredients = []; 
-  List<Ingredient> listIngredients = [];
+class _AvoidancePageState extends ConsumerState<AvoidancePage> {
+  List<Ingredient> displayedIngredients = [];
+  List<Ingredient> listAvoidances = [];
+  late Future<List<Ingredient?>> allIngredients;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    final listIngredients = ref.read(settingsControllerProvider.notifier).getAvoidances();
-    displayedIngredients = listIngredients;
+
+    listAvoidances =
+        ref.read(settingsControllerProvider.notifier).getAvoidances();
+    displayedIngredients = listAvoidances;
+
+    allIngredients = ref
+        .read(ingredientListControllerProvider.notifier)
+        .searchAllIngredients(searchEntry: "");
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Ingredient> listIngredients = ref.read(settingsControllerProvider.notifier).getAvoidances();
-    
-    final currentSettings = ref.watch(settingsControllerProvider);
+    // List<Ingredient> listAvoidances =
+    //     ref.read(settingsControllerProvider.notifier).getAvoidances();
 
-    print(listIngredients.length);
+    final currentSettings = ref.watch(settingsControllerProvider);
 
     switch (currentSettings) {
       case AsyncValue(:final value):
         return Scaffold(
           appBar: AppBar(
             title: const Text('Avoidances List'),
-
           ),
           body: SingleChildScrollView(
             physics: const ScrollPhysics(),
@@ -53,12 +56,14 @@ class _AvoidancePageBuild extends ConsumerState<AvoidancePage> {
                             background: _buildDismissBackground(context),
                             onDismissed: (direction) {
                               setState(() {
-                                listIngredients.removeAt(listIngredients.indexOf(ingredient));
+                                listAvoidances.removeAt(
+                                    listAvoidances.indexOf(ingredient));
                                 displayedIngredients.removeAt(index);
                               });
                             },
                             direction: DismissDirection.endToStart,
-                            child: ingredientCard(context, ingredient.ingredientName),
+                            child: ingredientCard(
+                                context, ingredient.ingredientName),
                           );
                         },
                         shrinkWrap: true,
@@ -71,24 +76,30 @@ class _AvoidancePageBuild extends ConsumerState<AvoidancePage> {
           ),
           floatingActionButton: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children:[
+            children: [
               FloatingActionButton(
+                heroTag: "addButton",
                 onPressed: () async {
-                  showModal(context, newItem);
+                  showModal(context, addAvoidance);
                 },
                 child: const Icon(Icons.add),
               ),
               FloatingActionButton(
+                heroTag: "submitButton",
                 onPressed: () async {
-                  await ref.read(settingsControllerProvider.notifier).updateSettings(
-                    settingsID: value!.id,
-                    avoidances: listIngredients.map((e) => e.ingredientName).toList(),
-                    dietType: value.dietType!,
-                    notificationStatus: value.notifications!,
-                    language: value.language!,
-                  );
+                  await ref
+                      .read(settingsControllerProvider.notifier)
+                      .updateSettings(
+                        settingsID: value!.id,
+                        avoidances: listAvoidances
+                            .map((e) => e.ingredientName)
+                            .toList(),
+                        dietType: value.dietType!,
+                        notificationStatus: value.notifications!,
+                        language: value.language!,
+                      );
 
-                  if(context.mounted) {
+                  if (context.mounted) {
                     Navigator.pop(context);
                   }
                 },
@@ -100,24 +111,18 @@ class _AvoidancePageBuild extends ConsumerState<AvoidancePage> {
     }
   }
 
-  void newItem(String newItem) {
+  void addAvoidance(String newItem) async {
     // parse newWeight to get unit
 
     final updatedIngredient = newItem;
-    final Ingredient newIngredient = Ingredient(ingredientName: updatedIngredient, relatedNames: [], removed: false);
-    listIngredients.add(newIngredient);
+    final Ingredient newIngredient = Ingredient(
+        ingredientName: updatedIngredient, relatedNames: [], removed: false);
 
-    // await ref.read(settingsControllerProvider.notifier).updateSettings(
-    //   settingsID: value!.id,
-    //   avoidances: listIngredients.map((e) => e.ingredientName).toList(),
-    //   dietType: value.dietType!,
-    //   notificationStatus: value.notifications!,
-    //   language: value.language!,
-    // );
+    // add avoidance to list of avoidances
+    listAvoidances.add(newIngredient);
   }
 
-  void showModal(
-      BuildContext context, Function(String) onTextUpdate) {
+  void showModal(BuildContext context, Function(String) onTextUpdate) {
     final TextEditingController textController =
         TextEditingController(text: '');
 
@@ -132,7 +137,7 @@ class _AvoidancePageBuild extends ConsumerState<AvoidancePage> {
         ),
         actions: <Widget>[
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               onTextUpdate(textController.text); // Update text value
               Navigator.pop(context); // Close dialog
             },
@@ -148,11 +153,12 @@ class _AvoidancePageBuild extends ConsumerState<AvoidancePage> {
   }
 
   void rebuildAllChildren(BuildContext context) {
-  void rebuild(Element el) {
-    el.markNeedsBuild();
-    el.visitChildren(rebuild);
-  }
-  (context as Element).visitChildren(rebuild);
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
   }
 
   Widget _buildDismissBackground(BuildContext context) {
@@ -167,38 +173,36 @@ class _AvoidancePageBuild extends ConsumerState<AvoidancePage> {
         color: Colors.transparent, // Background color for swipe
         borderRadius: cardShape.borderRadius, // Apply card border radius
       ),
-      child: const Icon(Icons.delete, color: Colors.white), // Optional delete icon
+      child:
+          const Icon(Icons.delete, color: Colors.white), // Optional delete icon
     );
   }
 
-  Widget ingredientCard(BuildContext context, String content)
-  {
+  Widget ingredientCard(BuildContext context, String content) {
     return Card(
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(
-          color: Colors.white,
-          width: 0.3,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(
+            color: Colors.white,
+            width: 0.3,
+          ),
+          borderRadius: BorderRadius.circular(15),
         ),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      margin: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
-      child: Padding(
-        padding: const EdgeInsets.only(right: 15.0, left: 15.0, top: 23, bottom: 23),
-        child: Row(
-          children: [
-            Expanded(
-            child: Text(content),
-            ),
-            // IconButton(
-            //   icon: const Icon(Icons.close),
-            //   // onPressed: (){Navigator.pop(context);},
-            // ),
-            const Icon(Icons.close),
-          ],
-        ),
-      ) 
-      
-    );
+        margin: const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
+        child: Padding(
+          padding: const EdgeInsets.only(
+              right: 15.0, left: 15.0, top: 23, bottom: 23),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(content),
+              ),
+              // IconButton(
+              //   icon: const Icon(Icons.close),
+              //   // onPressed: (){Navigator.pop(context);},
+              // ),
+              const Icon(Icons.close),
+            ],
+          ),
+        ));
   }
-  
 }

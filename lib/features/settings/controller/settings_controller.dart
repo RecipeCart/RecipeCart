@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:recipe_cart/features/settings/data/settings_repository.dart';
 import 'package:recipe_cart/models/ModelProvider.dart';
 import 'package:recipe_cart/models/Recipe.dart';

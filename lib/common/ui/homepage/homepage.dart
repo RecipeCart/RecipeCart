@@ -34,23 +34,18 @@ class NavigationExample extends ConsumerStatefulWidget {
 
 class NavigationExampleState extends ConsumerState<NavigationExample> {
   int currentPageIndex = 0;
-  // String weight = "";
-  // final weightController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    ref.read(ingredientListControllerProvider(searchEntry: ""));
+    ref.read(ingredientListControllerProvider);
     ref.read(settingsControllerProvider);
-    // ref.read(router);
   }
 
   @override
   Widget build(BuildContext context) {
-    final inventoryIngredients =
-        ref.watch(ingredientListControllerProvider(searchEntry: ""));
+    final inventoryIngredients = ref.watch(ingredientListControllerProvider);
     final settings = ref.watch(settingsControllerProvider);
-    // final homeRouter = ref.watch(router);
 
     return Scaffold(
       bottomNavigationBar: NavigationBar(
@@ -95,13 +90,13 @@ class NavigationExampleState extends ConsumerState<NavigationExample> {
             userSettings: settings, inventory: inventoryIngredients),
 
         /// Saved Recipe page
-        SavedRecipePage(userSettings: settings),
+        const SavedRecipePage(),
 
         /// Generate Recipe Page
         // const GenerateRecipePage(),
 
-        /// Messages page
-        const SettingsPage(), //settings: settings
+        /// Settings page
+        const SettingsPage(),
       ][currentPageIndex],
     );
   }

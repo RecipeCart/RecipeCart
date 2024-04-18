@@ -64,8 +64,7 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
       }
       print("reloaded diet type: $dietType");
     });
-    ref.listen(ingredientListControllerProvider(searchEntry: ""),
-        (prev, next) async {
+    ref.listen(ingredientListControllerProvider, (prev, next) async {
       switch (widget.inventory) {
         case AsyncData(:final value):
           ingredientList = value.isEmpty ? [] : value;
@@ -155,14 +154,14 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
                         itemCount: data.length,
                         itemBuilder: (context, index) {
                           return RecipeCard(
-                              name: data[index]!.recipeName,
-                              list: data[index]!.ingredients,
-                              instructions: data[index]!.instructions,
-                              rating: data[index]!.averageRatings,
-                              ratingCount: data[index]!.numRatings,
-                              id: data[index]!.id,
-                              userSettings: widget.userSettings,);
-                             
+                            name: data[index]!.recipeName,
+                            list: data[index]!.ingredients,
+                            instructions: data[index]!.instructions,
+                            rating: data[index]!.averageRatings,
+                            ratingCount: data[index]!.numRatings,
+                            id: data[index]!.id,
+                            userSettings: widget.userSettings,
+                          );
                         },
                         scrollDirection: Axis.vertical,
                       );
@@ -201,5 +200,4 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
           ),
         ));
   }
-
 }

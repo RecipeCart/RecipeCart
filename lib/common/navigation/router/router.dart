@@ -28,7 +28,7 @@ final routerProvider = Provider((ref) {
           GoRoute(
             path: 'avoidance',
             name: 'avoidance',
-            builder: (context, state) => const AvoidancePage(),
+            builder: (context, state) => AvoidancePage(),
           ),
         ],
       ),
