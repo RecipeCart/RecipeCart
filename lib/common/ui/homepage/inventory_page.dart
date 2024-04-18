@@ -388,8 +388,7 @@ class InventoryScreenState extends ConsumerState<InventoryPage> {
                               key: UniqueKey(),
                               background: _buildDismissBackground(context),
                               onDismissed: (direction) {
-                                detectedIngredients
-                                    .remove(cache[index].ingredient);
+                                detectedIngredients.removeAt(index);
                                 cache.removeAt(index);
                               },
                               direction: DismissDirection.endToStart,

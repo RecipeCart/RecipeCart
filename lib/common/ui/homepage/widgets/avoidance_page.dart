@@ -22,7 +22,7 @@ class _AvoidancePageState extends ConsumerState<AvoidancePage> {
 
     listAvoidances =
         ref.read(settingsControllerProvider.notifier).getAvoidances();
-    displayedIngredients = listAvoidances;
+    displayedIngredients = List.from(listAvoidances);
 
     allIngredients = ref
         .read(ingredientListControllerProvider.notifier)
@@ -56,8 +56,7 @@ class _AvoidancePageState extends ConsumerState<AvoidancePage> {
                             background: _buildDismissBackground(context),
                             onDismissed: (direction) {
                               setState(() {
-                                listAvoidances.removeAt(
-                                    listAvoidances.indexOf(ingredient));
+                                listAvoidances.removeAt(index);
                                 displayedIngredients.removeAt(index);
                               });
                             },
@@ -81,6 +80,7 @@ class _AvoidancePageState extends ConsumerState<AvoidancePage> {
                 heroTag: "addButton",
                 onPressed: () async {
                   showModal(context, addAvoidance);
+                  setState(() {});
                 },
                 child: const Icon(Icons.add),
               ),
@@ -120,6 +120,7 @@ class _AvoidancePageState extends ConsumerState<AvoidancePage> {
 
     // add avoidance to list of avoidances
     listAvoidances.add(newIngredient);
+    displayedIngredients.add(newIngredient);
   }
 
   void showModal(BuildContext context, Function(String) onTextUpdate) {
@@ -139,6 +140,7 @@ class _AvoidancePageState extends ConsumerState<AvoidancePage> {
           TextButton(
             onPressed: () async {
               onTextUpdate(textController.text); // Update text value
+              setState(() {});
               Navigator.pop(context); // Close dialog
             },
             child: const Text('OK'),
