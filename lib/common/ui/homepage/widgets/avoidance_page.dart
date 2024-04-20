@@ -35,6 +35,9 @@ class _AvoidancePageState extends ConsumerState<AvoidancePage> {
     //     ref.read(settingsControllerProvider.notifier).getAvoidances();
 
     final currentSettings = ref.watch(settingsControllerProvider);
+    // listAvoidances =
+    //     ref.watch(settingsControllerProvider.notifier).getAvoidances();
+    // displayedIngredients = List.from(listAvoidances);
 
     switch (currentSettings) {
       case AsyncValue(:final value):
@@ -91,7 +94,7 @@ class _AvoidancePageState extends ConsumerState<AvoidancePage> {
                       .read(settingsControllerProvider.notifier)
                       .updateSettings(
                         settingsID: value!.id,
-                        avoidances: listAvoidances
+                        avoidances: displayedIngredients
                             .map((e) => e.ingredientName)
                             .toList(),
                         dietType: value.dietType!,
@@ -119,7 +122,7 @@ class _AvoidancePageState extends ConsumerState<AvoidancePage> {
         ingredientName: updatedIngredient, relatedNames: [], removed: false);
 
     // add avoidance to list of avoidances
-    listAvoidances.add(newIngredient);
+    // listAvoidances.add(newIngredient);
     displayedIngredients.add(newIngredient);
   }
 

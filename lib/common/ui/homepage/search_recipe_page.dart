@@ -40,6 +40,7 @@ class SearchRecipeState extends ConsumerState<SearchRecipePage> {
   String dietType = '';
 
   late var recipeSearchProvider = FutureProvider<List<Recipe?>>((ref) async {
+    ref.read(recipeControllerProvider.notifier).resetOffset();
     final recipeResults = await ref
         .read(recipeControllerProvider.notifier)
         .searchRecipes(
