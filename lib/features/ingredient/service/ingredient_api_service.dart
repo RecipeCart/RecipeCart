@@ -152,6 +152,11 @@ class IngredientAPIService {
   }
 
   Future<void> addIngredient(Ingredient newIngredient) async {
+    if (newIngredient.ingredientName == "Unknown") {
+      safePrint("addIngredient Error: Cannot add unknown to inventory");
+      return;
+    }
+
     try {
       final request = ModelMutations.create(newIngredient);
       final response = await Amplify.API.mutate(request: request).response;

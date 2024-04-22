@@ -46,7 +46,7 @@ class _SavedRecipeBuild extends ConsumerState<SavedRecipePage> {
               savedRecipes = ref
                   .watch(settingsControllerProvider.notifier)
                   .getSavedRecipes();
-
+              setState(() {});
               print(savedRecipes.length);
             },
             child: Card(

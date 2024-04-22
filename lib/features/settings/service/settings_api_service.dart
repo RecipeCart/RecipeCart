@@ -146,12 +146,17 @@ class SettingsAPIService {
 
       safePrint("avoidances after: ${ingredientAvoidances.toString()}\n\n");
 
+      safePrint(
+          "savedRecipes before: ${savedRecipes.map((e) => e.recipeName).toList()}\n\n");
+      safePrint("savedRecipes in settings: ${response.data!.savedRecipes}\n\n");
       // re-fetch savedRecipes
       if (!const DeepCollectionEquality.unordered()
           .equals(savedRecipes.map((e) => e.id), response.data!.savedRecipes)) {
         savedRecipes = [];
         savedRecipes = await _getSavedRecipes(response.data!);
       }
+
+      safePrint("savedRecipes after: ${savedRecipes.toString()}\n\n");
     } on Exception catch (error) {
       safePrint('updateUserSettings failed: $error');
     }
